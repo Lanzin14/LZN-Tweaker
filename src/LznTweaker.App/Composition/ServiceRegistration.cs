@@ -3,7 +3,9 @@ using LznTweaker.Core.Changes;
 using LznTweaker.Core.Cleanup;
 using System.Net.Http;
 using LznTweaker.Core.Execution;
+using LznTweaker.Core.Debloat;
 using LznTweaker.Core.GameTuning;
+using LznTweaker.Features.Debloat;
 using LznTweaker.Features.GameProfiles;
 using LznTweaker.Infrastructure;
 using LznTweaker.Core.Startup;
@@ -34,9 +36,11 @@ public static class ServiceRegistration
         services.AddSingleton(_ => CreateHttpClient());
         services.AddSingleton<SteamLibraryLocator>();
         services.AddSingleton<GameTuningService>();
+        services.AddSingleton<AppxDebloatService>();
 
         // Infraestrutura da interface
         services.AddSingleton<IUserDialogs, UserDialogs>();
+        services.AddSingleton<RestorePointPrompt>();
 
         // Páginas: uma instância por sessão, como antes, para preservar o estado ao navegar.
         services.AddSingleton<DashboardViewModel>();
@@ -48,6 +52,8 @@ public static class ServiceRegistration
         services.AddSingleton<StartupView>();
         services.AddSingleton<DeadlockTuningViewModel>();
         services.AddSingleton<DeadlockTuningView>();
+        services.AddSingleton<AppDebloatViewModel>();
+        services.AddSingleton<AppDebloatView>();
         services.AddSingleton<MainWindow>();
         return services;
     }

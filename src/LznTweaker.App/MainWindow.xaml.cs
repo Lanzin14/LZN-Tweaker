@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using LznTweaker.Features.Debloat;
 using LznTweaker.Features.GameProfiles;
 using LznTweaker.ViewModels;
 using LznTweaker.Views;
@@ -17,10 +18,12 @@ public partial class MainWindow : Window
     private readonly CleanupView _cleanupView;
     private readonly StartupView _startupView;
     private readonly DeadlockTuningView _deadlockTuningView;
+    private readonly AppDebloatView _appDebloatView;
 
     public MainWindow(DashboardViewModel dashboardViewModel, TweaksView tweaksView, CleanupView cleanupView, StartupView startupView,
-        DeadlockTuningView deadlockTuningView)
+        DeadlockTuningView deadlockTuningView, AppDebloatView appDebloatView)
     {
+        _appDebloatView = appDebloatView;
         InitializeComponent();
         _dashboardContent = PageHost.Content;
         _tweaksView = tweaksView;
@@ -72,6 +75,7 @@ public partial class MainWindow : Window
             "Limpeza" => _cleanupView,
             "Inicialização" => _startupView,
             "Jogos" => _deadlockTuningView,
+            "Aplicativos" => _appDebloatView,
             _ => CreateFeaturePage(page)
         };
     }
@@ -130,15 +134,9 @@ public partial class MainWindow : Window
 
     private static UIElement CreateFeaturePage(string page)
     {
-        // Diagnóstico, Tweaks, Jogos, Limpeza e Inicialização têm páginas reais e nunca chegam aqui.
+        // Diagnóstico, Tweaks, Jogos, Aplicativos, Limpeza e Inicialização têm páginas reais e nunca chegam aqui.
         var descriptions = page switch
         {
-            "Aplicativos" => new[]
-            {
-                ("Inventário de aplicativos", "Listar aplicativos instalados e provisionados, indicando componentes importantes e dependências conhecidas."),
-                ("Prévia antes de remover", "Antes de qualquer remoção, mostrar o item selecionado, possíveis impactos e opções de recuperação disponíveis."),
-                ("Perfis transparentes", "Padrão, Gamer equilibrado, Competitivo e Personalizado serão listas para revisão, nunca alterações silenciosas.")
-            },
             "Privacidade" => new[]
             {
                 ("Configurações disponíveis", "Consultar opções de diagnóstico, anúncios e sugestões respeitando os limites da edição do Windows."),

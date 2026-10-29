@@ -337,6 +337,73 @@ foreach ($operation in @($payload.Operations)) {
                 $message = "Restaurados: $($tracker.Registry.Count) valor(es) do Registro, $($tracker.Services.Count) serviço(s), $($tracker.Tasks.Count) tarefa(s)."
                 $rollbackOutcome = 'Estado anterior restaurado.'
             }
+            'RemoveAppx' {
+                $name = [string]$operation.PackageName
+                $installed = @(Get-AppxPackage -Name $name)
+                if ($installed.Count -eq 0) {
+                    $outcome = 'Nada a alterar'
+                    $message = 'O aplicativo já não está instalado nesta conta.'
+                    $rollbackOutcome = 'Nada para restaurar.'
+                    break
+                }
+                foreach ($pkg in $installed) {
+                    # Defesa em profundidade: mesmo que a interface envie, pacotes do sistema/frameworks nunca são removidos.
+                    if ($pkg.IsFramework -or $pkg.NonRemovable -or [string]$pkg.SignatureKind -eq 'System') { throw "O pacote $($pkg.PackageFullName) é protegido pelo Windows; nada foi removido." }
+                }
+                $first = $installed[0]
+                $manifest = Join-Path ([string]$first.InstallLocation) 'AppxManifest.xml'
+                $allUsers = [bool]$operation.AllUsers
+                $provisionedRemoved = 0
+                if ($allUsers) {
+                    $provisioned = @(Get-AppxProvisionedPackage -Online -ErrorAction Stop | Where-Object { [string]$_.DisplayName -eq $name })
+                    foreach ($pkg in $installed) { Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction Stop }
+                    foreach ($prov in $provisioned) { Remove-AppxProvisionedPackage -Online -PackageName $prov.PackageName -ErrorAction Stop | Out-Null; $provisionedRemoved++ }
+                } else {
+                    foreach ($pkg in $installed) { Remove-AppxPackage -Package $pkg.PackageFullName -ErrorAction Stop }
+                }
+                if (@(Get-AppxPackage -Name $name).Count -gt 0) { throw 'O Windows ainda lista o aplicativo após a remoção; a remoção não foi confirmada.' }
+                $filesKept = Test-Path -LiteralPath $manifest
+                $previousState = "Instalado ($($first.Version))"
+                $rollbackData = ConvertTo-Json -Compress -InputObject ([ordered]@{
+                    Name = $name; PackageFullName = [string]$first.PackageFullName; PackageFamilyName = [string]$first.PackageFamilyName
+                    InstallLocation = [string]$first.InstallLocation; ManifestPath = $manifest; AllUsers = $allUsers; FilesKeptAfterRemoval = [bool]$filesKept
+                })
+                $outcome = 'Sucesso verificado'
+                $scope = if ($allUsers) { "todas as contas (provisionamentos removidos: $provisionedRemoved)" } else { 'a conta atual' }
+                $message = "Removido de $scope e confirmado pela consulta posterior."
+                $rollbackOutcome = if ($filesKept) { 'Os arquivos continuam no disco: a restauração por re-registro local deve funcionar.' } else { 'Os arquivos foram apagados pelo Windows: a restauração só é possível pela Microsoft Store.' }
+            }
+            'RestoreAppx' {
+                $data = ConvertFrom-Json -InputObject ([string]$operation.RollbackData)
+                $name = [string]$data.Name
+                if (@(Get-AppxPackage -Name $name).Count -gt 0) {
+                    $outcome = 'Nada a alterar'
+                    $message = 'O aplicativo já está instalado.'
+                    $rollbackOutcome = 'Nada a restaurar.'
+                    break
+                }
+                $manifest = $null
+                if ($data.ManifestPath -and (Test-Path -LiteralPath ([string]$data.ManifestPath))) { $manifest = [string]$data.ManifestPath }
+                if (-not $manifest) {
+                    # Outra conta ou o provisionamento ainda pode ter os arquivos do pacote (exige administrador).
+                    try {
+                        $other = Get-AppxPackage -AllUsers -Name $name -ErrorAction Stop | Where-Object { $_.InstallLocation -and (Test-Path -LiteralPath (Join-Path $_.InstallLocation 'AppxManifest.xml')) } | Select-Object -First 1
+                        if ($other) { $manifest = Join-Path $other.InstallLocation 'AppxManifest.xml' }
+                    } catch { }
+                }
+                if (-not $manifest) {
+                    $outcome = 'Requer Microsoft Store'
+                    $message = 'Os arquivos do aplicativo não existem mais no disco; reinstale pela página do app na Microsoft Store.'
+                    $rollbackOutcome = 'Pendente: reinstalação pela Microsoft Store.'
+                    break
+                }
+                Add-AppxPackage -DisableDevelopmentMode -Register $manifest -ErrorAction Stop
+                if (@(Get-AppxPackage -Name $name).Count -eq 0) { throw 'O re-registro terminou, mas o aplicativo não aparece instalado.' }
+                $previousState = 'Removido'
+                $outcome = 'Reversão verificada'
+                $message = 'Aplicativo re-registrado a partir do manifesto local e confirmado pela consulta posterior.'
+                $rollbackOutcome = 'Aplicativo restaurado.'
+            }
             default { throw "Tipo de operação não permitido: $($operation.Kind)." }
         }
     } catch {
@@ -356,6 +423,6 @@ try {
     $document = [ordered]@{ Results = @($results.ToArray()) }
     [System.IO.File]::WriteAllText($ResultPath, (ConvertTo-Json -InputObject $document -Compress -Depth 10), [System.Text.UTF8Encoding]::new($false))
 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 2 }
-$okOutcomes = @('Sucesso verificado', 'Reversão verificada', 'Executado sem verificação', 'Nada a alterar', 'Ponto recente reutilizado')
+$okOutcomes = @('Sucesso verificado', 'Reversão verificada', 'Executado sem verificação', 'Nada a alterar', 'Ponto recente reutilizado', 'Requer Microsoft Store')
 if (@($results | Where-Object { $_.Outcome -notin $okOutcomes }).Count -gt 0) { exit 1 }
 exit 0

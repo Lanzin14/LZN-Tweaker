@@ -12,6 +12,8 @@ public interface IUserDialogs
     void ShowError(string message, string title);
     string? PickFolder(string title, string? initialDirectory);
     void OpenUrl(string url);
+    /// <summary>Abre um link ms-windows-store:// (página de um app na Microsoft Store).</summary>
+    void OpenStorePage(string storeUri);
 }
 
 public sealed class UserDialogs : IUserDialogs
@@ -37,6 +39,12 @@ public sealed class UserDialogs : IUserDialogs
     {
         if (Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps)
             Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
+    }
+
+    public void OpenStorePage(string storeUri)
+    {
+        if (storeUri.StartsWith("ms-windows-store://", StringComparison.OrdinalIgnoreCase))
+            Process.Start(new ProcessStartInfo(storeUri) { UseShellExecute = true });
     }
 
     private static void Show(string message, string title, MessageBoxImage image)
