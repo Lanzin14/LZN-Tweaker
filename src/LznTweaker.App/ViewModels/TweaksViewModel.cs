@@ -388,94 +388,12 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
             item.SetStateText($"Obrigatório em todo lote · {readiness.Message}");
             return;
         }
-        var (state, detail) = await DetectStateAsync(item.Definition, cancellationToken);
+        var (state, detail) = await Task.Run(() => TweakStateDetector.Detect(item.Definition), cancellationToken);
         item.SetState(state, detail);
     }
 
-    private async Task<(TweakSystemState State, string Detail)> DetectStateAsync(
-        TweakDefinition definition, CancellationToken cancellationToken)
-    {
-        if (definition.Id == TweakCatalog.EndTaskOnTaskbarId && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000))
-            return (TweakSystemState.Unsupported, "requer Windows 11; nada foi alterado.");
-        var allChanges = new List<(string SubKey, string Name, object Value, bool IsHklm)>();
-        foreach (var service in definition.ServiceChanges ?? [])
-        {
-            // Serviços ausentes nesta versão do Windows não entram no cálculo do estado.
-            using var serviceKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service.Name}", writable: false);
-            if (serviceKey is not null)
-                allChanges.Add(($@"SYSTEM\CurrentControlSet\Services\{service.Name}", "Start", ServiceStartCode(service.TargetStartupType), true));
-        }
-        if (definition.RegistryChanges is { Count: > 0 })
-        {
-            foreach (var rc in definition.RegistryChanges)
-                allChanges.Add((rc.SubKey, rc.Name, rc.Value, false));
-        }
-        if (definition.HklmRegistryChanges is { Count: > 0 })
-        {
-            foreach (var hrc in definition.HklmRegistryChanges)
-                allChanges.Add((hrc.SubKey, hrc.Name, hrc.Value, true));
-        }
-
-        if (allChanges.Count == 0)
-        {
-            if (definition.Id == TweakCatalog.ActivateUltimatePerformanceId)
-                return (TweakSystemState.Unknown, "Plano de energia de alta performance.");
-            if (definition.Id == TweakCatalog.RemoveUltimatePerformanceId)
-                return (TweakSystemState.Unknown, "Restaura o plano Equilibrado.");
-            return (TweakSystemState.Unknown, "Nenhum método de detecção direta no Registro.");
-        }
-
-        try
-        {
-            var states = allChanges.Select(change =>
-            {
-                using var key = change.IsHklm
-                    ? Registry.LocalMachine.OpenSubKey(change.SubKey, writable: false)
-                    : Registry.CurrentUser.OpenSubKey(change.SubKey, writable: false);
-                if (key is null || !key.GetValueNames().Contains(change.Name, StringComparer.OrdinalIgnoreCase))
-                    return (Known: false, Matches: false);
-                var value = key.GetValue(change.Name, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
-                return (Known: true, Matches: string.Equals(Convert.ToString(value), Convert.ToString(change.Value), StringComparison.OrdinalIgnoreCase));
-            }).ToArray();
-
-            if (states.All(state => state.Known && state.Matches))
-                return (TweakSystemState.Enabled, "todos os valores esperados estão aplicados.");
-            if (states.All(state => state.Known && !state.Matches))
-                return (TweakSystemState.Disabled, "os valores atuais diferem dos que este ajuste aplica.");
-            if (states.Any(state => state.Known && state.Matches))
-                return (TweakSystemState.Mixed, "valores parciais encontrados.");
-            return (TweakSystemState.Unknown, "valores ausentes ou não configurados.");
-        }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or System.Security.SecurityException)
-        {
-            return (TweakSystemState.Unknown, $"leitura do Registro falhou: {ex.Message}");
-        }
-    }
-
-    private static int ServiceStartCode(string startupType) => startupType switch
-    {
-        "Automatic" => 2,
-        "Manual" => 3,
-        _ => 4
-    };
-
-    private static IReadOnlyDictionary<string, TweakOperationResult> GetLatestUndoCandidates(IReadOnlyList<TweakOperationResult> entries)
-    {
-        var candidates = new Dictionary<string, TweakOperationResult>(StringComparer.Ordinal);
-        foreach (var entry in entries)
-        {
-            if (entry.RequestedState == "Desfazer")
-            {
-                if (entry.Outcome == "Reversão verificada")
-                    candidates.Remove(entry.TweakId);
-                continue;
-            }
-
-            if (entry.Outcome == "Sucesso verificado" && !string.IsNullOrWhiteSpace(entry.RollbackData))
-                candidates[entry.TweakId] = entry;
-        }
-        return candidates;
-    }
+    private static IReadOnlyDictionary<string, TweakOperationResult> GetLatestUndoCandidates(IReadOnlyList<TweakOperationResult> entries) =>
+        TweakStateDetector.GetUndoCandidates(entries);
 
     private void ApplyRunResultsToUndoCandidates(IReadOnlyList<TweakOperationResult> results)
     {

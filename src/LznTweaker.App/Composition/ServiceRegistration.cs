@@ -1,16 +1,22 @@
+using System.Net.Http;
 using LznTweaker.Core;
 using LznTweaker.Core.Changes;
 using LznTweaker.Core.Cleanup;
-using System.Net.Http;
+using LznTweaker.Core.Debloat;
 using LznTweaker.Core.Execution;
 using LznTweaker.Core.GameOptimization;
-using LznTweaker.Core.Debloat;
 using LznTweaker.Core.GameTuning;
-using LznTweaker.Features.Debloat;
-using LznTweaker.Features.GameProfiles;
-using LznTweaker.Infrastructure;
+using LznTweaker.Core.Maintenance;
 using LznTweaker.Core.Startup;
 using LznTweaker.Core.Tweaks;
+using LznTweaker.Features.Backups;
+using LznTweaker.Features.Debloat;
+using LznTweaker.Features.GameProfiles;
+using LznTweaker.Features.Hardware;
+using LznTweaker.Features.Home;
+using LznTweaker.Features.TweakCards;
+using LznTweaker.Infrastructure;
+using LznTweaker.Shell;
 using LznTweaker.ViewModels;
 using LznTweaker.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,18 +48,35 @@ public static class ServiceRegistration
         services.AddSingleton<GamingDiagnosticsService>();
         services.AddSingleton<ShaderCacheService>();
         services.AddSingleton<SteamFolderBackupService>();
+        services.AddSingleton<SystemToolsService>();
 
         // Infraestrutura da interface
         services.AddSingleton<IUserDialogs, UserDialogs>();
         services.AddSingleton<RestorePointPrompt>();
+        services.AddSingleton<INotificationService, NotificationService>();
+        services.AddSingleton<NavigationService>();
+        services.AddSingleton<INavigationService>(provider => provider.GetRequiredService<NavigationService>());
+        services.AddSingleton<TweakCardsServices>();
 
-        // Páginas: uma instância por sessão, como antes, para preservar o estado ao navegar.
+        // Páginas: uma instância por sessão, para preservar o estado ao navegar.
         services.AddSingleton<DashboardViewModel>();
+        services.AddSingleton<HomeViewModel>();
+        services.AddSingleton<HomeView>();
+        services.AddSingleton<BackupsViewModel>();
+        services.AddSingleton<BackupsView>();
+        services.AddSingleton<GeneralPageViewModel>();
+        services.AddSingleton<GeneralPageView>();
+        services.AddSingleton<NetworkPageViewModel>();
+        services.AddSingleton<NetworkPageView>();
+        services.AddSingleton<FixesPageViewModel>();
+        services.AddSingleton<FixesPageView>();
+        services.AddSingleton<HardwareViewModel>();
+        services.AddSingleton<HardwareView>();
         services.AddSingleton<TweaksViewModel>();
-        services.AddSingleton<CleanupViewModel>();
-        services.AddSingleton<StartupViewModel>();
         services.AddSingleton<TweaksView>();
+        services.AddSingleton<CleanupViewModel>();
         services.AddSingleton<CleanupView>();
+        services.AddSingleton<StartupViewModel>();
         services.AddSingleton<StartupView>();
         services.AddSingleton<DeadlockTuningViewModel>();
         services.AddSingleton<DeadlockTuningView>();
@@ -61,6 +84,9 @@ public static class ServiceRegistration
         services.AddSingleton<GameLibraryView>();
         services.AddSingleton<AppDebloatViewModel>();
         services.AddSingleton<AppDebloatView>();
+
+        // Janela principal
+        services.AddSingleton<ShellViewModel>();
         services.AddSingleton<MainWindow>();
         return services;
     }

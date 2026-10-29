@@ -1,0 +1,276 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Identidade visual do LznTweaker: preto/grafite com destaque violeta neon discreto. -->
+
+    <Color x:Key="Lzn.AccentColor">#8B5CF6</Color>
+    <Color x:Key="Lzn.AccentGlowColor">#7C3AED</Color>
+    <Color x:Key="Lzn.CardStrokeColor">#25252E</Color>
+    <Color x:Key="Lzn.CardStrokeHoverColor">#4C3A80</Color>
+
+    <SolidColorBrush x:Key="Lzn.Background" Color="#09090C" />
+    <SolidColorBrush x:Key="Lzn.Sidebar" Color="#0D0D11" />
+    <SolidColorBrush x:Key="Lzn.Surface" Color="#141419" />
+    <SolidColorBrush x:Key="Lzn.SurfaceHover" Color="#18181F" />
+    <SolidColorBrush x:Key="Lzn.SurfaceRaised" Color="#1D1D25" />
+    <SolidColorBrush x:Key="Lzn.Stroke" Color="#25252E" />
+    <SolidColorBrush x:Key="Lzn.StrokeSubtle" Color="#1C1C23" />
+    <SolidColorBrush x:Key="Lzn.Accent" Color="#8B5CF6" />
+    <SolidColorBrush x:Key="Lzn.AccentHover" Color="#A78BFA" />
+    <SolidColorBrush x:Key="Lzn.AccentSoft" Color="#1F1833" />
+    <SolidColorBrush x:Key="Lzn.AccentStroke" Color="#4C3A80" />
+    <SolidColorBrush x:Key="Lzn.AccentText" Color="#DDD0FF" />
+    <SolidColorBrush x:Key="Lzn.Text" Color="#F4F4F7" />
+    <SolidColorBrush x:Key="Lzn.TextSecondary" Color="#A3A3AE" />
+    <SolidColorBrush x:Key="Lzn.TextMuted" Color="#74747F" />
+    <SolidColorBrush x:Key="Lzn.RiskLow" Color="#6EE7B7" />
+    <SolidColorBrush x:Key="Lzn.RiskWarn" Color="#F5C46B" />
+    <SolidColorBrush x:Key="Lzn.RiskHigh" Color="#F87171" />
+
+    <!-- Segoe Fluent Icons no Windows 11; Segoe MDL2 Assets no Windows 10. -->
+    <FontFamily x:Key="Lzn.IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+
+    <Style x:Key="Lzn.Icon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Lzn.IconFont}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Interruptor estilo Windows 11 com o polegar deslizando. -->
+    <Style x:Key="Lzn.ToggleSwitch" TargetType="CheckBox">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Border x:Name="Track" Width="40" Height="20" CornerRadius="10" BorderThickness="1"
+                            Background="#1D1D25" BorderBrush="#3A3A46">
+                        <Ellipse x:Name="Thumb" Width="12" Height="12" HorizontalAlignment="Left" Margin="4,0,0,0" Fill="#A3A3AE">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform x:Name="ThumbOffset" X="0" />
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ThumbOffset" Storyboard.TargetProperty="X" To="20" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut" /></DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ThumbOffset" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut" /></DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter TargetName="Track" Property="Background" Value="{StaticResource Lzn.Accent}" />
+                            <Setter TargetName="Track" Property="BorderBrush" Value="{StaticResource Lzn.Accent}" />
+                            <Setter TargetName="Thumb" Property="Fill" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Track" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Track" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Track" Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Card de ajuste: grafite, borda discreta e brilho violeta suave no hover. -->
+    <Style x:Key="Lzn.Card" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="16,14" />
+        <Style.Triggers>
+            <!-- Pincéis vindos de Setter são congelados e não podem ser animados; a troca no hover é direta. -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                <Setter Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="{StaticResource Lzn.AccentGlowColor}" BlurRadius="18" ShadowDepth="0" Opacity="0.22" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Item da sidebar: barra violeta à esquerda quando selecionado. -->
+    <Style x:Key="Lzn.NavItem" TargetType="ListBoxItem">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Grid Margin="0,1">
+                        <Border x:Name="Row" CornerRadius="8" Padding="10,8" Background="Transparent">
+                            <ContentPresenter />
+                        </Border>
+                        <Border x:Name="Indicator" Width="3" Height="16" CornerRadius="2" HorizontalAlignment="Left" Margin="0,0,0,0"
+                                Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
+                            <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Aba contextual com sublinhado violeta (Core, Privacy, QoL...). -->
+    <Style x:Key="Lzn.Tab" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid>
+                        <Border x:Name="Chip" CornerRadius="8" Padding="12,7" Background="Transparent">
+                            <ContentPresenter />
+                        </Border>
+                        <Border x:Name="Underline" Height="2" VerticalAlignment="Bottom" Margin="8,0" CornerRadius="1"
+                                Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Chip" Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
+                            <Setter TargetName="Underline" Property="Visibility" Value="Visible" />
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Chip" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Botão de barra de ferramentas (Filtro, Ordenar, Atualizar). -->
+    <Style x:Key="Lzn.ToolbarButton" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Chrome" CornerRadius="9" Padding="12,8" BorderThickness="1"
+                            Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Chrome" Property="Opacity" Value="0.45" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Botão de destaque com contorno violeta e brilho (ex.: Revisar e aplicar). -->
+    <Style x:Key="Lzn.GlowButton" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Chrome" CornerRadius="10" Padding="16,9" BorderThickness="1"
+                            Background="{StaticResource Lzn.AccentSoft}" BorderBrush="{StaticResource Lzn.Accent}">
+                        <Border.Effect>
+                            <DropShadowEffect x:Name="Glow" Color="{StaticResource Lzn.AccentGlowColor}" BlurRadius="16" ShadowDepth="0" Opacity="0.45" />
+                        </Border.Effect>
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Chrome" Property="Background" Value="#2A1F4A" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Chrome" Property="Opacity" Value="0.4" />
+                            <Setter TargetName="Chrome" Property="Effect" Value="{x:Null}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Caixa de busca com ícone e texto de exemplo (Tag). -->
+    <Style x:Key="Lzn.SearchBox" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="CaretBrush" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="Chrome" CornerRadius="9" BorderThickness="1" Padding="10,0"
+                            Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,8,0" />
+                            <TextBlock x:Name="Placeholder" Grid.Column="1" Text="{TemplateBinding Tag}" Foreground="{StaticResource Lzn.TextMuted}"
+                                       VerticalAlignment="Center" IsHitTestVisible="False" Visibility="Collapsed" />
+                            <ScrollViewer x:Name="PART_ContentHost" Grid.Column="1" VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

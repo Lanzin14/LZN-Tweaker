@@ -1,0 +1,43 @@
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+
+namespace LznTweaker.Features.TweakCards;
+
+public partial class TweakCardsView : UserControl
+{
+    public TweakCardsView(TweakCardsViewModel viewModel)
+    {
+        InitializeComponent();
+        DataContext = viewModel;
+        Loaded += async (_, _) => await viewModel.InitializeAsync();
+        // Esc fecha o painel de detalhes.
+        InputBindings.Add(new KeyBinding(viewModel.CloseDetailsCommand, Key.Escape, ModifierKeys.None));
+    }
+}
+
+public sealed class GeneralPageView(GeneralPageViewModel viewModel) : TweakCardsView(viewModel);
+public sealed class NetworkPageView(NetworkPageViewModel viewModel) : TweakCardsView(viewModel);
+public sealed class FixesPageView(FixesPageViewModel viewModel) : TweakCardsView(viewModel);
+
+public sealed class DetailsTemplateSelector : DataTemplateSelector
+{
+    public DataTemplate? Tweak { get; set; }
+    public DataTemplate? Action { get; set; }
+
+    public override DataTemplate? SelectTemplate(object item, DependencyObject container) => item switch
+    {
+        TweakCardViewModel => Tweak,
+        QuickActionCardViewModel => Action,
+        _ => null
+    };
+}
+
+public sealed class InverseBooleanConverter : IValueConverter
+{
+    public static InverseBooleanConverter Instance { get; } = new();
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value is not true;
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => value is not true;
+}

@@ -74,6 +74,7 @@ public static class TweakCatalog
     public const string DisableLocationTrackingId = "disable-location-tracking";
     public const string DisableStorageSenseId = "disable-storage-sense";
     public const string DisableRecallId = "disable-recall";
+    public const string EnableGameModeId = "enable-game-mode";
 
     // ═══════════ ID Constants — Customize Preferences ═══════════
     public const string DarkThemeId = "dark-theme-windows";
@@ -90,6 +91,8 @@ public static class TweakCatalog
     public const string DisableTaskViewId = "disable-task-view";
     public const string DisableTaskbarWidgetsId = "disable-taskbar-widgets";
     public const string TaskbarAlignLeftId = "taskbar-align-left";
+    public const string DisableTransparencyId = "disable-transparency";
+    public const string DisableStartupDelayId = "disable-startup-delay";
 
     // ═══════════ ID Constants — Advanced ═══════════
     public const string AdobeNetworkBlockId = "adobe-network-block";
@@ -375,9 +378,58 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
                 new(@"SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis", Microsoft.Win32.RegistryValueKind.DWord, 1)
             ]),
 
+        new(
+            EnableGameModeId,
+            "",
+            "Ativar Modo de Jogo",
+            "Liga o Modo de Jogo do Windows, que prioriza o jogo em primeiro plano e evita instalações de drivers e notificações de reinício durante a partida.",
+            "Define AutoGameModeEnabled=1 em HKCU\\Software\\Microsoft\\GameBar (é o padrão do Windows). Não promete ganho de FPS: o efeito depende do jogo e do hardware.",
+            TweakCategory.Essential,
+            "Baixo",
+            "Windows 10 1703+ e Windows 11. Aplicado ao perfil atual.",
+            RequiresAdministrator: false,
+            RequiresRestart: false,
+            HasReliableRollback: true,
+            IsOneShotOperation: false,
+            "https://support.microsoft.com/windows",
+            [new RegistryValueChange(@"Software\Microsoft\GameBar", "AutoGameModeEnabled", Microsoft.Win32.RegistryValueKind.DWord, 1)]),
+
         // ════════════════════════════════════════════════════════════════════
         //  CUSTOMIZE PREFERENCES
         // ════════════════════════════════════════════════════════════════════
+
+        new(
+            DisableTransparencyId,
+            "",
+            "Desativar efeitos de transparência",
+            "Remove a transparência da barra de tarefas, do Iniciar e das janelas do sistema.",
+            "Define EnableTransparency=0 em HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize (o mesmo que Configurações > Personalização > Cores). Alivia um pouco a composição da área de trabalho em PCs modestos; em jogos de tela cheia o efeito costuma ser imperceptível.",
+            TweakCategory.CustomizePreferences,
+            "Baixo",
+            "Windows 10/11. Aplicado ao perfil atual; a mudança aparece na hora.",
+            RequiresAdministrator: false,
+            RequiresRestart: false,
+            HasReliableRollback: true,
+            IsOneShotOperation: false,
+            "https://support.microsoft.com/windows",
+            [new RegistryValueChange(ThemePersonalizePath, "EnableTransparency", Microsoft.Win32.RegistryValueKind.DWord, 0)]),
+
+        new(
+            DisableStartupDelayId,
+            "",
+            "Remover atraso dos apps de inicialização",
+            "Faz os programas da inicialização abrirem logo após o logon, sem o atraso que o Windows aplica.",
+            "Define StartupDelayInMSec=0 em HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize. Os apps abrem antes, mas disputam disco e CPU com o início do Windows; com muitos itens na inicialização, o logon pode parecer mais lento. Revise também a página Inicialização.",
+            TweakCategory.CustomizePreferences,
+            "Baixo",
+            "Windows 10/11. Vale a partir do próximo logon.",
+            RequiresAdministrator: false,
+            RequiresRestart: true,
+            HasReliableRollback: true,
+            IsOneShotOperation: false,
+            WinUtilSourceUrl,
+            [new RegistryValueChange(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize", "StartupDelayInMSec", Microsoft.Win32.RegistryValueKind.DWord, 0)],
+            RestartNote: "Vale a partir do próximo logon."),
 
         new(
             DarkThemeId,
