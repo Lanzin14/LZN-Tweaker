@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Motor e serviços do LznTweaker, sem dependência de WPF. -->
+  <PropertyGroup>
+    <RootNamespace>LznTweaker.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LznTweaker.Core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Execution\Scripts\*.ps1" LogicalName="LznTweaker.Core.Execution.Scripts.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

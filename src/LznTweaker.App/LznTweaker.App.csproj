@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Interface WPF do LznTweaker: Views, ViewModels e composição dos serviços do Core. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>LznTweaker</RootNamespace>
+    <AssemblyName>LznTweaker</AssemblyName>
+
+    <!-- Manifesto UAC: o app sempre inicia como administrador. -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <Product>LznTweaker - Windows Optimization &amp; Gaming Companion</Product>
+    <Description>Otimizador do Windows com execução coordenada, verificação de resultados e reversão.</Description>
+    <ApplicationIcon Condition="Exists('app.ico')">app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LznTweaker.Core\LznTweaker.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+  </ItemGroup>
+
+</Project>
