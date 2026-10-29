@@ -1,0 +1,13 @@
+# Saídas de compilação
+bin/
+obj/
+publish/
+*.user
+.vs/
+TestResults/
+
+# Saídas de ferramentas locais
+graphify-out/
+
+# Pontos de recuperação manuais
+*.zip

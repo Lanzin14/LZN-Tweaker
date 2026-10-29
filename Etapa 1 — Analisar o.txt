@@ -1,0 +1,127 @@
+Etapa 1 — Analisar o projeto e planejar a implementação
+Analise meu projeto atual de otimização do Windows antes de modificar qualquer arquivo.
+
+Use como referência o Chris Titus Tech WinUtil: https://github.com/ChrisTitusTech/winutil
+
+Examine a estrutura do projeto, a tecnologia utilizada, as páginas existentes, os componentes visuais, as funções implementadas e as que ainda são apenas visuais.
+
+Meu objetivo é criar um otimizador Windows funcional, com interface existente preservada, execução real de comandos, verificação de resultados, logs e reversão quando possível.
+
+Faça um inventário das funcionalidades necessárias: Dashboard, informações do sistema, limpeza, Essential Tweaks, Advanced Tweaks, Customize Preferences, presets, criação de ponto de restauração, planos de energia, gerenciamento de aplicativos, atualizações e configurações do programa, considerando somente as páginas que fazem parte do meu projeto.
+
+Consulte o código e a documentação oficial do WinUtil para identificar implementações reais, categorias, presets e comportamentos. Use outras fontes confiáveis quando necessário.
+
+Não recrie a interface nem reescreva o projeto sem necessidade. Identifique os arquivos que precisam ser modificados, possíveis riscos e a ordem ideal de implementação.
+
+Nesta etapa, entregue um diagnóstico objetivo e um plano de trabalho. Não faça alterações destrutivas e não invente funcionalidades que não existem nas fontes ou no projeto.
+
+
+
+
+Etapa 2 — Criar o núcleo funcional do programa
+Com base na análise anterior, implemente a estrutura central do meu otimizador Windows, preservando a interface e a arquitetura existentes.
+
+Crie um mecanismo confiável para executar operações reais no Windows, detectar o estado atual das configurações, verificar compatibilidade, identificar necessidade de administrador e registrar resultados.
+
+Cada operação deve ter identificação única, descrição, categoria, nível de risco, requisitos, método de aplicação, verificação posterior e reversão quando tecnicamente possível.
+
+Implemente tratamento de erros, logs, cancelamento quando seguro e indicação clara de sucesso, falha ou operação ignorada.
+
+Use PowerShell para as operações apropriadas, integrado à tecnologia atual do projeto. Não abra um processo separado para cada tweak: agrupe as operações selecionadas em uma execução coordenada, com saída de progresso visível.
+
+Implemente validações para impedir comandos inseguros, conflitos entre operações e execução de opções incompatíveis com a versão do Windows.
+
+Não mostre sucesso antes de verificar o resultado. Não substitua funcionalidades existentes por simulações.
+
+Implemente e teste primeiro o núcleo com operações de baixo risco. Explique os arquivos alterados e como testar antes de avançar.
+
+
+
+
+Etapa 3 — Implementar a página Tweaks inspirada no WinUtil
+Implemente a página Tweaks do meu programa seguindo a organização funcional e visual do Chris Titus Tech WinUtil: https://github.com/ChrisTitusTech/winutil
+
+Preserve a interface atual e organize as opções em três áreas independentes:
+
+Essential Tweaks: ponto de restauração, limpeza de temporários, Consumer Features, telemetria, Activity History, Game DVR, hibernação, Homegroup, preferência IPv4, localização, Storage Sense, Wi-Fi Sense, End Task no menu de contexto, Disk Cleanup, Windows Terminal, PowerShell, Recall, serviços e debloat sem remover Edge, conforme compatibilidade e disponibilidade.
+
+Advanced Tweaks: Adobe Network Block, Adobe Debloat, desativação de IPv6, Teredo, aplicativos em segundo plano, Fullscreen Optimizations, Copilot, Intel AMM e WPBT, além das outras opções avançadas previamente definidas. Investigue os nomes e comportamentos originais antes de implementar.
+
+Customize Preferences: tema escuro, pesquisa Bing no menu Iniciar, NumLock na inicialização, mensagens detalhadas de logon, Snap Window, Snap Assist, aceleração do mouse, Sticky Keys, arquivos ocultos e extensões, botões Search, Task View e Widgets, alinhamento da barra de tarefas e outras preferências previamente definidas.
+
+Cada opção deve ter seleção individual, descrição, detecção do estado atual e implementação real.
+
+Implemente os presets Minimal e Standard, além de Advanced e Clear conforme a organização da interface. Os presets devem marcar ou desmarcar opções, nunca executá-las automaticamente. Standard e Minimal devem seguir a configuração de referência verificada no WinUtil, e o perfil Advanced deve selecionar os grupos previstos sem ignorar incompatibilidades ou exclusões de segurança.
+
+O botão Get Installed, se mantido, deve detectar e apresentar o estado real das configurações, não apenas alterar as caixas visualmente.
+
+O botão Run Tweaks deve validar e executar conjuntamente todas as opções selecionadas em Essential, Advanced e Customize, apresentando resumo, progresso, logs, falhas e resultados verificados.
+
+O botão Undo Selected Tweaks deve reverter as alterações selecionadas quando houver reversão confiável.
+
+Implemente também a ativação e remoção do plano Ultimate Performance, verificando sua existência e utilização antes de alterá-lo.
+
+Consulte o código-fonte oficial para confirmar os nomes, comandos, presets e riscos. Não invente opções. Teste cada grupo antes de avançar para o próximo.
+
+
+
+
+Etapa 4 — Implementar Dashboard, limpeza e manutenção
+Implemente as funcionalidades reais de Dashboard e limpeza do meu otimizador Windows, respeitando as páginas e componentes que já existem.
+
+No Dashboard, apresente informações obtidas do sistema, como versão do Windows, CPU, RAM, armazenamento, espaço livre e estado das operações disponíveis. Não invente métricas nem prometa ganhos de FPS sem medições confiáveis.
+
+Na limpeza, implemente operações seguras para arquivos temporários, caches e outros arquivos dispensáveis identificados por métodos confiáveis. Antes de apagar, mostre o espaço estimado, os locais afetados e as opções selecionadas.
+
+Não exclua documentos pessoais, downloads ou arquivos desconhecidos por padrão. Trate arquivos em uso e erros de permissão sem interromper indevidamente o programa.
+
+Quando aplicável, disponibilize análise antes da limpeza, confirmação, execução, cálculo do espaço liberado e relatório final.
+
+Adicione verificações para evitar executar repetidamente operações desnecessárias. Não use scripts genéricos de limpeza que apaguem arquivos indiscriminadamente.
+
+Teste cada função no Windows e informe claramente o que foi implementado, o que foi verificado e quais limitações permanecem.
+
+
+
+
+Etapa 5 — Implementar aplicativos, atualizações e configurações
+Implemente as funcionalidades reais das páginas Install, Updates, Config e MicroWin, caso elas façam parte da interface atual do meu programa.
+
+Use o WinUtil como referência de organização e consulte suas implementações oficiais: https://github.com/ChrisTitusTech/winutil
+
+Install: listar aplicativos disponíveis, apresentar informações básicas e permitir instalar ou remover os aplicativos suportados por mecanismos confiáveis, mostrando progresso e resultado.
+
+Updates: detectar o estado das atualizações do Windows e disponibilizar somente ações realmente implementadas e compatíveis. Não desative atualizações de segurança silenciosamente.
+
+Config: implementar as configurações reais previstas no projeto, incluindo preferências do aplicativo, logs e opções de execução. Persistir configurações quando necessário.
+
+MicroWin: investigar o significado e o funcionamento da seção no WinUtil. Se o meu programa tiver uma área equivalente, implemente apenas funcionalidades compatíveis e tecnicamente verificadas. Não prometa criar uma ISO personalizada ou modificar a instalação do Windows se esse fluxo ainda não estiver implementado.
+
+Utilize fontes confiáveis, valide dependências e permissões e mostre erros de instalação ou atualização. Não execute downloads ou scripts externos sem validação.
+
+Preserve as páginas existentes, evite duplicar funcionalidades e não deixe botões sem ação. Se algum recurso exigir uma etapa adicional, explique a limitação e implemente o restante que for possível com segurança.
+
+
+
+
+Etapa 6 — Revisão geral e testes finais
+Faça uma auditoria completa do meu otimizador Windows depois das etapas de implementação.
+
+Verifique todas as páginas e botões existentes, incluindo Dashboard, limpeza, Essential Tweaks, Advanced Tweaks, Customize Preferences, presets, Run Tweaks, Undo Selected Tweaks, planos de energia, Install, Updates, Config e MicroWin, conforme aplicável ao projeto.
+
+Teste:
+- Se cada botão executa sua ação real.
+- Se os presets selecionam as opções corretas.
+- Se a seleção manual funciona sem conflitos.
+- Se Run Tweaks executa conjuntamente as operações selecionadas.
+- Se os resultados são verificados e os erros registrados.
+- Se a reversão restaura os valores anteriores quando possível.
+- Se permissões administrativas e incompatibilidades são tratadas corretamente.
+- Se a interface permanece responsiva durante operações demoradas.
+- Se não há comandos destrutivos executados sem confirmação.
+- Se não existem funções simuladas, erros silenciosos ou mensagens falsas de sucesso.
+Compare os comportamentos pertinentes com o repositório oficial do Chris Titus Tech WinUtil e corrija os problemas encontrados.
+
+Não reescreva todo o projeto para corrigir pequenos defeitos. Faça alterações pontuais, execute os testes disponíveis e informe quais funcionalidades foram aprovadas, quais falharam e quais ainda não puderam ser verificadas.
+
+Considere o projeto concluído somente quando as funções anunciadas estiverem realmente implementadas ou claramente identificadas como pendentes.
