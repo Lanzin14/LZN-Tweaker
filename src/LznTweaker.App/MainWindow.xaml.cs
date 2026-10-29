@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using LznTweaker.Features.GameProfiles;
 using LznTweaker.ViewModels;
 using LznTweaker.Views;
 
@@ -15,14 +16,17 @@ public partial class MainWindow : Window
     private readonly TweaksView _tweaksView;
     private readonly CleanupView _cleanupView;
     private readonly StartupView _startupView;
+    private readonly DeadlockTuningView _deadlockTuningView;
 
-    public MainWindow(DashboardViewModel dashboardViewModel, TweaksView tweaksView, CleanupView cleanupView, StartupView startupView)
+    public MainWindow(DashboardViewModel dashboardViewModel, TweaksView tweaksView, CleanupView cleanupView, StartupView startupView,
+        DeadlockTuningView deadlockTuningView)
     {
         InitializeComponent();
         _dashboardContent = PageHost.Content;
         _tweaksView = tweaksView;
         _cleanupView = cleanupView;
         _startupView = startupView;
+        _deadlockTuningView = deadlockTuningView;
         _dashboardViewModel = dashboardViewModel;
         DataContext = _dashboardViewModel;
 
@@ -67,6 +71,7 @@ public partial class MainWindow : Window
             "Tweaks" => _tweaksView,
             "Limpeza" => _cleanupView,
             "Inicialização" => _startupView,
+            "Jogos" => _deadlockTuningView,
             _ => CreateFeaturePage(page)
         };
     }
@@ -125,15 +130,9 @@ public partial class MainWindow : Window
 
     private static UIElement CreateFeaturePage(string page)
     {
-        // Diagnóstico, Tweaks, Limpeza e Inicialização têm páginas reais e nunca chegam aqui.
+        // Diagnóstico, Tweaks, Jogos, Limpeza e Inicialização têm páginas reais e nunca chegam aqui.
         var descriptions = page switch
         {
-            "Jogos" => new[]
-            {
-                ("Modo de Jogo e energia", "Consultar as configurações atuais e explicar efeitos conhecidos antes de oferecer qualquer mudança."),
-                ("Atividade em segundo plano", "Identificar processos e itens de inicialização para revisão manual. Nenhum programa será encerrado automaticamente."),
-                ("Medição responsável", "Resultados de desempenho dependerão de testes comparáveis. O app não promete aumento fixo de FPS.")
-            },
             "Aplicativos" => new[]
             {
                 ("Inventário de aplicativos", "Listar aplicativos instalados e provisionados, indicando componentes importantes e dependências conhecidas."),

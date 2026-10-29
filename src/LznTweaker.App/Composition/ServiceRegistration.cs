@@ -1,7 +1,11 @@
 using LznTweaker.Core;
 using LznTweaker.Core.Changes;
 using LznTweaker.Core.Cleanup;
+using System.Net.Http;
 using LznTweaker.Core.Execution;
+using LznTweaker.Core.GameTuning;
+using LznTweaker.Features.GameProfiles;
+using LznTweaker.Infrastructure;
 using LznTweaker.Core.Startup;
 using LznTweaker.Core.Tweaks;
 using LznTweaker.ViewModels;
@@ -27,6 +31,12 @@ public static class ServiceRegistration
         services.AddSingleton<SystemInformationService>();
         services.AddSingleton<SystemCleanupService>();
         services.AddSingleton<StartupManagerService>();
+        services.AddSingleton(_ => CreateHttpClient());
+        services.AddSingleton<SteamLibraryLocator>();
+        services.AddSingleton<GameTuningService>();
+
+        // Infraestrutura da interface
+        services.AddSingleton<IUserDialogs, UserDialogs>();
 
         // Páginas: uma instância por sessão, como antes, para preservar o estado ao navegar.
         services.AddSingleton<DashboardViewModel>();
@@ -36,7 +46,17 @@ public static class ServiceRegistration
         services.AddSingleton<TweaksView>();
         services.AddSingleton<CleanupView>();
         services.AddSingleton<StartupView>();
+        services.AddSingleton<DeadlockTuningViewModel>();
+        services.AddSingleton<DeadlockTuningView>();
         services.AddSingleton<MainWindow>();
         return services;
+    }
+
+    private static HttpClient CreateHttpClient()
+    {
+        var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+        // A API do GitHub exige User-Agent.
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("LznTweaker/1.0");
+        return client;
     }
 }
