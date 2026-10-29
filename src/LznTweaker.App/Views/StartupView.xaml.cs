@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using LznTweaker.Core.Startup;
 using LznTweaker.ViewModels;
 
 namespace LznTweaker.Views;
@@ -9,10 +8,10 @@ public partial class StartupView : UserControl
 {
     private readonly StartupViewModel _viewModel;
 
-    public StartupView()
+    public StartupView(StartupViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = new StartupViewModel(new StartupManagerService());
+        _viewModel = viewModel;
         DataContext = _viewModel;
 
         Loaded += async (_, _) =>

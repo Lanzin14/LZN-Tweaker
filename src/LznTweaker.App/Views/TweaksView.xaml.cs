@@ -10,15 +10,10 @@ public partial class TweaksView : UserControl
 {
     private readonly TweaksViewModel _viewModel;
 
-    public TweaksView()
+    public TweaksView(TweaksViewModel viewModel)
     {
         InitializeComponent();
-        var history = new TweakOperationHistory();
-        _viewModel = new TweaksViewModel(
-            new SystemRestorePointHandler(),
-            new TweakBatchExecutor(history),
-            history,
-            new TempCleanupPreviewService());
+        _viewModel = viewModel;
         DataContext = _viewModel;
         Loaded += async (_, _) => await _viewModel.RefreshAsync();
     }
@@ -37,6 +32,9 @@ public partial class TweaksView : UserControl
     private async void RunTweaks_Click(object sender, RoutedEventArgs e)
     {
         if (_viewModel.SelectedCount == 0)
+            return;
+
+        if (!await EnsureRestorePointAvailableAsync())
             return;
 
         IReadOnlyList<TempCleanupFile> selectedTempFiles = [];
@@ -65,11 +63,9 @@ public partial class TweaksView : UserControl
             : string.Empty;
         var requiresUac = selected.Any(item => item.Definition.RequiresAdministrator);
         var hasOneShot = selected.Any(item => item.Definition.IsOneShotOperation);
-        var includesRestorePoint = selected.Any(item => item.Definition.Id == TweakCatalog.CreateRestorePointId);
-        var restorePointNote = includesRestorePoint
-            ? "• O ponto de restauração depende da Proteção do Sistema; ela não será ativada automaticamente e o Windows pode limitar a criação a uma vez por 24 horas.\n"
-            : string.Empty;
-        var withoutRollback = selected.Count(item => !item.Definition.HasReliableRollback);
+        const string restorePointNote =
+            "• Antes de tudo, um ponto de restauração é criado (obrigatório). Se o Windows não criar nem houver um ponto das últimas 24 horas, nenhuma outra alteração é feita.\n";
+        var withoutRollback = selected.Count(item => !item.Definition.HasReliableRollback && item.Definition.Id != TweakCatalog.CreateRestorePointId);
         var choice = MessageBox.Show(
             Window.GetWindow(this),
             "O lote será executado em um único processo coordenado:\n\n" + lines + cleanupLine + "\n\n" +
@@ -89,6 +85,45 @@ public partial class TweaksView : UserControl
             return;
 
         await _viewModel.RunSelectedAsync(selectedTempFiles);
+    }
+
+    /// <summary>
+    /// Bloqueia o lote quando o ponto de restauração obrigatório não pode ser criado e, se a Proteção do Sistema
+    /// estiver desativada, oferece ativá-la antes de prosseguir.
+    /// </summary>
+    private async Task<bool> EnsureRestorePointAvailableAsync()
+    {
+        var owner = Window.GetWindow(this);
+        var readiness = await _viewModel.CheckRestorePointAsync();
+        if (readiness.CanAttempt)
+            return true;
+
+        if (!readiness.CanEnableProtection)
+        {
+            MessageBox.Show(owner, readiness.Message + "\n\nO lote não será executado.", "Ponto de restauração indisponível",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        var choice = MessageBox.Show(owner,
+            readiness.Message + "\n\n" +
+            "O LznTweaker só aplica alterações depois de criar um ponto de restauração.\n\n" +
+            "Deseja ativar a Proteção do Sistema no disco do Windows agora?\n" +
+            "• O Windows reserva parte do disco para os pontos (ajustável em Proteção do Sistema).\n" +
+            "• A ativação será registrada no histórico.",
+            "Ativar Proteção do Sistema",
+            MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+        if (choice != MessageBoxResult.Yes)
+            return false;
+
+        var result = await _viewModel.EnableSystemProtectionAsync();
+        if (result?.Outcome is "Sucesso verificado" or "Nada a alterar")
+            return true;
+
+        MessageBox.Show(owner,
+            $"A Proteção do Sistema não foi ativada: {result?.Message ?? "erro desconhecido"}\n\nO lote não será executado.",
+            "Ativar Proteção do Sistema", MessageBoxButton.OK, MessageBoxImage.Error);
+        return false;
     }
 
     private async void UndoSelected_Click(object sender, RoutedEventArgs e)

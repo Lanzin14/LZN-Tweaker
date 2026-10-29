@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using LznTweaker.Core;
 using LznTweaker.ViewModels;
 using LznTweaker.Views;
 
@@ -17,14 +16,14 @@ public partial class MainWindow : Window
     private readonly CleanupView _cleanupView;
     private readonly StartupView _startupView;
 
-    public MainWindow()
+    public MainWindow(DashboardViewModel dashboardViewModel, TweaksView tweaksView, CleanupView cleanupView, StartupView startupView)
     {
         InitializeComponent();
         _dashboardContent = PageHost.Content;
-        _tweaksView = new TweaksView();
-        _cleanupView = new CleanupView();
-        _startupView = new StartupView();
-        _dashboardViewModel = new DashboardViewModel(new SystemInformationService());
+        _tweaksView = tweaksView;
+        _cleanupView = cleanupView;
+        _startupView = startupView;
+        _dashboardViewModel = dashboardViewModel;
         DataContext = _dashboardViewModel;
 
         _refreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(60) };

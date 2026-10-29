@@ -112,7 +112,7 @@ public static class TweakCatalog
 
     // O nome do plano é traduzido pelo Windows ("Desempenho Máximo" em pt-BR); "M.{1,2}ximo" tolera a
     // decodificação da saída do powercfg pelo console. Planos são sempre ativados/removidos pelo GUID.
-    private const string UltimatePlanLookup = """
+    internal const string UltimatePlanLookup = """
 $ultimateNamePattern = '^(Ultimate Performance|Desempenho M.{1,2}ximo)$'
 $ultimatePlans = @(powercfg /list | ForEach-Object {
     if ($_ -match '([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\s+\((.+?)\)') {

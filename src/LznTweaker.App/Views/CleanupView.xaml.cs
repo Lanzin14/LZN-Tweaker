@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using LznTweaker.Core.Cleanup;
 using LznTweaker.ViewModels;
 
 namespace LznTweaker.Views;
@@ -9,10 +8,10 @@ public partial class CleanupView : UserControl
 {
     private readonly CleanupViewModel _viewModel;
 
-    public CleanupView()
+    public CleanupView(CleanupViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = new CleanupViewModel(new SystemCleanupService());
+        _viewModel = viewModel;
         DataContext = _viewModel;
 
         Loaded += async (_, _) =>

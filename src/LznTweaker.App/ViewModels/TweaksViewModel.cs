@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Media;
 using Microsoft.Win32;
 using System.Runtime.CompilerServices;
+using LznTweaker.Core.Changes;
 using LznTweaker.Core.Tweaks;
 
 namespace LznTweaker.ViewModels;
@@ -57,6 +58,8 @@ public sealed class TweakItemViewModel(TweakDefinition definition) : INotifyProp
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StateText)));
         }
     }
+
+    public void SetStateText(string text) => StateText = text;
 
     public void SetState(TweakSystemState state, string detail) =>
         StateText = $"Estado atual: {state switch
@@ -115,7 +118,7 @@ public sealed class TweakItemViewModel(TweakDefinition definition) : INotifyProp
 
 public sealed class TweaksViewModel : INotifyPropertyChanged
 {
-    private readonly SystemRestorePointHandler _restorePointHandler;
+    private readonly RestorePointGuard _restorePointGuard;
     private readonly TweakBatchExecutor _batchExecutor;
     private readonly TweakOperationHistory _history;
     private readonly TempCleanupPreviewService _tempCleanupPreviewService;
@@ -128,12 +131,12 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
     private bool _isChangingPreset;
 
     public TweaksViewModel(
-        SystemRestorePointHandler restorePointHandler,
+        RestorePointGuard restorePointGuard,
         TweakBatchExecutor batchExecutor,
         TweakOperationHistory history,
         TempCleanupPreviewService tempCleanupPreviewService)
     {
-        _restorePointHandler = restorePointHandler;
+        _restorePointGuard = restorePointGuard;
         _batchExecutor = batchExecutor;
         _history = history;
         _tempCleanupPreviewService = tempCleanupPreviewService;
@@ -223,8 +226,7 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
             foreach (var item in Items)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var (state, detail) = await DetectStateAsync(item.Definition, cancellationToken);
-                item.SetState(state, detail);
+                await UpdateItemStateAsync(item, cancellationToken);
             }
             AvailabilityMessage = "O estado real das configurações foi detectado no Windows e atualizado em cada item.";
             var entries = await _history.ReadAsync(cancellationToken);
@@ -346,9 +348,48 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
         foreach (var item in Items)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var (state, detail) = await DetectStateAsync(item.Definition, cancellationToken);
-            item.SetState(state, detail);
+            await UpdateItemStateAsync(item, cancellationToken);
         }
+    }
+
+    /// <summary>Estado da rede de segurança obrigatória antes de qualquer lote.</summary>
+    public Task<RestorePointReadiness> CheckRestorePointAsync(CancellationToken cancellationToken = default) =>
+        _restorePointGuard.CheckAsync(cancellationToken);
+
+    public async Task<TweakOperationResult?> EnableSystemProtectionAsync(CancellationToken cancellationToken = default)
+    {
+        if (IsBusy)
+            return null;
+        IsBusy = true;
+        try
+        {
+            var result = await _restorePointGuard.EnableProtectionAsync(cancellationToken);
+            OperationMessage = $"{result.RequestedState}: {result.Outcome} — {result.Message}";
+            var restorePointItem = Items.First(item => item.Definition.Id == TweakCatalog.CreateRestorePointId);
+            await UpdateItemStateAsync(restorePointItem, cancellationToken);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            OperationMessage = $"Não foi possível ativar a Proteção do Sistema: {ex.Message}";
+            return null;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task UpdateItemStateAsync(TweakItemViewModel item, CancellationToken cancellationToken)
+    {
+        if (item.Definition.Id == TweakCatalog.CreateRestorePointId)
+        {
+            var readiness = await _restorePointGuard.CheckAsync(cancellationToken);
+            item.SetStateText($"Obrigatório em todo lote · {readiness.Message}");
+            return;
+        }
+        var (state, detail) = await DetectStateAsync(item.Definition, cancellationToken);
+        item.SetState(state, detail);
     }
 
     private async Task<(TweakSystemState State, string Detail)> DetectStateAsync(
@@ -356,12 +397,6 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
     {
         if (definition.Id == TweakCatalog.EndTaskOnTaskbarId && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000))
             return (TweakSystemState.Unsupported, "requer Windows 11; nada foi alterado.");
-        if (definition.Id == TweakCatalog.CreateRestorePointId)
-        {
-            var capability = await _restorePointHandler.DetectAsync(cancellationToken);
-            return (capability.State, capability.Message);
-        }
-
         var allChanges = new List<(string SubKey, string Name, object Value, bool IsHklm)>();
         foreach (var service in definition.ServiceChanges ?? [])
         {

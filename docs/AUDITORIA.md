@@ -1,5 +1,7 @@
 # Auditoria técnica — LznTweaker (29/10/2026)
 
+> **Atualização (Etapa 2 da nova arquitetura):** o projeto foi migrado para .NET 10 e dividido em `src/LznTweaker.App`, `src/LznTweaker.Core` e `tests/`. Os itens abaixo que citam `build.bat`, `publish/` ou caminhos na raiz se referem à estrutura antiga; o empacotamento foi adiado até o fim do desenvolvimento. Resolvidos desde então: o risco da pasta de operações gravável pelo usuário (`ElevatedWorkspace`), o bloqueio do lote quando o ponto de restauração falha (`RestorePointGuard`), a ausência de Git e o harness de testes, que virou `tests/LznTweaker.Core.Tests`.
+
 Referência: [ChrisTitusTech/winutil](https://github.com/ChrisTitusTech/winutil) (`config/tweaks.json`, `config/preset.json`, `Invoke-WinUtilTweaks.ps1`, `Set-WinUtilRegistry.ps1`, `Invoke-WPFUltimatePerformance.ps1`).
 
 Legenda de evidência usada em todo o documento:

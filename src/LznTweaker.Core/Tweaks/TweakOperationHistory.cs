@@ -19,9 +19,13 @@ public sealed record TweakOperationResult(
 public sealed class TweakOperationHistory
 {
     private static readonly SemaphoreSlim WriteLock = new(1, 1);
-    private readonly string _historyPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "LznTweaker", "history.json");
+    private readonly string _historyPath;
+
+    /// <param name="historyPath">Caminho do arquivo; o padrão é %LOCALAPPDATA%\LznTweaker\history.json.</param>
+    public TweakOperationHistory(string? historyPath = null) =>
+        _historyPath = historyPath ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "LznTweaker", "history.json");
 
     public async Task AppendAsync(TweakOperationResult entry, CancellationToken cancellationToken = default)
     {
