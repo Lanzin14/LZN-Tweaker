@@ -45,6 +45,46 @@ public sealed class RestorePointGuard(ScriptRunnerService scriptRunner, TweakOpe
     public Task<RestorePointReadiness> CheckAsync(CancellationToken cancellationToken = default) =>
         Task.Run(Check, cancellationToken);
 
+    /// <summary>
+    /// Cria (ou reaproveita, no limite de 24 h do Windows) o ponto obrigatório antes de lotes que não passam pelo
+    /// BatchEngine, como as operações de arquivos por jogo. Usa o mesmo motor e a mesma verificação dos Tweaks.
+    /// </summary>
+    public async Task<TweakOperationResult> CreateRestorePointAsync(CancellationToken cancellationToken = default)
+    {
+        var startedAt = DateTimeOffset.Now;
+        var definition = TweakCatalog.GetById(TweakCatalog.CreateRestorePointId);
+        var payload = JsonSerializer.Serialize(new
+        {
+            Operations = new[] { new { TweakId = definition.Id, definition.Name, Kind = "RestorePoint" } },
+            UserSid = System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value ?? string.Empty,
+            RequireRestorePoint = true
+        });
+        var run = await scriptRunner.RunAsync(
+            new ScriptRunRequest("restorepoint", EmbeddedScripts.BatchEngine, payload, TimeSpan.FromMinutes(5), RequiresElevation: true),
+            cancellationToken: cancellationToken);
+
+        string outcome = "Falha ou não verificado", message = run.ErrorOutput ?? run.Message, previous = "Não disponível";
+        if (run.ResultJson is not null)
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(run.ResultJson);
+                var item = document.RootElement.GetProperty("Results")[0];
+                outcome = item.GetProperty("Outcome").GetString() ?? outcome;
+                message = item.GetProperty("Message").GetString() ?? message;
+                previous = item.GetProperty("PreviousState").GetString() ?? previous;
+            }
+            catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or IndexOutOfRangeException) { }
+        }
+        var result = new TweakOperationResult(Guid.NewGuid(), definition.Id, startedAt, previous, definition.Name, outcome, message,
+            RequiresRestart: false, RollbackMethod: null, RollbackOutcome: "Sem reversão automática confiável");
+        await history.AppendAsync(result, cancellationToken);
+        return result;
+    }
+
+    public static bool IsRestorePointReady(TweakOperationResult result) =>
+        result.Outcome is "Sucesso verificado" or "Ponto recente reutilizado";
+
     /// <summary>Ativa a Proteção do Sistema no volume do Windows e confirma pela leitura posterior.</summary>
     public async Task<TweakOperationResult> EnableProtectionAsync(CancellationToken cancellationToken = default)
     {

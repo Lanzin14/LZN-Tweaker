@@ -12,6 +12,11 @@ internal static class EmbeddedScripts
     /// <summary>Inventário somente leitura dos pacotes Appx.</summary>
     public static string AppxInventory => AppxInventoryScript.Value;
 
+    private static readonly Lazy<string> GamingDiagnosticsScript = new(() => Read("GamingDiagnostics.ps1"));
+
+    /// <summary>Coleta somente leitura para o diagnóstico de jogos (Windows, discos, memória, BIOS, executáveis).</summary>
+    public static string GamingDiagnostics => GamingDiagnosticsScript.Value;
+
     /// <summary>Motor do lote de tweaks: aplicação rastreada, scripts verificados, limpeza de TEMP e Undo.</summary>
     public static string BatchEngine => BatchEngineScript.Value;
 

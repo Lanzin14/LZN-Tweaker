@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -17,11 +17,11 @@ public partial class MainWindow : Window
     private readonly TweaksView _tweaksView;
     private readonly CleanupView _cleanupView;
     private readonly StartupView _startupView;
-    private readonly DeadlockTuningView _deadlockTuningView;
+    private readonly GameLibraryView _gameLibraryView;
     private readonly AppDebloatView _appDebloatView;
 
     public MainWindow(DashboardViewModel dashboardViewModel, TweaksView tweaksView, CleanupView cleanupView, StartupView startupView,
-        DeadlockTuningView deadlockTuningView, AppDebloatView appDebloatView)
+        GameLibraryView gameLibraryView, AppDebloatView appDebloatView)
     {
         _appDebloatView = appDebloatView;
         InitializeComponent();
@@ -29,7 +29,7 @@ public partial class MainWindow : Window
         _tweaksView = tweaksView;
         _cleanupView = cleanupView;
         _startupView = startupView;
-        _deadlockTuningView = deadlockTuningView;
+        _gameLibraryView = gameLibraryView;
         _dashboardViewModel = dashboardViewModel;
         DataContext = _dashboardViewModel;
 
@@ -74,7 +74,7 @@ public partial class MainWindow : Window
             "Tweaks" => _tweaksView,
             "Limpeza" => _cleanupView,
             "Inicialização" => _startupView,
-            "Jogos" => _deadlockTuningView,
+            "Jogos" => _gameLibraryView,
             "Aplicativos" => _appDebloatView,
             _ => CreateFeaturePage(page)
         };

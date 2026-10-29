@@ -13,11 +13,26 @@ public sealed class SteamLibraryLocator
 
     internal SteamLibraryLocator(Func<string?> steamRootProvider) => _steamRootProvider = steamRootProvider;
 
-    /// <summary>Pasta de instalação do app (ex.: ...\steamapps\common\Deadlock), ou null se não encontrado.</summary>
-    public string? FindAppInstallPath(string appId)
+    /// <summary>Pasta da Steam (onde ficam userdata e config), ou null se a Steam não estiver instalada.</summary>
+    public string? SteamRoot
     {
-        var steamRoot = _steamRootProvider();
-        if (string.IsNullOrWhiteSpace(steamRoot) || !Directory.Exists(steamRoot))
+        get
+        {
+            var root = _steamRootProvider();
+            return string.IsNullOrWhiteSpace(root) || !Directory.Exists(root) ? null : Path.GetFullPath(root);
+        }
+    }
+
+    /// <summary>Pasta de instalação do app (ex.: ...\steamapps\common\Deadlock), ou null se não encontrado.</summary>
+    public string? FindAppInstallPath(string appId) => FindApp(appId)?.InstallPath;
+
+    /// <summary>Biblioteca Steam que contém o app (onde ficam steamapps\shadercache\&lt;AppID&gt;), ou null.</summary>
+    public string? FindAppLibraryPath(string appId) => FindApp(appId)?.LibraryPath;
+
+    private (string LibraryPath, string InstallPath)? FindApp(string appId)
+    {
+        var steamRoot = SteamRoot;
+        if (steamRoot is null)
             return null;
 
         foreach (var library in GetLibraryFolders(steamRoot))
@@ -34,7 +49,7 @@ public sealed class SteamLibraryLocator
                     continue;
                 var installPath = Path.Combine(library, "steamapps", "common", installDir);
                 if (Directory.Exists(installPath))
-                    return Path.GetFullPath(installPath);
+                    return (library, Path.GetFullPath(installPath));
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {

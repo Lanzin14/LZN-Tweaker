@@ -3,6 +3,7 @@ using LznTweaker.Core.Changes;
 using LznTweaker.Core.Cleanup;
 using System.Net.Http;
 using LznTweaker.Core.Execution;
+using LznTweaker.Core.GameOptimization;
 using LznTweaker.Core.Debloat;
 using LznTweaker.Core.GameTuning;
 using LznTweaker.Features.Debloat;
@@ -37,6 +38,10 @@ public static class ServiceRegistration
         services.AddSingleton<SteamLibraryLocator>();
         services.AddSingleton<GameTuningService>();
         services.AddSingleton<AppxDebloatService>();
+        services.AddSingleton<GameLocator>();
+        services.AddSingleton<GamingDiagnosticsService>();
+        services.AddSingleton<ShaderCacheService>();
+        services.AddSingleton<SteamFolderBackupService>();
 
         // Infraestrutura da interface
         services.AddSingleton<IUserDialogs, UserDialogs>();
@@ -52,6 +57,8 @@ public static class ServiceRegistration
         services.AddSingleton<StartupView>();
         services.AddSingleton<DeadlockTuningViewModel>();
         services.AddSingleton<DeadlockTuningView>();
+        services.AddSingleton<GameLibraryViewModel>();
+        services.AddSingleton<GameLibraryView>();
         services.AddSingleton<AppDebloatViewModel>();
         services.AddSingleton<AppDebloatView>();
         services.AddSingleton<MainWindow>();

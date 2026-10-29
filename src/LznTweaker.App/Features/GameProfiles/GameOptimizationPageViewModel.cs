@@ -1,0 +1,334 @@
+﻿using System.Collections.ObjectModel;
+using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LznTweaker.Core.Changes;
+using LznTweaker.Core.GameOptimization;
+using LznTweaker.Core.Tweaks;
+using LznTweaker.Infrastructure;
+
+namespace LznTweaker.Features.GameProfiles;
+
+internal static class StatusBrushes
+{
+    public static readonly SolidColorBrush Green = Freeze("#7ED9B2");
+    public static readonly SolidColorBrush Amber = Freeze("#E0BF80");
+    public static readonly SolidColorBrush Red = Freeze("#F28B82");
+    public static readonly SolidColorBrush Purple = Freeze("#C9B9F2");
+    public static readonly SolidColorBrush Gray = Freeze("#827A91");
+
+    private static SolidColorBrush Freeze(string color)
+    {
+        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
+        brush.Freeze();
+        return brush;
+    }
+}
+
+/// <summary>Ação automatizável: limpeza de um cache de shaders ou redefinição de uma pasta da Steam.</summary>
+public sealed partial class OptimizationActionViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private bool _isSelected;
+
+    [ObservableProperty]
+    private string _resultText = string.Empty;
+
+    [ObservableProperty]
+    private Brush _resultBrush = StatusBrushes.Gray;
+
+    private OptimizationActionViewModel(string name, string description, string risk, string prerequisites, string gamesAffected, string reversibility, string state)
+    {
+        Name = name;
+        Description = description;
+        Risk = risk;
+        Prerequisites = prerequisites;
+        GamesAffected = gamesAffected;
+        Reversibility = reversibility;
+        State = state;
+    }
+
+    public string Name { get; }
+    public string Description { get; }
+    public string Risk { get; }
+    public string Prerequisites { get; }
+    public string GamesAffected { get; }
+    public string Reversibility { get; }
+    public string State { get; }
+    public ShaderCacheLocation? ShaderCache { get; private init; }
+    public SteamFolderTarget? SteamFolder { get; private init; }
+    public bool IsDestructiveForUserData => SteamFolder?.Kind == SteamFolderKind.UserConfig;
+
+    public static OptimizationActionViewModel ForShaderCache(ShaderCacheLocation location) => new(
+        $"Limpar {location.Label}",
+        $"Apaga o conteúdo de {location.Path}. Os jogos vão recompilar shaders e podem travar por alguns instantes nas primeiras partidas.",
+        "Baixo", "Feche os jogos (arquivos em uso são mantidos).", "Todos os jogos",
+        "Sem reversão: é cache e é recriado automaticamente.",
+        $"{ShaderCacheService.FormatBytes(location.Bytes)} em {location.Files:N0} arquivo(s) · {location.Vendor}")
+    { ShaderCache = location };
+
+    public static OptimizationActionViewModel ForSteamFolder(SteamFolderTarget target) => target.Kind == SteamFolderKind.UserConfig
+        ? new($"Redefinir {target.Label}",
+            "Renomeia userdata\\…\\730 para um backup e deixa o CS2 recriar as configurações padrão. Você PERDE binds e ajustes pessoais até restaurar o backup.",
+            "Médio", "Steam e CS2 fechados. Siga a orientação da Steam Cloud antes de abrir o jogo.", target.Game.Name,
+            "Reversível: \"Restaurar\" devolve a pasta original (a recriada é guardada ao lado).",
+            $"{ShaderCacheService.FormatBytes(target.Bytes)} em {target.Files:N0} arquivo(s) · {target.FolderPath}")
+        { SteamFolder = target }
+        : new($"Redefinir {target.Label}",
+            $"Renomeia steamapps\\shadercache\\{target.Game.SteamAppId} para um backup; a Steam e o jogo recriam o cache.",
+            "Baixo", "Steam e o jogo fechados.", target.Game.Name,
+            "Reversível: \"Restaurar\" devolve a pasta original.",
+            $"{ShaderCacheService.FormatBytes(target.Bytes)} em {target.Files:N0} arquivo(s) · {target.FolderPath}")
+        { SteamFolder = target };
+
+    public void SetResult(TweakOperationResult result)
+    {
+        var (label, brush) = result.Outcome switch
+        {
+            "Sucesso verificado" or "Reversão verificada" => ("Concluída", StatusBrushes.Green),
+            "Nada a alterar" => ("Ignorada", StatusBrushes.Gray),
+            "Bloqueado" => ("Pendente (bloqueada)", StatusBrushes.Amber),
+            _ => ("Falha", StatusBrushes.Red)
+        };
+        ResultText = $"{label}: {result.Message}";
+        ResultBrush = brush;
+    }
+}
+
+public sealed class DiagnosticItemViewModel(DiagnosticItem item)
+{
+    public DiagnosticItem Item { get; } = item;
+    public string Title => Item.Title;
+    public string CurrentState => Item.CurrentState;
+    public string Recommendation => Item.Recommendation;
+    public string Details => $"Evidência: {Item.Evidence} · Risco: {Item.Risk} · Afeta: {Item.GamesAffected}" +
+                             (Item.RelatedFeature is null ? string.Empty : $" · Veja: {Item.RelatedFeature}");
+    public string StatusText => Item.Status switch
+    {
+        DiagnosticStatus.Ok => "OK",
+        DiagnosticStatus.Attention => "ATENÇÃO",
+        DiagnosticStatus.Info => "DEPENDE",
+        _ => "NÃO LIDO"
+    };
+    public Brush StatusBrush => Item.Status switch
+    {
+        DiagnosticStatus.Ok => StatusBrushes.Green,
+        DiagnosticStatus.Attention => StatusBrushes.Amber,
+        DiagnosticStatus.Info => StatusBrushes.Purple,
+        _ => StatusBrushes.Gray
+    };
+}
+
+public sealed class GuidanceItemViewModel(GuidanceItem item)
+{
+    public GuidanceItem Item { get; } = item;
+    public string Title => Item.Refused ? $"{Item.Title} — não aplicado" : Item.Title;
+    public string Summary => Item.Summary;
+    public IReadOnlyList<string> Steps => Item.Steps;
+    public string Details => $"Quando: {Item.Condition} · Evidência: {Item.Evidence} · Risco: {Item.Risk} · Afeta: {Item.GamesAffected}";
+    public Brush TitleBrush => Item.Refused ? StatusBrushes.Gray : StatusBrushes.Purple;
+}
+
+public sealed class BackupItemViewModel(SteamFolderBackup backup)
+{
+    public SteamFolderBackup Backup { get; } = backup;
+    public string Label => Backup.Label;
+    public string Details => $"Backup de {Backup.CreatedAt.LocalDateTime:g} · {Backup.BackupPath}";
+}
+
+/// <summary>Página de uma área (Windows, Steam, um jogo ou hardware). Cada instância guarda o próprio estado.</summary>
+public sealed partial class GameOptimizationPageViewModel : ObservableObject
+{
+    private readonly OptimizationArea _area;
+    private readonly ShaderCacheService _shaderCache;
+    private readonly SteamFolderBackupService _steamFolders;
+    private readonly RestorePointGuard _restorePointGuard;
+    private readonly RestorePointPrompt _restorePointPrompt;
+    private readonly IUserDialogs _dialogs;
+    private string? _steamRoot;
+
+    public GameOptimizationPageViewModel(OptimizationArea area, string title, string description,
+        ShaderCacheService shaderCache, SteamFolderBackupService steamFolders, RestorePointGuard restorePointGuard,
+        RestorePointPrompt restorePointPrompt, IUserDialogs dialogs)
+    {
+        _area = area;
+        Title = title;
+        Description = description;
+        _shaderCache = shaderCache;
+        _steamFolders = steamFolders;
+        _restorePointGuard = restorePointGuard;
+        _restorePointPrompt = restorePointPrompt;
+        _dialogs = dialogs;
+        foreach (var guidance in GuidanceCatalog.All.Where(item => item.Area == area))
+            Guidance.Add(new GuidanceItemViewModel(guidance));
+        Actions.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasActions));
+        Backups.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasBackups));
+        Diagnostics.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasDiagnostics));
+    }
+
+    public OptimizationArea Area => _area;
+    public string Title { get; }
+    public string Description { get; }
+    public ObservableCollection<OptimizationActionViewModel> Actions { get; } = [];
+    public ObservableCollection<BackupItemViewModel> Backups { get; } = [];
+    public ObservableCollection<DiagnosticItemViewModel> Diagnostics { get; } = [];
+    public ObservableCollection<GuidanceItemViewModel> Guidance { get; } = [];
+    public bool HasActions => Actions.Count > 0;
+    public bool HasBackups => Backups.Count > 0;
+    public bool HasDiagnostics => Diagnostics.Count > 0;
+
+    /// <summary>Jogo desta página, quando é uma página de jogo.</summary>
+    public DetectedGame? Game { get; private set; }
+
+    [ObservableProperty]
+    private string _detectionText = string.Empty;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RunCommand), nameof(RestoreBackupCommand))]
+    private bool _isBusy;
+
+    [ObservableProperty]
+    private string _runSummary = string.Empty;
+
+    public void SetDiagnostics(IEnumerable<DiagnosticItem> items)
+    {
+        Diagnostics.Clear();
+        foreach (var item in items.Where(item => item.Area == _area))
+            Diagnostics.Add(new DiagnosticItemViewModel(item));
+    }
+
+    /// <summary>Recarrega as ações disponíveis (somente leitura): locais de cache e pastas da Steam do jogo.</summary>
+    public async Task LoadActionsAsync(DetectedGame? game, string? steamRoot)
+    {
+        Game = game;
+        _steamRoot = steamRoot;
+        Actions.Clear();
+        if (_area == OptimizationArea.Windows)
+        {
+            foreach (var location in await _shaderCache.ScanAsync())
+                Actions.Add(OptimizationActionViewModel.ForShaderCache(location));
+        }
+        if (game is { IsInstalled: true })
+        {
+            var targets = await Task.Run(() => _steamFolders.GetTargets(game, steamRoot));
+            foreach (var target in targets)
+                Actions.Add(OptimizationActionViewModel.ForSteamFolder(target));
+        }
+        await LoadBackupsAsync();
+        RunCommand.NotifyCanExecuteChanged();
+    }
+
+    private async Task LoadBackupsAsync()
+    {
+        Backups.Clear();
+        if (Game is null)
+            return;
+        foreach (var backup in await _steamFolders.GetBackupsAsync())
+        {
+            if (backup.GameId == Game.Game.Id)
+                Backups.Add(new BackupItemViewModel(backup));
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task RunAsync()
+    {
+        var selected = Actions.Where(action => action.IsSelected).ToArray();
+        if (selected.Length == 0)
+        {
+            _dialogs.ShowInfo("Marque as ações que deseja executar.", Title);
+            return;
+        }
+
+        // Falha cedo, antes do ponto de restauração, se a Steam ou o jogo estiverem abertos.
+        if (selected.Select(action => action.SteamFolder?.Game).FirstOrDefault(game => game is not null) is { } steamGame &&
+            _steamFolders.GetBlockingReason(steamGame) is { } blocking)
+        {
+            _dialogs.ShowError(blocking + "\n\nNada foi alterado.", Title);
+            return;
+        }
+
+        var userData = selected.Where(action => action.IsDestructiveForUserData).ToArray();
+        var confirmation =
+            "Serão executadas:\n\n" + string.Join("\n", selected.Select(action => $"• {action.Name} — risco {action.Risk}")) + "\n\n" +
+            "• Antes de tudo, um ponto de restauração é criado (obrigatório).\n" +
+            (selected.Any(action => action.ShaderCache is not null)
+                ? "• Caches de shaders não têm backup: os jogos vão recompilar e podem travar por alguns instantes nas primeiras partidas.\n"
+                : string.Empty) +
+            (userData.Length > 0
+                ? "• ATENÇÃO: as configurações locais do CS2 voltam ao padrão, incluindo binds. A pasta antiga fica guardada como backup.\n" +
+                  "• Antes de abrir o CS2, siga a orientação \"Steam Cloud ao redefinir configurações\" (página Steam), senão a nuvem pode devolver o arquivo antigo.\n"
+                : string.Empty) +
+            "\nDeseja continuar?";
+        if (!_dialogs.Confirm(confirmation, Title))
+            return;
+        if (!await _restorePointPrompt.EnsureAvailableAsync())
+            return;
+
+        IsBusy = true;
+        try
+        {
+            RunSummary = "Criando o ponto de restauração obrigatório…";
+            var restorePoint = await _restorePointGuard.CreateRestorePointAsync();
+            if (!RestorePointGuard.IsRestorePointReady(restorePoint))
+            {
+                RunSummary = $"Bloqueado: o ponto de restauração não foi criado ({restorePoint.Message}). Nenhuma alteração foi feita.";
+                foreach (var action in selected)
+                    action.SetResult(restorePoint with { Outcome = "Bloqueado", Message = "Ponto de restauração não criado; nada foi alterado." });
+                return;
+            }
+
+            var done = 0;
+            foreach (var action in selected)
+            {
+                RunSummary = $"Executando {++done}/{selected.Length}: {action.Name}…";
+                var result = action.ShaderCache is { } location
+                    ? await _shaderCache.CleanAsync([location])
+                    : await _steamFolders.BackupAndResetAsync(action.SteamFolder!);
+                action.SetResult(result);
+            }
+            RunSummary = $"Concluído. Ponto de restauração: {restorePoint.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+        var results = selected.ToDictionary(action => action.Name, action => (action.ResultText, action.ResultBrush));
+        await LoadActionsAsync(Game, _steamRoot);
+        // Mantém o resultado visível nas ações que continuam disponíveis após a atualização.
+        foreach (var action in Actions)
+        {
+            if (results.TryGetValue(action.Name, out var previous))
+            {
+                action.ResultText = previous.ResultText;
+                action.ResultBrush = previous.ResultBrush;
+            }
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task RestoreBackupAsync(BackupItemViewModel? item)
+    {
+        if (item is null)
+            return;
+        if (!_dialogs.Confirm(
+                $"Restaurar \"{item.Label}\"?\n\nA pasta de backup volta ao lugar original. Se a Steam ou o jogo já recriaram a pasta, " +
+                "a versão recriada é guardada ao lado (nada é apagado).\n\nA Steam e o jogo precisam estar fechados.",
+                "Restaurar backup"))
+            return;
+
+        IsBusy = true;
+        try
+        {
+            var result = await _steamFolders.RestoreAsync(item.Backup);
+            RunSummary = $"{result.RequestedState}: {result.Outcome} — {result.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+        await LoadActionsAsync(Game, _steamRoot);
+    }
+
+    private bool CanRun() => !IsBusy;
+}
