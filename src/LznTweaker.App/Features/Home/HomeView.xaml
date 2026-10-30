@@ -17,20 +17,11 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="56,56,56,40" MaxWidth="760" HorizontalAlignment="Left">
             <TextBlock Text="LZN Tweaker" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,0,14" />
-            <TextBlock Text="Mais desempenho. Mais controle. Mais jogo." Style="{StaticResource Lzn.Text.Display}" Margin="0,0,0,28" />
+            <TextBlock Text="Game Ready. Desempenho Real." Style="{StaticResource Lzn.Text.Display}" Margin="0,0,0,18" />
 
-            <!-- Largura limitada (~70 caracteres por linha). -->
-            <StackPanel MaxWidth="660" HorizontalAlignment="Left">
-                <TextBlock Style="{StaticResource Lead}" Foreground="{StaticResource Lzn.Text}"
-                           Text="O LZN Tweaker reúne ferramentas e ajustes para ajudar você a otimizar o Windows e configurar seu PC para jogar." />
-                <TextBlock Style="{StaticResource Lead}"
-                           Text="Desenvolvido com foco em jogadores competitivos, o aplicativo prioriza desempenho, praticidade e transparência, com explicações claras sobre cada ajuste e seus possíveis efeitos." />
-                <TextBlock Style="{StaticResource Lead}"
-                           Text="A proposta não é prometer milagres ou FPS garantido, mas oferecer ferramentas úteis para você ter mais controle sobre o seu sistema." />
-                <TextBlock FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{StaticResource Lzn.AccentText}">
-                    <Run Text="LZN Tweaker" /><Run Text=" — otimize seu PC. Foque no jogo." Foreground="{StaticResource Lzn.TextSecondary}" FontWeight="Normal" />
-                </TextBlock>
-            </StackPanel>
+            <!-- Subtítulo único, com largura limitada (~70 caracteres por linha). -->
+            <TextBlock Style="{StaticResource Lead}" MaxWidth="660" HorizontalAlignment="Left" Margin="0"
+                       Text="Sua central de manutenção, limpeza e otimização avançada para jogos no Windows." />
 
             <Button Style="{StaticResource Lzn.PrimaryButton}" HorizontalAlignment="Left" Margin="0,32,0,0"
                     Command="{Binding NavigateCommand}" CommandParameter="general">
@@ -67,7 +58,12 @@
                 <Image Source="pack://application:,,,/LznTweaker;component/Assets/Brand/lzn-logo-mark.png" Height="34" Stretch="Uniform" VerticalAlignment="Center"
                        RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="Logo do LZN Tweaker" />
                 <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Text="Sobre o LZN Tweaker" Style="{StaticResource Lzn.Text.Overline}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Sobre o LZN Tweaker" Style="{StaticResource Lzn.Text.Overline}" VerticalAlignment="Center" />
+                        <Border Style="{StaticResource Lzn.Badge.Warn}" Margin="10,0,0,0">
+                            <TextBlock Text="Ferramenta em desenvolvimento" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" />
+                        </Border>
+                    </StackPanel>
                     <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,3,0,0">
                         <Run Text="Versão " /><Run Text="{Binding AppVersion, Mode=OneWay}" /><Run Text=" · para Windows 10 e 11" />
                     </TextBlock>
