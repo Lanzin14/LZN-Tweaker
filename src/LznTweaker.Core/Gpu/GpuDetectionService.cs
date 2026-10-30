@@ -10,7 +10,9 @@ public enum GpuDetectionStatus { NotChecked, Available, Unavailable }
 
 /// <param name="DriverVersion">Versão do driver como o Windows registra (ex.: 32.0.21045.16010).</param>
 /// <param name="VendorSoftwareVersion">Versão no padrão do fabricante (GeForce 560.94 / Adrenalin 26.10.1), quando dá para obter sem estimar.</param>
-public sealed record GpuAdapter(string Name, GpuVendor Vendor, string? DriverVersion, string? VendorSoftwareVersion, DateOnly? DriverDate);
+/// <param name="DedicatedMemoryBytes">VRAM dedicada informada pelo driver (HardwareInformation.qwMemorySize); nula quando ausente.</param>
+public sealed record GpuAdapter(string Name, GpuVendor Vendor, string? DriverVersion, string? VendorSoftwareVersion, DateOnly? DriverDate,
+    long? DedicatedMemoryBytes = null);
 
 public sealed record GpuDetectionResult(GpuDetectionStatus Status, IReadOnlyList<GpuAdapter> Adapters, int? RefreshRateHz, string? Error)
 {
@@ -27,6 +29,7 @@ public sealed record GpuDetectionResult(GpuDetectionStatus Status, IReadOnlyList
 public sealed class GpuDetectionService
 {
     private const string DisplayClass = @"SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}";
+    internal const string MemoryValue = "HardwareInformation.qwMemorySize";
     private readonly Func<IReadOnlyList<IReadOnlyDictionary<string, string?>>> _readAdapters;
     private readonly Func<int?> _readRefreshRate;
 
@@ -76,7 +79,8 @@ public sealed class GpuDetectionService
             GpuVendor.Amd => key.GetValueOrDefault("RadeonSoftwareVersion"),
             _ => null
         };
-        return new GpuAdapter(name, vendor, driverVersion, string.IsNullOrWhiteSpace(vendorVersion) ? null : vendorVersion, ParseDriverDate(key.GetValueOrDefault("DriverDate")));
+        return new GpuAdapter(name, vendor, driverVersion, string.IsNullOrWhiteSpace(vendorVersion) ? null : vendorVersion, ParseDriverDate(key.GetValueOrDefault("DriverDate")),
+            long.TryParse(key.GetValueOrDefault(MemoryValue), NumberStyles.None, CultureInfo.InvariantCulture, out var memory) && memory > 0 ? memory : null);
     }
 
     /// <summary>Identifica o fabricante pelo ID PCI (VEN_10DE NVIDIA, VEN_1002 AMD, VEN_8086 Intel); o nome do provedor é só reserva.</summary>
@@ -132,6 +136,8 @@ public sealed class GpuDetectionService
                 var values = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
                 foreach (var name in new[] { "DriverDesc", "DriverVersion", "ProviderName", "DriverDate", "MatchingDeviceId", "RadeonSoftwareVersion" })
                     values[name] = Convert.ToString(adapter.GetValue(name), CultureInfo.InvariantCulture);
+                // A VRAM fica em QWORD; o valor antigo de 32 bits (HardwareInformation.MemorySize) satura em 4 GB e não é usado.
+                values[MemoryValue] = adapter.GetValue(MemoryValue) is long bytes ? bytes.ToString(CultureInfo.InvariantCulture) : null;
                 result.Add(values);
             }
             catch (Exception) { }

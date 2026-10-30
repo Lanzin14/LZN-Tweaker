@@ -28,6 +28,7 @@ public sealed record SystemSnapshot(
     long? MemoryCommittedBytes,
     long? MemoryCommitLimitBytes,
     string GraphicsAdapters,
+    LznTweaker.Core.Gpu.GpuAdapter? PrimaryGraphics,
     string Motherboard,
     double CpuUsagePercent,
     DiskActivitySnapshot? DiskActivity,

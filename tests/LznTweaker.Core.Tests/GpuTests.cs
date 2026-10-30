@@ -6,7 +6,7 @@ namespace LznTweaker.Core.Tests;
 
 public sealed class GpuTests
 {
-    private static Dictionary<string, string?> AdapterKey(string name, string? deviceId, string? provider = null, string? version = null, string? radeon = null, string? date = null) =>
+    private static Dictionary<string, string?> AdapterKey(string name, string? deviceId, string? provider = null, string? version = null, string? radeon = null, string? date = null, string? vram = null) =>
         new(StringComparer.OrdinalIgnoreCase)
         {
             ["DriverDesc"] = name,
@@ -14,7 +14,8 @@ public sealed class GpuTests
             ["ProviderName"] = provider,
             ["DriverVersion"] = version,
             ["RadeonSoftwareVersion"] = radeon,
-            ["DriverDate"] = date
+            ["DriverDate"] = date,
+            [GpuDetectionService.MemoryValue] = vram
         };
 
     [Theory]
@@ -44,7 +45,7 @@ public sealed class GpuTests
         [
             AdapterKey("Microsoft Basic Display Adapter", null),
             AdapterKey("Intel(R) UHD Graphics 770", @"PCI\VEN_8086&DEV_4680", version: "31.0.101.4502"),
-            AdapterKey("AMD Radeon RX 6600", @"PCI\VEN_1002&DEV_73FF", "Advanced Micro Devices, Inc.", "32.0.21045.16010", "26.10.1", "10-16-2026")
+            AdapterKey("AMD Radeon RX 6600", @"PCI\VEN_1002&DEV_73FF", "Advanced Micro Devices, Inc.", "32.0.21045.16010", "26.10.1", "10-16-2026", "8573157376")
         ], () => 240);
 
         var result = service.Detect();
@@ -56,6 +57,7 @@ public sealed class GpuTests
         Assert.Equal(GpuVendor.Amd, primary.Vendor);
         Assert.Equal("26.10.1", primary.VendorSoftwareVersion);
         Assert.Equal(new DateOnly(2026, 10, 16), primary.DriverDate);
+        Assert.Equal(8_573_157_376L, primary.DedicatedMemoryBytes);
         Assert.Equal(240, result.RefreshRateHz);
     }
 
@@ -75,6 +77,7 @@ public sealed class GpuTests
         Assert.NotNull(noVersion);
         Assert.Null(noVersion!.VendorSoftwareVersion);
         Assert.Null(noVersion.DriverDate);
+        Assert.Null(noVersion.DedicatedMemoryBytes);
     }
 
     [Fact]

@@ -2,6 +2,7 @@ using Microsoft.Win32;
 using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
+using LznTweaker.Core.Gpu;
 
 namespace LznTweaker.Core;
 
@@ -10,10 +11,17 @@ namespace LznTweaker.Core;
 /// </summary>
 public sealed class SystemInformationService
 {
+    // A placa de vídeo vem da mesma detecção da página Placa de Vídeo, para as duas páginas mostrarem o mesmo dado.
+    private readonly GpuDetectionService _gpuDetection;
+
+    public SystemInformationService() : this(new GpuDetectionService()) { }
+
+    public SystemInformationService(GpuDetectionService gpuDetection) => _gpuDetection = gpuDetection;
+
     public Task<SystemSnapshot> ReadAsync(CancellationToken cancellationToken = default) =>
         Task.Run(() => Read(cancellationToken), cancellationToken);
 
-    private static SystemSnapshot Read(CancellationToken cancellationToken)
+    private SystemSnapshot Read(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var wmiWarnings = new List<string>();
@@ -21,7 +29,6 @@ public sealed class SystemInformationService
         var operatingSystem = QueryWmiSafely("Windows", "SELECT Caption, Version, BuildNumber, OSArchitecture FROM Win32_OperatingSystem", wmiWarnings).FirstOrDefault();
         var processor = QueryWmiSafely("processador", "SELECT Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed FROM Win32_Processor", wmiWarnings).FirstOrDefault();
         var memoryModules = QueryWmiSafely("memória", "SELECT Capacity, ConfiguredClockSpeed FROM Win32_PhysicalMemory", wmiWarnings);
-        var graphics = QueryWmiSafely("placa de vídeo", "SELECT Name FROM Win32_VideoController", wmiWarnings);
         var motherboard = QueryWmiSafely("placa-mãe", "SELECT Manufacturer, Product FROM Win32_BaseBoard", wmiWarnings).FirstOrDefault();
         var diskRows = QueryWmiSafely("atividade de disco", "SELECT Name, PercentDiskTime, DiskReadBytesPersec, DiskWriteBytesPersec FROM Win32_PerfFormattedData_PerfDisk_PhysicalDisk", wmiWarnings);
 
@@ -58,7 +65,7 @@ public sealed class SystemInformationService
         if (string.IsNullOrWhiteSpace(boardName))
             boardName = ReadMotherboardName();
 
-        var processorName = processor?.GetValueOrDefault("Name");
+        var processorName = processor?.GetValueOrDefault("Name")?.Trim();
         if (string.IsNullOrWhiteSpace(processorName))
             processorName = ReadProcessorName();
         var processorCores = ParseInt(processor?.GetValueOrDefault("NumberOfCores"));
@@ -71,10 +78,13 @@ public sealed class SystemInformationService
         if (processorClock <= 0)
             processorClock = ReadProcessorClockMHz();
 
-        var graphicsNames = graphics.Select(item => item.GetValueOrDefault("Name"))
-            .Where(name => !string.IsNullOrWhiteSpace(name)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-        if (graphicsNames.Length == 0)
-            graphicsNames = ReadGraphicsNames();
+        // A leitura antiga (WMI + registro) falhava ao encontrar a subchave Properties, que o Windows bloqueia,
+        // e devolvia "não identificada"; o GpuDetectionService lê cada subchave separadamente.
+        var gpu = _gpuDetection.Detect();
+        var graphicsNames = gpu.Adapters
+            .OrderByDescending(adapter => adapter == gpu.Primary)
+            .Select(adapter => adapter.Name)
+            .ToArray();
 
         // Report only fields that remain unavailable after trying native/registry fallbacks.
         var warnings = new List<string>();
@@ -101,6 +111,7 @@ public sealed class SystemInformationService
             memoryCommitted,
             memoryCommitLimit,
             string.Join(" · ", graphicsNames),
+            gpu.Primary,
             string.IsNullOrWhiteSpace(boardName) ? "Não disponível" : boardName,
             cpuUsage,
             diskActivity,
@@ -135,7 +146,9 @@ public sealed class SystemInformationService
             dynamic dynamicLocator = locator!;
             services = dynamicLocator.ConnectServer(".", nameSpace);
             dynamic dynamicServices = services!;
-            rows = dynamicServices.ExecQuery(query, "WQL", 0x10 | 0x20);
+            // Sem wbemFlagForwardOnly (0x20): com ele, enumerar o resultado pelo .NET falha com DISP_E_EXCEPTION
+            // em toda consulta, e todos os dados caíam nas leituras reservas (ou ficavam "não disponíveis").
+            rows = dynamicServices.ExecQuery(query, "WQL", 0);
 
             foreach (var row in (IEnumerable)rows!)
             {
@@ -273,28 +286,6 @@ public sealed class SystemInformationService
             }.Where(value => !string.IsNullOrWhiteSpace(value)));
         }
         catch (Exception) { return string.Empty; }
-    }
-
-    private static string[] ReadGraphicsNames()
-    {
-        const string displayClass = @"SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}";
-        try
-        {
-            using var key = OpenLocalMachineKey(displayClass);
-            if (key is null)
-                return [];
-
-            var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var subKeyName in key.GetSubKeyNames())
-            {
-                using var adapter = key.OpenSubKey(subKeyName);
-                var name = Convert.ToString(adapter?.GetValue("DriverDesc")) ?? Convert.ToString(adapter?.GetValue("AdapterString"));
-                if (!string.IsNullOrWhiteSpace(name) && !name.Contains("Basic Display", StringComparison.OrdinalIgnoreCase))
-                    names.Add(name.Trim());
-            }
-            return names.ToArray();
-        }
-        catch (Exception) { return []; }
     }
 
     private static RegistryKey? OpenLocalMachineKey(string subKey) =>

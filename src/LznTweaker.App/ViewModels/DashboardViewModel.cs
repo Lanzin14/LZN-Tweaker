@@ -95,7 +95,15 @@ public sealed class DashboardViewModel : INotifyPropertyChanged
         GraphicsSummary = string.IsNullOrWhiteSpace(snapshot.GraphicsAdapters)
             ? "Placa de vídeo não identificada"
             : snapshot.GraphicsAdapters;
-        GraphicsMemorySummary = "VRAM dedicada não disponível nesta consulta; memória compartilhada não foi tratada como VRAM.";
+        GraphicsMemorySummary = snapshot.PrimaryGraphics switch
+        {
+            null => "VRAM e driver não disponíveis nesta leitura.",
+            var gpu => string.Join(" · ", new[]
+            {
+                gpu.DedicatedMemoryBytes is long vram ? $"{FormatMemory(vram)} de VRAM" : "VRAM não informada pelo driver",
+                gpu.VendorSoftwareVersion is { } vendor ? $"driver {vendor}" : gpu.DriverVersion is { } driver ? $"driver {driver}" : null
+            }.Where(part => part is not null))
+        };
         MotherboardSummary = snapshot.Motherboard;
         CommitSummary = snapshot.MemoryCommitLimitBytes is > 0 && snapshot.MemoryCommittedBytes is long committed
             ? $"Comprometida: {FormatMemory(committed)} de {FormatMemory(snapshot.MemoryCommitLimitBytes.Value)}"
