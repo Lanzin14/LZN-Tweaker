@@ -6,7 +6,6 @@
     <!-- Background #111116, Surface #1B1B24, Elevated #292936, Accent #8175FF, Lavender #A69FFF, Text #E9E8F0, Muted #858594, Danger #E47777.
          Roxo só para ação, seleção e foco; verde, âmbar e vermelho só para estado e risco. -->
     <Color x:Key="Lzn.Color.Gray950">#111116</Color>
-    <Color x:Key="Lzn.Color.Gray925">#0D0D11</Color>
     <Color x:Key="Lzn.Color.Gray900">#1B1B24</Color>
     <Color x:Key="Lzn.Color.Gray875">#20202A</Color>
     <Color x:Key="Lzn.Color.Gray850">#24242F</Color>
@@ -52,8 +51,10 @@
 
     <!-- ═══ 2. Semânticos ═══ -->
     <SolidColorBrush x:Key="Lzn.Background" Color="{StaticResource Lzn.Color.Gray950}" />
-    <SolidColorBrush x:Key="Lzn.Sidebar" Color="{StaticResource Lzn.Color.Gray925}" />
-    <SolidColorBrush x:Key="Lzn.SurfaceSunken" Color="{StaticResource Lzn.Color.Gray925}" />
+    <!-- Sidebar em Surface (paleta oficial); o conteúdo fica no Background. -->
+    <SolidColorBrush x:Key="Lzn.Sidebar" Color="{StaticResource Lzn.Color.Gray900}" />
+    <!-- Área rebaixada dentro de cards e painéis (Surface): volta ao tom do fundo. -->
+    <SolidColorBrush x:Key="Lzn.SurfaceSunken" Color="{StaticResource Lzn.Color.Gray950}" />
     <SolidColorBrush x:Key="Lzn.Surface" Color="{StaticResource Lzn.Color.Gray900}" />
     <SolidColorBrush x:Key="Lzn.SurfaceHover" Color="{StaticResource Lzn.Color.Gray875}" />
     <SolidColorBrush x:Key="Lzn.SurfaceRaised" Color="{StaticResource Lzn.Color.Gray850}" />

@@ -36,14 +36,14 @@ public static class ShellPages
         new(General, "Geral", "", "Otimização", typeof(GeneralPageView)),
         new(Hardware, "Hardware", "", "Otimização", typeof(HardwareView)),
         new(Gpu, "Placa de Vídeo", "", "Otimização", typeof(GpuView)),
-        new(Debloat, "Debloat", "", "Otimização", typeof(AppDebloatView)),
-        new(Network, "Network", "", "Otimização", typeof(NetworkPageView)),
-        new(Advanced, "Advanced", "", "Otimização", typeof(TweaksView)),
+        new(Debloat, "Remover apps", "", "Otimização", typeof(AppDebloatView)),
+        new(Network, "Rede", "", "Otimização", typeof(NetworkPageView)),
+        new(Advanced, "Avançado", "", "Otimização", typeof(TweaksView)),
         new(Games, "Jogos", "", "Jogos e manutenção", typeof(GameLibraryView)),
         new(Cleanup, "Limpeza", "", "Jogos e manutenção", typeof(CleanupView)),
         new(Startup, "Inicialização", "", "Jogos e manutenção", typeof(StartupView)),
         new(Programs, "Programas", "", "Jogos e manutenção", typeof(ProgramsView)),
-        new(Backups, "Backups", "", "Segurança", typeof(BackupsView)),
-        new(Fixes, "Fixes", "", "Segurança", typeof(FixesPageView))
+        new(Backups, "Histórico", "", "Segurança", typeof(BackupsView)),
+        new(Fixes, "Reparos", "", "Segurança", typeof(FixesPageView))
     ];
 }

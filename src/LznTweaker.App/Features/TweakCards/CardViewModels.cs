@@ -15,7 +15,8 @@ internal static class CardBrushes
     public static SolidColorBrush Low => ThemeBrushes.Success;
     public static SolidColorBrush Warning => ThemeBrushes.Warning;
     public static SolidColorBrush High => ThemeBrushes.Danger;
-    public static SolidColorBrush Active => ThemeBrushes.Accent;
+    // Estado é cor de estado: "Ativo" em verde, o roxo fica para ação e seleção.
+    public static SolidColorBrush Active => ThemeBrushes.Success;
     public static SolidColorBrush Pending => ThemeBrushes.Warning;
     public static SolidColorBrush Muted => ThemeBrushes.Muted;
 

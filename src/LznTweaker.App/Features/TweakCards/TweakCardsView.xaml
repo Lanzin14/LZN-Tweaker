@@ -28,11 +28,11 @@
             </Border>
         </DataTemplate>
 
-        <!-- Cabeçalho de grupo: ícone, nome, quantidade visível e descrição da categoria -->
+        <!-- Cabeçalho de grupo: ícone da categoria, nome, quantidade visível e descrição. Ícones neutros: o roxo fica para ação e seleção. -->
         <DataTemplate x:Key="GroupHeader">
             <StackPanel Margin="2,4,0,10" Visibility="{Binding Name, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Name.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,9,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Name.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.Text}" Margin="0,0,10,0" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding Name.Title, FallbackValue=''}" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
                     <Border Style="{StaticResource Lzn.Badge}" Margin="10,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="{Binding ItemCount}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
@@ -73,8 +73,8 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0">
-                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,12,0">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                         </Border>
                         <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
                                    ToolTip="{Binding Title}" />
@@ -127,8 +127,8 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0">
-                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,12,0">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                         </Border>
                         <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding Title}" />
                         <Button Grid.Column="2" Style="{StaticResource InfoButton}" ToolTip="Detalhes"
@@ -485,8 +485,8 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                                    <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
@@ -513,8 +513,8 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                                    <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />

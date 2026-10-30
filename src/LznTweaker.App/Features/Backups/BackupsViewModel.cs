@@ -199,7 +199,7 @@ public sealed partial class BackupsViewModel : ObservableObject
 
     private static string AreaOf(string tweakId) => tweakId switch
     {
-        _ when tweakId.StartsWith(AppxDebloatService.OperationPrefix, StringComparison.Ordinal) => "Debloat",
+        _ when tweakId.StartsWith(AppxDebloatService.OperationPrefix, StringComparison.Ordinal) => "Remover apps",
         _ when tweakId.StartsWith(SteamFolderBackupService.OperationPrefix, StringComparison.Ordinal) => "Jogos · Steam",
         _ when tweakId.StartsWith(SystemToolsService.OperationPrefix, StringComparison.Ordinal) => "Ferramentas",
         _ when tweakId.StartsWith(SystemCleanupService.OperationPrefix, StringComparison.Ordinal) => "Limpeza",

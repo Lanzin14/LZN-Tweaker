@@ -9,7 +9,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource Lzn.Color.Gray950}" />
-    <SolidColorBrush x:Key="SidebarBrush" Color="{StaticResource Lzn.Color.Gray925}" />
+    <SolidColorBrush x:Key="SidebarBrush" Color="{StaticResource Lzn.Color.Gray900}" />
     <SolidColorBrush x:Key="HeaderBrush" Color="{StaticResource Lzn.Color.Gray950}" />
     <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource Lzn.Color.Gray900}" />
     <SolidColorBrush x:Key="PanelAltBrush" Color="{StaticResource Lzn.Color.Gray875}" />

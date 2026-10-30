@@ -99,7 +99,7 @@ public static class TweakCardPages
             Highlight: "IMPORTANTE SE VOCÊ USA DISCORD.")
     ], ListLayout: true);
 
-    public static TweakCardsPage Network { get; } = new("Network", CategoryGuides.Network,
+    public static TweakCardsPage Network { get; } = new("Rede", CategoryGuides.Network,
     [
         new("diagnostics", "Diagnóstico", "", [],
             [new("connectivity", "", "Teste de conectividade",
@@ -124,7 +124,7 @@ public static class TweakCardPages
             Description: "Para quando a internet para de funcionar depois de instalar ou remover VPN, antivírus ou outro programa de rede.")
     ], ListLayout: true);
 
-    public static TweakCardsPage Fixes { get; } = new("Fixes", CategoryGuides.Fixes,
+    public static TweakCardsPage Fixes { get; } = new("Reparos", CategoryGuides.Fixes,
     [
         new("integrity", "Integridade", "", [],
             [new("sfc", "", "Verificar arquivos do sistema (SFC)",
