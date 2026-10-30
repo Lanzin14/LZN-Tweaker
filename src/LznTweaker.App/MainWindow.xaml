@@ -123,7 +123,7 @@
                             </Border>
                             <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding UserName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding PrivilegeText}" FontSize="10" TextTrimming="CharacterEllipsis">
+                                <TextBlock Text="{Binding PrivilegeText}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextTrimming="CharacterEllipsis">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="{StaticResource Lzn.RiskWarn}" />

@@ -154,7 +154,7 @@
                                 AutomationProperties.Name="Saiba mais sobre a placa de vídeo">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Saiba mais" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentText}" />
-                                <TextBlock FontSize="10" Foreground="{StaticResource Lzn.AccentText}" Margin="7,1,0,0" VerticalAlignment="Center">
+                                <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" Margin="7,1,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
                                             <Setter Property="Text" Value="&#xE70D;" />

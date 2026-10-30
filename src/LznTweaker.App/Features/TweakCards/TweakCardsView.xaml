@@ -214,7 +214,7 @@
                 <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" />
-                    <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="11" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="12,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
                 <TextBlock Text="O que faz" Style="{StaticResource Lzn.Text.Overline}" Margin="0,18,0,6" />
                 <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" />
@@ -229,8 +229,8 @@
                 </TextBlock>
                 <TextBlock Text="Estado detectado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
                 <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding SwitchTooltip}" FontSize="11" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" Margin="0,8,0,0" />
-                <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0"
+                <TextBlock Text="{Binding SwitchTooltip}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0"
                            Visibility="{Binding Definition.SourceUrl, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
             </StackPanel>
         </DataTemplate>
@@ -246,7 +246,7 @@
                 <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{StaticResource Lzn.RiskWarn}" TextWrapping="Wrap" Margin="0,10,0,0"
                            Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                 <TextBlock Text="A execução é registrada em Backups. O app só executa a ferramenta desta lista fixa; nenhum comando digitado é aceito."
-                           FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
+                           FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
             </StackPanel>
         </DataTemplate>
 
@@ -255,7 +255,7 @@
                 <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RecommendationBadge}" />
-                    <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="11" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="12,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
                 <TextBlock Text="Benefício" Style="{StaticResource Lzn.Text.Overline}" Margin="0,18,0,6" />
                 <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" />
@@ -272,13 +272,13 @@
                 <Border Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,10" Margin="0,6,0,0"
                         Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                     <StackPanel>
-                        <TextBlock Text="Pode variar conforme a versão" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource Lzn.RiskWarn}" />
+                        <TextBlock Text="Pode variar conforme a versão" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.RiskWarn}" />
                         <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0" />
                     </StackPanel>
                 </Border>
                 <TextBlock Text="O LZN Tweaker não abre nem altera o Discord. Se uma opção não estiver no lugar indicado, o Discord pode ter mudado o menu na sua versão."
-                           FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
-                <TextBlock Text="{Binding Guide.SourceUrl, StringFormat=Referência: {0}}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,10,0,0" />
+                           FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
+                <TextBlock Text="{Binding Guide.SourceUrl, StringFormat=Referência: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,10,0,0" />
             </StackPanel>
         </DataTemplate>
 
@@ -409,7 +409,7 @@
                             <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding RiskOptions}" SelectedItem="{Binding RiskFilter}" />
                             <TextBlock Text="Estado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,12,0,6" />
                             <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding StateOptions}" SelectedItem="{Binding StateFilter}" />
-                            <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Limpar filtros" FontSize="11" HorizontalAlignment="Left" Margin="0,12,0,0"
+                            <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Limpar filtros" FontSize="{StaticResource Lzn.FontSize.Caption}" HorizontalAlignment="Left" Margin="0,12,0,0"
                                     Command="{Binding ClearFiltersCommand}" />
                         </StackPanel>
                     </Border>
@@ -421,7 +421,7 @@
                                   BorderThickness="0" Background="Transparent" AutomationProperties.Name="Ordenar" />
                     </StackPanel>
                 </Border>
-                <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}"
+                <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
                            Text="{Binding VisibleCount, StringFormat={}{0} item(ns)}" />
             </Grid>
 

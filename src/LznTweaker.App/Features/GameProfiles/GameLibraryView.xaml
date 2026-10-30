@@ -135,7 +135,7 @@
                                               Visibility="{Binding IsWindows, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                                         <Border CornerRadius="4" Background="{StaticResource Lzn.SurfaceActive}"
                                                 Visibility="{Binding ShowsInitial, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                            <TextBlock Text="{Binding Initial}" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding Initial}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                         </Border>
                                     </Grid>
                                 </DataTemplate>

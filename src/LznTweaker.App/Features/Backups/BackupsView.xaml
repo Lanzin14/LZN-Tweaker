@@ -37,7 +37,7 @@
                     <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding OutcomeOptions}" SelectedItem="{Binding OutcomeFilter}" MinWidth="170" BorderThickness="0" Background="Transparent" />
                 </StackPanel>
             </Border>
-            <TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}"
+            <TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
                        Text="{Binding VisibleCount, StringFormat={}{0} registro(s)}" />
         </Grid>
 
@@ -58,19 +58,19 @@
                                     <StackPanel Grid.Column="1">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" />
-                                            <TextBlock Text="{Binding Area}" FontSize="10" Foreground="{StaticResource Lzn.AccentHover}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding Area}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" Margin="10,0,0,0" VerticalAlignment="Center" />
                                         </StackPanel>
-                                        <TextBlock Text="{Binding Message}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
-                                        <TextBlock FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,4,0,0">
+                                        <TextBlock Text="{Binding Message}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                        <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,4,0,0">
                                             <Run Text="{Binding When, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding PreviousState, Mode=OneWay}" /><Run Text="  " /><Run Text="{Binding RestoreHint, Mode=OneWay}" Foreground="{StaticResource Lzn.AccentText}" />
                                         </TextBlock>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="12,0,0,0">
-                                        <TextBlock Text="{Binding Outcome}" FontSize="11" FontWeight="SemiBold" Foreground="{Binding OutcomeBrush}" HorizontalAlignment="Right" />
-                                        <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Restaurar" FontSize="11" Margin="0,6,0,0" HorizontalAlignment="Right"
+                                        <TextBlock Text="{Binding Outcome}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{Binding OutcomeBrush}" HorizontalAlignment="Right" />
+                                        <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Restaurar" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,6,0,0" HorizontalAlignment="Right"
                                                 Visibility="{Binding CanRestoreHere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
                                                 Command="{Binding DataContext.RestoreOneCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
-                                        <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Abrir origem" FontSize="11" Margin="0,6,0,0" HorizontalAlignment="Right"
+                                        <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Abrir origem" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,6,0,0" HorizontalAlignment="Right"
                                                 Visibility="{Binding HasRestoreElsewhere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
                                                 Command="{Binding DataContext.OpenOriginCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
                                     </StackPanel>

@@ -97,14 +97,14 @@
             <!-- Cabeçalho -->
             <Grid Margin="0,0,0,18">
                 <StackPanel>
-                    <TextBlock Text="PERFIS DE JOGOS" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" />
+                    <TextBlock Text="PERFIS DE JOGOS" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" />
                     <TextBlock Text="Deadlock" Style="{StaticResource Lzn.Text.Title}" Margin="0,4,0,0" />
                     <TextBlock Text="Substitui o gameinfo.gi do jogo por um perfil do OptimizationLock, guardando o original para o Desfazer."
                                Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap" />
                 </StackPanel>
                 <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource AccentSoftBrush}"
                         BorderBrush="{StaticResource AccentStrokeBrush}" BorderThickness="1" CornerRadius="8" Padding="10,6">
-                    <TextBlock Text="ARQUIVO DO JOGO · REVERSÍVEL" Foreground="{StaticResource AccentTextBrush}" FontSize="9" FontWeight="Bold" />
+                    <TextBlock Text="ARQUIVO DO JOGO · REVERSÍVEL" Foreground="{StaticResource AccentTextBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" />
                 </Border>
             </Grid>
 
@@ -118,12 +118,12 @@
                     <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
                         <TextBlock Text="Instalação" FontWeight="SemiBold" FontSize="14" />
                         <TextBlock Text="{Binding InstallationText}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding Installation.GameInfoPath, StringFormat=Arquivo: {0}}" Foreground="{StaticResource TextMutedBrush}" FontSize="11"
+                        <TextBlock Text="{Binding Installation.GameInfoPath, StringFormat=Arquivo: {0}}" Foreground="{StaticResource TextMutedBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}"
                                    Margin="0,3,0,0" TextWrapping="Wrap"
                                    Visibility="{Binding IsInstallationFound, Converter={StaticResource BoolToVisibility}}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Content="↻ Detectar" Command="{Binding DetectCommand}" Padding="12,8" Margin="0,0,8,0" />
+                        <Button Style="{StaticResource SecondaryButtonStyle}" Content="Detectar" Command="{Binding DetectCommand}" Padding="12,8" Margin="0,0,8,0" />
                         <Button Style="{StaticResource SecondaryButtonStyle}" Content="Escolher pasta" Command="{Binding BrowseCommand}" Padding="12,8" />
                     </StackPanel>
                 </Grid>
@@ -134,12 +134,12 @@
                 <StackPanel>
                     <TextBlock Text="Estado da configuração" FontWeight="SemiBold" FontSize="12" />
                     <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
-                    <TextBlock Text="{Binding LastResultText}" Foreground="{StaticResource AccentTextBrush}" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding LastResultText}" Foreground="{StaticResource AccentTextBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,6,0,0" TextWrapping="Wrap" />
                 </StackPanel>
             </Border>
 
             <!-- Perfis -->
-            <TextBlock Text="PERFIS DE OTIMIZAÇÃO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="2,4,0,10" />
+            <TextBlock Text="PERFIS DE OTIMIZAÇÃO" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="2,4,0,10" />
             <ItemsControl ItemsSource="{Binding Profiles}" IsEnabled="{Binding IsInstallationFound}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type local:DeadlockProfileOption}">
@@ -154,18 +154,18 @@
                                         <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" />
                                         <Border Background="{StaticResource Lzn.SuccessSoft}" BorderBrush="{StaticResource Lzn.SuccessStroke}" BorderThickness="1" CornerRadius="4" Padding="6,1" Margin="10,0,0,0"
                                                 VerticalAlignment="Center" Visibility="{Binding IsApplied, Converter={StaticResource BoolToVisibility}}">
-                                            <TextBlock Text="APLICADO" FontSize="9" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" />
+                                            <TextBlock Text="APLICADO" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" />
                                         </Border>
                                     </StackPanel>
                                     <TextBlock Text="{Binding Summary}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
-                                    <TextBlock Text="{Binding Warning, StringFormat=⚠ {0}}" Foreground="{StaticResource WarningBrush}" FontSize="11" Margin="0,5,0,0"
+                                    <TextBlock Text="{Binding Warning, StringFormat=⚠ {0}}" Foreground="{StaticResource WarningBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,5,0,0"
                                                TextWrapping="Wrap" Visibility="{Binding HasWarning, Converter={StaticResource BoolToVisibility}}" />
                                     <Button Style="{StaticResource LinkButtonStyle}" Content="Ver arquivo no GitHub ↗" HorizontalAlignment="Left" Margin="0,7,0,0"
                                             Command="{Binding DataContext.OpenSourceCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding}" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="12,0,0,0">
-                                    <TextBlock Text="{Binding RiskText}" Foreground="{Binding RiskBrush}" FontSize="10" FontWeight="SemiBold"
+                                    <TextBlock Text="{Binding RiskText}" Foreground="{Binding RiskBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold"
                                                VerticalAlignment="Center" Margin="0,0,10,0" />
                                     <Border Style="{StaticResource InfoTipStyle}">
                                         <Border.ToolTip>
@@ -173,12 +173,12 @@
                                                 <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="10" Padding="14" MaxWidth="420">
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6" />
-                                                        <TextBlock Text="{Binding InfoTip}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
+                                                        <TextBlock Text="{Binding InfoTip}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
                                                     </StackPanel>
                                                 </Border>
                                             </ToolTip>
                                         </Border.ToolTip>
-                                        <TextBlock Text="?" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <TextBlock Text="?" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                 </StackPanel>
                             </Grid>
@@ -191,7 +191,7 @@
             <Border Style="{StaticResource CardStyle}" Background="{StaticResource Lzn.SurfaceHover}" BorderBrush="{StaticResource Lzn.AccentStroke}" Margin="0,4,0,14">
                 <StackPanel>
                     <TextBlock Text="Antes de aplicar" FontWeight="SemiBold" FontSize="12" Foreground="{StaticResource AccentTextBrush}" />
-                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" LineHeight="17" Margin="0,6,0,0">
+                    <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" LineHeight="17" Margin="0,6,0,0">
                         • Feche o Deadlock. Toda atualização grande do jogo reinstala o gameinfo.gi; depois de um patch, reaplique o perfil.<LineBreak />
                         • O jogo exibe um aviso de que pode bloquear o matchmaking com ConVars alteradas no gameinfo.gi; segundo o autor, isso ainda não é aplicado.<LineBreak />
                         • Os perfis são do projeto OptimizationLock (GPL-3.0) e são baixados do GitHub do autor no momento da aplicação. Ganhos de FPS variam por hardware e não são garantidos.
@@ -208,7 +208,7 @@
                 </Grid.ColumnDefinitions>
                 <Button Style="{StaticResource LinkButtonStyle}" Content="Projeto OptimizationLock ↗" VerticalAlignment="Center" HorizontalAlignment="Left"
                         Command="{Binding OpenSourceCommand}" />
-                <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}" Content="↺ Desfazer" Command="{Binding UndoCommand}" Padding="16,10" Margin="0,0,9,0" />
+                <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}" Content="Desfazer" Command="{Binding UndoCommand}" Padding="16,10" Margin="0,0,9,0" />
                 <Button Grid.Column="2" Style="{StaticResource PrimaryButtonStyle}" Content="Aplicar perfil selecionado" Command="{Binding ApplyCommand}" Padding="18,10" />
             </Grid>
         </StackPanel>

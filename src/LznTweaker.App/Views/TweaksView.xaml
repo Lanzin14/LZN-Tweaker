@@ -53,37 +53,37 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource Lzn.Text}" TextWrapping="Wrap" />
                                     <Border Grid.Column="1" Background="{Binding RiskBackgroundBrush}" BorderBrush="{Binding RiskBorderBrush}" BorderThickness="1" CornerRadius="4" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Top">
-                                        <TextBlock Text="{Binding RiskLevel, StringFormat=Risco {0}}" Foreground="{Binding RiskBrush}" FontSize="10" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding RiskLevel, StringFormat=Risco {0}}" Foreground="{Binding RiskBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" />
                                     </Border>
                                 </Grid>
 
-                                <TextBlock Text="{Binding Category}" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding Category}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,0,6" />
 
                                 <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" Margin="0,0,0,8" />
 
                                 <Border Height="1" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,2,0,8" />
 
-                                <TextBlock Text="DETALHES TÉCNICOS:" FontSize="9" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,0,3" />
-                                <TextBlock Text="{Binding TechnicalReason}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="15" Margin="0,0,0,8" />
+                                <TextBlock Text="DETALHES TÉCNICOS:" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,0,3" />
+                                <TextBlock Text="{Binding TechnicalReason}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="15" Margin="0,0,0,8" />
 
                                 <Border Height="1" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,0,8" />
 
                                 <WrapPanel Margin="0,0,0,4">
                                     <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="4" Padding="6,3" Margin="0,0,6,6">
-                                        <TextBlock Text="{Binding AdministratorText}" Foreground="{StaticResource Lzn.AccentText}" FontSize="10" />
+                                        <TextBlock Text="{Binding AdministratorText}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" />
                                     </Border>
                                     <Border Background="{StaticResource Lzn.SuccessSoft}" BorderBrush="{StaticResource Lzn.SuccessStroke}" BorderThickness="1" CornerRadius="4" Padding="6,3" Margin="0,0,6,6">
-                                        <TextBlock Text="{Binding RestartText}" Foreground="{StaticResource Lzn.RiskLow}" FontSize="10" />
+                                        <TextBlock Text="{Binding RestartText}" Foreground="{StaticResource Lzn.RiskLow}" FontSize="{StaticResource Lzn.FontSize.Caption}" />
                                     </Border>
                                     <Border Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="4" Padding="6,3" Margin="0,0,6,6">
-                                        <TextBlock Text="{Binding RollbackText}" Foreground="{StaticResource Lzn.RiskWarn}" FontSize="10" />
+                                        <TextBlock Text="{Binding RollbackText}" Foreground="{StaticResource Lzn.RiskWarn}" FontSize="{StaticResource Lzn.FontSize.Caption}" />
                                     </Border>
                                     <Border Background="{StaticResource Lzn.SurfaceHover}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="4" Padding="6,3" Margin="0,0,0,6">
-                                        <TextBlock Text="{Binding Compatibility}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="10" />
+                                        <TextBlock Text="{Binding Compatibility}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="{StaticResource Lzn.FontSize.Caption}" />
                                     </Border>
                                 </WrapPanel>
 
-                                <TextBlock Text="{Binding StateText}" Foreground="{StaticResource AccentTextBrush}" FontSize="10" Margin="0,2,0,0" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding StateText}" Foreground="{StaticResource AccentTextBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,2,0,0" TextWrapping="Wrap" />
                             </StackPanel>
                         </Border>
                     </ToolTip>
@@ -113,7 +113,7 @@
                             Background="{Binding RiskBackgroundBrush}"
                             BorderBrush="{Binding RiskBorderBrush}"
                             BorderThickness="1">
-                        <TextBlock Text="{Binding RiskLevel}" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock Text="{Binding RiskLevel}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold"
                                    Foreground="{Binding RiskBrush}" />
                     </Border>
 
@@ -121,7 +121,7 @@
                     <Border Grid.Column="3" Width="18" Height="18" CornerRadius="9"
                             Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1"
                             VerticalAlignment="Center" Cursor="Help">
-                        <TextBlock Text="?" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}"
+                        <TextBlock Text="?" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,1" />
                     </Border>
                 </Grid>
@@ -146,11 +146,11 @@
 
                         <!-- Preset Quick Buttons -->
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="PRESETS:" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBlock Text="Perfis:" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" Margin="0,0,10,0" />
                             <Button Style="{StaticResource PresetPillButtonStyle}" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Standard}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE734;" Style="{StaticResource Lzn.Icon}" Foreground="{StaticResource Lzn.AccentHover}" FontSize="10" Margin="0,0,6,0" />
-                                    <TextBlock Text="Standard (Recomendado)" />
+                                    <TextBlock Text="Padrão (recomendado)" />
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource PresetPillButtonStyle}" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Minimal}">
@@ -166,15 +166,15 @@
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource PresetPillButtonStyle}" Command="{Binding ClearSelectionCommand}">
-                                <TextBlock Text="✕ Limpar Seleção" />
+                                <TextBlock Text="Limpar seleção" />
                             </Button>
                         </StackPanel>
 
                         <!-- Refresh State Button -->
                         <Button Grid.Column="1" Style="{StaticResource PresetPillButtonStyle}" Command="{Binding RefreshCommand}" Margin="0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="↻ " FontSize="11" />
-                                <TextBlock Text="Detectar Estado Real" />
+                                <TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,6,0" />
+                                <TextBlock Text="Verificar estado" />
                             </StackPanel>
                         </Button>
                     </Grid>
@@ -183,9 +183,9 @@
 
                     <!-- Status / Summary info line -->
                     <Grid>
-                        <TextBlock Text="{Binding SelectedPresetOption.Description}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="11" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding SelectedPresetOption.Description}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                         <Border HorizontalAlignment="Right" Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="6" Padding="8,4">
-                            <TextBlock Text="{Binding SelectionSummary}" Foreground="{StaticResource Lzn.AccentText}" FontSize="10" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding SelectionSummary}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" />
                         </Border>
                     </Grid>
                 </StackPanel>
@@ -208,10 +208,10 @@
                             <Grid Margin="0,0,0,10">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="&#xE945;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,6,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="Essential Tweaks" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Essenciais" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
                                 </StackPanel>
                                 <Border HorizontalAlignment="Right" Background="{StaticResource Lzn.SurfaceRaised}" CornerRadius="8" Padding="7,2">
-                                    <TextBlock Text="{Binding EssentialItems.Count, StringFormat={}{0} opções}" Foreground="{StaticResource Lzn.AccentText}" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding EssentialItems.Count, StringFormat={}{0} opções}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" />
                                 </Border>
                             </Grid>
                             <ItemsControl ItemsSource="{Binding EssentialItems}" ItemTemplate="{StaticResource CompactTweakItemTemplate}" />
@@ -224,13 +224,13 @@
                             <Grid Margin="0,0,0,10">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="&#xE7BA;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,6,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="Advanced Tweaks" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Avançados" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
                                     <Border Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="4" Padding="5,1" Margin="8,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock Text="CUIDADO" Foreground="{StaticResource Lzn.RiskWarn}" FontSize="9" FontWeight="Bold" />
+                                        <TextBlock Text="Cuidado" Foreground="{StaticResource Lzn.RiskWarn}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" />
                                     </Border>
                                 </StackPanel>
                                 <Border HorizontalAlignment="Right" Background="{StaticResource Lzn.SurfaceRaised}" CornerRadius="8" Padding="7,2">
-                                    <TextBlock Text="{Binding AdvancedItems.Count, StringFormat={}{0} opções}" Foreground="{StaticResource Lzn.AccentText}" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding AdvancedItems.Count, StringFormat={}{0} opções}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" />
                                 </Border>
                             </Grid>
                             <ItemsControl ItemsSource="{Binding AdvancedItems}" ItemTemplate="{StaticResource CompactTweakItemTemplate}" />
@@ -247,10 +247,10 @@
                             <Grid Margin="0,0,0,10">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="&#xE790;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.RiskLow}" Margin="0,0,6,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="Customize Preferences" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Preferências" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
                                 </StackPanel>
                                 <Border HorizontalAlignment="Right" Background="{StaticResource Lzn.SurfaceRaised}" CornerRadius="8" Padding="7,2">
-                                    <TextBlock Text="{Binding PreferenceItems.Count, StringFormat={}{0} preferências}" Foreground="{StaticResource Lzn.AccentText}" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding PreferenceItems.Count, StringFormat={}{0} preferências}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" />
                                 </Border>
                             </Grid>
                             <ItemsControl ItemsSource="{Binding PreferenceItems}" ItemTemplate="{StaticResource CompactTweakItemTemplate}" />
@@ -263,10 +263,10 @@
                             <Grid Margin="0,0,0,10">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="&#xE83F;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,6,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="Performance Plans" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Planos de energia" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
                                 </StackPanel>
                                 <Border HorizontalAlignment="Right" Background="{StaticResource Lzn.SurfaceRaised}" CornerRadius="8" Padding="7,2">
-                                    <TextBlock Text="{Binding PerformancePlanItems.Count, StringFormat={}{0} planos}" Foreground="{StaticResource Lzn.AccentText}" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding PerformancePlanItems.Count, StringFormat={}{0} planos}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" />
                                 </Border>
                             </Grid>
                             <ItemsControl ItemsSource="{Binding PerformancePlanItems}" ItemTemplate="{StaticResource CompactTweakItemTemplate}" />
@@ -279,9 +279,9 @@
             <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,0,0,16">
                 <StackPanel>
                     <TextBlock Text="Status da Sessão e Detecção" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" FontSize="12" />
-                    <TextBlock Text="{Binding AvailabilityMessage}" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="11" TextWrapping="Wrap" Margin="0,5,0,0" />
-                    <TextBlock Text="{Binding OperationMessage}" Foreground="{StaticResource Lzn.AccentText}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" />
-                    <TextBlock Text="{Binding HistoryMessage}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="10" TextWrapping="Wrap" Margin="0,4,0,0" />
+                    <TextBlock Text="{Binding AvailabilityMessage}" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,5,0,0" />
+                    <TextBlock Text="{Binding OperationMessage}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                    <TextBlock Text="{Binding HistoryMessage}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,4,0,0" />
                 </StackPanel>
             </Border>
 
@@ -296,12 +296,12 @@
 
                 <Button Style="{StaticResource SecondaryButtonStyle}" Content="Abrir Proteção do Sistema" Command="{Binding OpenProtectionCommand}" HorizontalAlignment="Left" Padding="14,10" />
                 <Button Style="{StaticResource SecondaryButtonStyle}" Grid.Column="1" Content="Detalhes do Selecionado" Command="{Binding ShowDetailsCommand}" Margin="9,0,0,0" Padding="14,10" />
-                <Button Style="{StaticResource SecondaryButtonStyle}" Grid.Column="2" Content="↺ Undo Selecionados" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndoSelected}" Margin="9,0,0,0" Padding="14,10" />
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Column="3" Content="Executar Tweaks Selecionados" Command="{Binding RunCommand}" IsEnabled="{Binding CanApply}" Margin="9,0,0,0" Padding="18,10" />
+                <Button Style="{StaticResource SecondaryButtonStyle}" Grid.Column="2" Content="Desfazer selecionados" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndoSelected}" Margin="9,0,0,0" Padding="14,10" />
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Column="3" Content="Aplicar selecionados" Command="{Binding RunCommand}" IsEnabled="{Binding CanApply}" Margin="9,0,0,0" Padding="18,10" />
             </Grid>
 
             <!-- Footer Note -->
-            <TextBlock Text="{Binding UndoSummary}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="10" TextWrapping="Wrap" Margin="0,8,0,0" />
+            <TextBlock Text="{Binding UndoSummary}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,8,0,0" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

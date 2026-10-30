@@ -50,7 +50,7 @@
     </Style>
     <!-- Rótulo de grupo (sidebar, seções de painel). -->
     <Style x:Key="Lzn.Text.Overline" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Caption}" />
+        <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Overline}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
     </Style>

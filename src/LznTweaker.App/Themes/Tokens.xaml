@@ -99,14 +99,17 @@
 
     <!-- ═══ 3. Componentes: escala ═══ -->
     <!-- Tipografia: seis tamanhos, bem separados. -->
-    <sys:Double x:Key="Lzn.FontSize.Caption">11</sys:Double>
-    <sys:Double x:Key="Lzn.FontSize.BodySmall">12</sys:Double>
-    <sys:Double x:Key="Lzn.FontSize.Body">13</sys:Double>
+    <!-- Rótulo curto em maiúsculas (Overline): a única exceção abaixo de 12. -->
+    <sys:Double x:Key="Lzn.FontSize.Overline">11</sys:Double>
+    <!-- Mínimo para texto corrido e metadados. -->
+    <sys:Double x:Key="Lzn.FontSize.Caption">12</sys:Double>
+    <sys:Double x:Key="Lzn.FontSize.BodySmall">13</sys:Double>
+    <sys:Double x:Key="Lzn.FontSize.Body">14</sys:Double>
     <sys:Double x:Key="Lzn.FontSize.Subtitle">15</sys:Double>
     <sys:Double x:Key="Lzn.FontSize.Section">18</sys:Double>
-    <sys:Double x:Key="Lzn.FontSize.Title">26</sys:Double>
+    <sys:Double x:Key="Lzn.FontSize.Title">24</sys:Double>
     <!-- Só para títulos de apresentação (Home). -->
-    <sys:Double x:Key="Lzn.FontSize.Display">40</sys:Double>
+    <sys:Double x:Key="Lzn.FontSize.Display">32</sys:Double>
     <CornerRadius x:Key="Lzn.Radius.Sm">6</CornerRadius>
     <CornerRadius x:Key="Lzn.Radius.Md">8</CornerRadius>
     <CornerRadius x:Key="Lzn.Radius.Lg">12</CornerRadius>

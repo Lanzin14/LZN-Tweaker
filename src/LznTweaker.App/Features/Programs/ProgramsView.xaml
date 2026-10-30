@@ -103,7 +103,7 @@
                             Command="{Binding DataContext.ToggleDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Configurações recomendadas" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
-                            <TextBlock FontSize="10" Foreground="{StaticResource Lzn.AccentHover}" Margin="6,1,0,0">
+                            <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" Margin="6,1,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
                                         <Setter Property="Text" Value="&#xE70D;" />

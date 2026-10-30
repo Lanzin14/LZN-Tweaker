@@ -70,7 +70,7 @@ public sealed partial class ShellViewModel : ObservableObject
     public string UserInitial => string.IsNullOrEmpty(WindowsEnvironment.UserName) ? "?" : WindowsEnvironment.UserName[..1].ToUpperInvariant();
     public string WindowsVersion => WindowsEnvironment.WindowsVersion;
     public bool IsElevated => WindowsEnvironment.IsElevated;
-    public string PrivilegeText => IsElevated ? "Administrador" : "Sem privilégios de administrador";
+    public string PrivilegeText => IsElevated ? "Administrador" : "Sem administrador";
 
     [ObservableProperty]
     private string _statusText = "Pronto";

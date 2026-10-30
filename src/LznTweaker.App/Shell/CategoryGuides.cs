@@ -55,7 +55,7 @@ public static class CategoryGuides
         "A lista completa de ajustes em formato de tabela, com perfis prontos para selecionar vários de uma vez.",
         "Usar os perfis Mínimo, Standard e Avançado, marcar itens um a um, executar a seleção e desfazer ajustes aplicados.",
         "Controle fino para quem já sabe o que quer mudar.",
-        "Os itens da seção Advanced Tweaks têm risco maior. Escolher um perfil só marca as opções; nada é executado até você confirmar.");
+        "Os itens da seção Avançados têm risco maior. Escolher um perfil só marca as opções; nada é executado até você confirmar.");
 
     public static CategoryGuide Games { get; } = new(
         "Otimizações separadas por jogo, além das opções que valem para o Windows e para a Steam.",

@@ -42,11 +42,11 @@
                             <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" />
                             <Border Visibility="{Binding RequiresElevation, Converter={StaticResource BoolToVis}}"
                                     Background="{StaticResource Lzn.SurfaceActive}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="4" Padding="5,1" Margin="8,0,0,0">
-                                <TextBlock Text="SISTEMA (UAC)" Foreground="{StaticResource Lzn.AccentText}" FontSize="9" FontWeight="Bold" />
+                                <TextBlock Text="SISTEMA (UAC)" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" />
                             </Border>
                         </StackPanel>
                         <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,3,0,0" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding PathSummary, StringFormat='Local: {0}'}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding PathSummary, StringFormat='Local: {0}'}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
                     </StackPanel>
 
                     <!-- Size and Count Badge -->
@@ -54,7 +54,7 @@
                         <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="8" Padding="10,5">
                             <TextBlock Text="{Binding SizeDisplay}" FontSize="13" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Right" />
                         </Border>
-                        <TextBlock Text="{Binding StatusText}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Right" Margin="0,4,0,0" />
+                        <TextBlock Text="{Binding StatusText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Right" Margin="0,4,0,0" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -74,7 +74,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="ESPAÇO RECONHECIDO PARA LIBERAÇÃO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" />
+                        <TextBlock Text="ESPAÇO RECONHECIDO PARA LIBERAÇÃO" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" />
                         <TextBlock Text="{Binding TotalFoundText}" FontSize="32" FontWeight="Bold" Foreground="{StaticResource Lzn.Text}" Margin="0,4,0,2" />
                         <TextBlock Text="{Binding SelectedSizeText, StringFormat='{}{0} para remoção segura.'}" FontSize="12" Foreground="{StaticResource Lzn.AccentText}" />
                     </StackPanel>
@@ -84,13 +84,13 @@
                         <Button Style="{StaticResource SecondaryButtonStyle}" Command="{Binding ScanCommand}" IsEnabled="{Binding CanScan}" Margin="0,0,10,0" Padding="14,10">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,6,0" />
-                                <TextBlock Text="Iniciar Varredura" />
+                                <TextBlock Text="Iniciar varredura" />
                             </StackPanel>
                         </Button>
                         <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding CleanCommand}" IsEnabled="{Binding CanClean}" Padding="18,10">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE945;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,6,0" />
-                                <TextBlock Text="Limpar Selecionados" />
+                                <TextBlock Text="Limpar selecionados" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -102,7 +102,7 @@
                 <StackPanel>
                     <Grid Margin="0,0,0,6">
                         <TextBlock Text="{Binding StatusMessage}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextTrimming="CharacterEllipsis" />
-                        <TextBlock Text="{Binding ProgressText}" FontSize="11" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding ProgressText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Right" />
                     </Grid>
                     <ProgressBar Height="5" Value="{Binding ProgressValue, Mode=OneWay}" Background="{StaticResource Lzn.SurfaceRaised}" Foreground="{StaticResource Lzn.AccentHover}" BorderThickness="0" />
                 </StackPanel>
@@ -110,10 +110,10 @@
 
             <!-- Categories Selection Bar -->
             <Grid Margin="0,0,0,12">
-                <TextBlock Text="ÁREAS DE VARREDURA" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
+                <TextBlock Text="ÁREAS DE VARREDURA" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Marcar Todos" Command="{Binding SelectAllCommand}" Padding="10,5" Margin="0,0,6,0" FontSize="11" />
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Desmarcar Todos" Command="{Binding SelectNoneCommand}" Padding="10,5" FontSize="11" />
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Marcar todos" Command="{Binding SelectAllCommand}" Padding="10,5" Margin="0,0,6,0" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Desmarcar todos" Command="{Binding SelectNoneCommand}" Padding="10,5" FontSize="{StaticResource Lzn.FontSize.Caption}" />
                 </StackPanel>
             </Grid>
 

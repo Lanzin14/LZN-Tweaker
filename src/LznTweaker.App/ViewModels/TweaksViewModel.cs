@@ -82,10 +82,10 @@ public sealed class TweakItemViewModel(TweakDefinition definition) : INotifyProp
     public string Compatibility => Definition.Compatibility;
     public string Category => Definition.Category switch
     {
-        TweakCategory.Essential => "Essential Tweaks",
-        TweakCategory.Advanced => "Advanced Tweaks",
-        TweakCategory.CustomizePreferences => "Customize Preferences",
-        TweakCategory.PerformancePlans => "Performance Plans",
+        TweakCategory.Essential => "Essenciais",
+        TweakCategory.Advanced => "Avançados",
+        TweakCategory.CustomizePreferences => "Preferências",
+        TweakCategory.PerformancePlans => "Planos de energia",
         _ => "Categoria desconhecida"
     };
     public string OperationKind => Definition.IsOneShotOperation ? "Ação pontual" : "Configuração";
@@ -164,7 +164,7 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
 
         Presets =
         [
-            new(TweakPreset.Standard, "Standard (Recomendado)", "Seleção padrão de ajustes que este app implementa; apenas marca as opções, nada é executado."),
+            new(TweakPreset.Standard, "Padrão (recomendado)", "Seleção padrão de ajustes que este app implementa; apenas marca as opções, nada é executado."),
             new(TweakPreset.Minimal, "Mínimo", "Só Consumer Features e Telemetria, mais o ponto de restauração; apenas marca as opções."),
             new(TweakPreset.Advanced, "Avançado", "Standard mais a desativação de Recall e Copilot; apenas marca as opções."),
             new(TweakPreset.Custom, "Personalizado", "Seleção manual livre de itens.")

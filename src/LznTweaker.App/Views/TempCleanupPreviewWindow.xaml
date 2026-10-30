@@ -59,16 +59,16 @@
                             <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,10,0" />
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding DisplayName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding FullPath}" FontSize="10" Foreground="{StaticResource TextMutedBrush}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding FullPath}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
-                            <TextBlock Grid.Column="2" Text="{Binding SizeText}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="12,0,5,0" />
+                            <TextBlock Grid.Column="2" Text="{Binding SizeText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="12,0,5,0" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </Border>
         <Grid Grid.Row="2" Margin="0,16,0,0">
-            <TextBlock Text="Nenhum arquivo será apagado até você confirmar a execução seguinte." FontSize="10"
+            <TextBlock Text="Nenhum arquivo será apagado até você confirmar a execução seguinte." FontSize="{StaticResource Lzn.FontSize.Caption}"
                        Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,260,0" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Style="{StaticResource SecondaryButtonStyle}" Content="Cancelar" IsCancel="True" Margin="0,0,8,0" MinWidth="100" />
