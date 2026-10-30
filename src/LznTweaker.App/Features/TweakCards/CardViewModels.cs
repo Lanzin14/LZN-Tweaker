@@ -3,25 +3,21 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using LznTweaker.Core.Maintenance;
 using LznTweaker.Core.Tweaks;
 
+using LznTweaker.Infrastructure;
+
 namespace LznTweaker.Features.TweakCards;
 
 public enum RiskLevel { Low, Warning, High }
 
 internal static class CardBrushes
 {
-    public static readonly SolidColorBrush Low = Freeze("#6EE7B7");
-    public static readonly SolidColorBrush Warning = Freeze("#F5C46B");
-    public static readonly SolidColorBrush High = Freeze("#F87171");
-    public static readonly SolidColorBrush Active = Freeze("#A78BFA");
-    public static readonly SolidColorBrush Pending = Freeze("#F5C46B");
-    public static readonly SolidColorBrush Muted = Freeze("#8A8A96");
+    public static SolidColorBrush Low => ThemeBrushes.Success;
+    public static SolidColorBrush Warning => ThemeBrushes.Warning;
+    public static SolidColorBrush High => ThemeBrushes.Danger;
+    public static SolidColorBrush Active => ThemeBrushes.Accent;
+    public static SolidColorBrush Pending => ThemeBrushes.Warning;
+    public static SolidColorBrush Muted => ThemeBrushes.Muted;
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }
 
 /// <summary>Base dos cards da grade: ícone, título, descrição, risco e estado.</summary>

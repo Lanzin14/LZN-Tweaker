@@ -11,18 +11,12 @@ namespace LznTweaker.Features.GameProfiles;
 
 internal static class StatusBrushes
 {
-    public static readonly SolidColorBrush Green = Freeze("#6EE7B7");
-    public static readonly SolidColorBrush Amber = Freeze("#F5C46B");
-    public static readonly SolidColorBrush Red = Freeze("#F87171");
-    public static readonly SolidColorBrush Purple = Freeze("#DDD0FF");
-    public static readonly SolidColorBrush Gray = Freeze("#8A8A96");
+    public static SolidColorBrush Green => ThemeBrushes.Success;
+    public static SolidColorBrush Amber => ThemeBrushes.Warning;
+    public static SolidColorBrush Red => ThemeBrushes.Danger;
+    public static SolidColorBrush Purple => ThemeBrushes.AccentText;
+    public static SolidColorBrush Gray => ThemeBrushes.Muted;
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }
 
 /// <summary>Ação automatizável: limpeza de um cache de shaders ou backup e recriação do cache de shaders de um jogo na Steam.</summary>

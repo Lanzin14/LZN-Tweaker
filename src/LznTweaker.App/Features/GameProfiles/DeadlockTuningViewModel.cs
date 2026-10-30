@@ -9,9 +9,9 @@ namespace LznTweaker.Features.GameProfiles;
 
 public sealed partial class DeadlockProfileOption(GameConfigProfile profile) : ObservableObject
 {
-    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
-    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
-    private static readonly SolidColorBrush Red = Freeze("#F87171");
+    private static SolidColorBrush Green => ThemeBrushes.Success;
+    private static SolidColorBrush Amber => ThemeBrushes.Warning;
+    private static SolidColorBrush Red => ThemeBrushes.Danger;
 
     [ObservableProperty]
     private bool _isSelected;
@@ -36,12 +36,6 @@ public sealed partial class DeadlockProfileOption(GameConfigProfile profile) : O
         $"Autor: {Profile.Author} · Projeto OptimizationLock (GPL-3.0), baixado do GitHub na hora de aplicar.\n" +
         $"Reversão: o original é guardado antes e pode ser restaurado com \"Desfazer\".";
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }
 
 public sealed partial class DeadlockTuningViewModel : ObservableObject

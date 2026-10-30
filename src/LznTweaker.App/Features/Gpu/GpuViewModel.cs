@@ -16,9 +16,9 @@ namespace LznTweaker.Features.Gpu;
 /// </summary>
 public sealed partial class GpuViewModel : ObservableObject
 {
-    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
-    private static readonly SolidColorBrush Gray = Freeze("#8A8A96");
-    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
+    private static SolidColorBrush Green => ThemeBrushes.Success;
+    private static SolidColorBrush Gray => ThemeBrushes.Muted;
+    private static SolidColorBrush Amber => ThemeBrushes.Warning;
 
     private readonly GpuDetectionService _detection;
     private readonly GpuPreferencesStore _store;
@@ -315,10 +315,4 @@ public sealed partial class GpuViewModel : ObservableObject
         }
     }
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }

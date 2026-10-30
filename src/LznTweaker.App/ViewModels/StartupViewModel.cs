@@ -5,18 +5,20 @@ using System.Windows.Data;
 using System.Windows.Media;
 using LznTweaker.Core.Startup;
 
+using LznTweaker.Infrastructure;
+
 namespace LznTweaker.ViewModels;
 
 public sealed class StartupItemViewModel : INotifyPropertyChanged
 {
-    private static readonly SolidColorBrush GreenBrush = new((Color)ColorConverter.ConvertFromString("#6EE7B7"));
-    private static readonly SolidColorBrush AmberBrush = new((Color)ColorConverter.ConvertFromString("#F5C46B"));
-    private static readonly SolidColorBrush RedBrush = new((Color)ColorConverter.ConvertFromString("#F87171"));
-    private static readonly SolidColorBrush GrayBrush = new((Color)ColorConverter.ConvertFromString("#8A8A96"));
+    private static SolidColorBrush GreenBrush => ThemeBrushes.Success;
+    private static SolidColorBrush AmberBrush => ThemeBrushes.Warning;
+    private static SolidColorBrush RedBrush => ThemeBrushes.Danger;
+    private static SolidColorBrush GrayBrush => ThemeBrushes.Muted;
 
-    private static readonly SolidColorBrush GreenBg = new((Color)ColorConverter.ConvertFromString("#10251C"));
-    private static readonly SolidColorBrush AmberBg = new((Color)ColorConverter.ConvertFromString("#2A2112"));
-    private static readonly SolidColorBrush RedBg = new((Color)ColorConverter.ConvertFromString("#2A1416"));
+    private static SolidColorBrush GreenBg => ThemeBrushes.SuccessSoft;
+    private static SolidColorBrush AmberBg => ThemeBrushes.WarningSoft;
+    private static SolidColorBrush RedBg => ThemeBrushes.DangerSoft;
 
     private readonly StartupManagerService _service;
     private bool _isEnabled;

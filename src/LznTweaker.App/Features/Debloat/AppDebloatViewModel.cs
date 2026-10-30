@@ -12,9 +12,9 @@ namespace LznTweaker.Features.Debloat;
 
 public sealed class AppxItemViewModel(AppxPackageInfo package)
 {
-    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
-    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
-    private static readonly SolidColorBrush Purple = Freeze("#DDD0FF");
+    private static SolidColorBrush Green => ThemeBrushes.Success;
+    private static SolidColorBrush Amber => ThemeBrushes.Warning;
+    private static SolidColorBrush Purple => ThemeBrushes.AccentText;
 
     public AppxPackageInfo Package { get; } = package;
     public string FriendlyName => Package.FriendlyName;
@@ -56,12 +56,6 @@ public sealed class AppxItemViewModel(AppxPackageInfo package)
         (Package.Note is null ? string.Empty : $"\n\nObservação: {Package.Note}") +
         (Package.IsProvisioned == true ? "\n\nEstá provisionado para novas contas: os arquivos tendem a continuar no disco, então a restauração local costuma funcionar." : string.Empty);
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }
 
 public sealed partial class RemovedAppxItemViewModel(RemovedAppxPackage package) : ObservableObject

@@ -14,10 +14,10 @@ public sealed record NavItem(string Key, string Title, string Glyph, string Sect
 
 public sealed class ToastViewModel(Notification notification)
 {
-    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
-    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
-    private static readonly SolidColorBrush Red = Freeze("#F87171");
-    private static readonly SolidColorBrush Violet = Freeze("#A78BFA");
+    private static SolidColorBrush Green => ThemeBrushes.Success;
+    private static SolidColorBrush Amber => ThemeBrushes.Warning;
+    private static SolidColorBrush Red => ThemeBrushes.Danger;
+    private static SolidColorBrush Violet => ThemeBrushes.Accent;
 
     public string Title { get; } = notification.Title;
     public string Message { get; } = notification.Message;
@@ -36,12 +36,6 @@ public sealed class ToastViewModel(Notification notification)
         _ => Violet
     };
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }
 
 /// <summary>

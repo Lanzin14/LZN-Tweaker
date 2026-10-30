@@ -16,21 +16,21 @@ public sealed record TweakPresetOption(TweakPreset Preset, string Name, string D
 
 public sealed class TweakItemViewModel(TweakDefinition definition) : INotifyPropertyChanged
 {
-    private static readonly SolidColorBrush GreenBrush = new((Color)ColorConverter.ConvertFromString("#6EE7B7"));
-    private static readonly SolidColorBrush GreenBorder = new((Color)ColorConverter.ConvertFromString("#1F4A37"));
-    private static readonly SolidColorBrush GreenBg = new((Color)ColorConverter.ConvertFromString("#10251C"));
+    private static SolidColorBrush GreenBrush => ThemeBrushes.Success;
+    private static SolidColorBrush GreenBorder => ThemeBrushes.SuccessStroke;
+    private static SolidColorBrush GreenBg => ThemeBrushes.SuccessSoft;
 
-    private static readonly SolidColorBrush AmberBrush = new((Color)ColorConverter.ConvertFromString("#F5C46B"));
-    private static readonly SolidColorBrush AmberBorder = new((Color)ColorConverter.ConvertFromString("#4D3A1C"));
-    private static readonly SolidColorBrush AmberBg = new((Color)ColorConverter.ConvertFromString("#2A2112"));
+    private static SolidColorBrush AmberBrush => ThemeBrushes.Warning;
+    private static SolidColorBrush AmberBorder => ThemeBrushes.WarningStroke;
+    private static SolidColorBrush AmberBg => ThemeBrushes.WarningSoft;
 
-    private static readonly SolidColorBrush RedBrush = new((Color)ColorConverter.ConvertFromString("#F87171"));
-    private static readonly SolidColorBrush RedBorder = new((Color)ColorConverter.ConvertFromString("#5A2328"));
-    private static readonly SolidColorBrush RedBg = new((Color)ColorConverter.ConvertFromString("#2A1416"));
+    private static SolidColorBrush RedBrush => ThemeBrushes.Danger;
+    private static SolidColorBrush RedBorder => ThemeBrushes.DangerStroke;
+    private static SolidColorBrush RedBg => ThemeBrushes.DangerSoft;
 
-    private static readonly SolidColorBrush PurpleBrush = new((Color)ColorConverter.ConvertFromString("#DDD0FF"));
-    private static readonly SolidColorBrush PurpleBorder = new((Color)ColorConverter.ConvertFromString("#4A3A7A"));
-    private static readonly SolidColorBrush PurpleBg = new((Color)ColorConverter.ConvertFromString("#1D1731"));
+    private static SolidColorBrush PurpleBrush => ThemeBrushes.AccentText;
+    private static SolidColorBrush PurpleBorder => ThemeBrushes.AccentStroke;
+    private static SolidColorBrush PurpleBg => ThemeBrushes.AccentSoft;
 
     private bool _isSelected;
     private string _stateText = "Estado não consultado";

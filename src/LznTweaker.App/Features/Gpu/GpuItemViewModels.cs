@@ -2,6 +2,8 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LznTweaker.Core.Gpu;
 
+using LznTweaker.Infrastructure;
+
 namespace LznTweaker.Features.Gpu;
 
 /// <summary>Estados exibidos na página. "Aplicado" e "Restaurado" só valem para mudanças feitas pelo próprio app.</summary>
@@ -9,10 +11,10 @@ public enum GpuItemState { Applied, ManualRequired, NotSupported, NotDetected, F
 
 public static class GpuStateText
 {
-    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
-    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
-    private static readonly SolidColorBrush Red = Freeze("#F87171");
-    private static readonly SolidColorBrush Gray = Freeze("#8A8A96");
+    private static SolidColorBrush Green => ThemeBrushes.Success;
+    private static SolidColorBrush Amber => ThemeBrushes.Warning;
+    private static SolidColorBrush Red => ThemeBrushes.Danger;
+    private static SolidColorBrush Gray => ThemeBrushes.Muted;
 
     public static (string Text, Brush Brush) For(GpuItemState state) => state switch
     {
@@ -39,12 +41,6 @@ public static class GpuStateText
         _ => "Manual"
     };
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }
 
 public sealed partial class GpuModeOptionViewModel(GpuOptimizationMode mode, string title, string description, string glyph) : ObservableObject

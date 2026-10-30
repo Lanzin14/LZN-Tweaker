@@ -16,10 +16,10 @@ namespace LznTweaker.Features.Backups;
 
 public sealed partial class HistoryEntryViewModel(TweakOperationResult entry, string area, string? restorePage, bool canRestoreHere) : ObservableObject
 {
-    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
-    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
-    private static readonly SolidColorBrush Red = Freeze("#F87171");
-    private static readonly SolidColorBrush Gray = Freeze("#8A8A96");
+    private static SolidColorBrush Green => ThemeBrushes.Success;
+    private static SolidColorBrush Amber => ThemeBrushes.Warning;
+    private static SolidColorBrush Red => ThemeBrushes.Danger;
+    private static SolidColorBrush Gray => ThemeBrushes.Muted;
 
     public TweakOperationResult Entry { get; } = entry;
     public string When => Entry.StartedAt.LocalDateTime.ToString("g");
@@ -44,12 +44,6 @@ public sealed partial class HistoryEntryViewModel(TweakOperationResult entry, st
         _ => Red
     };
 
-    private static SolidColorBrush Freeze(string color)
-    {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
-        brush.Freeze();
-        return brush;
-    }
 }
 
 /// <summary>
