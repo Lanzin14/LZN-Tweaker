@@ -1,6 +1,5 @@
 using Microsoft.Win32;
 using System.Collections;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -86,7 +85,6 @@ public sealed class SystemInformationService
         if (graphicsNames.Length == 0) warnings.Add("placa de vídeo");
         if (string.IsNullOrWhiteSpace(boardName)) warnings.Add("placa-mãe");
         if (diskRows.Count == 0) warnings.Add("atividade de disco");
-        var processList = ReadTopProcesses();
 
         return new SystemSnapshot(
             string.IsNullOrWhiteSpace(windowsIdentity.Name) ? "Windows (informação indisponível)" : windowsIdentity.Name,
@@ -104,11 +102,9 @@ public sealed class SystemInformationService
             memoryCommitLimit,
             string.Join(" · ", graphicsNames),
             string.IsNullOrWhiteSpace(boardName) ? "Não disponível" : boardName,
-            TimeSpan.FromMilliseconds(Math.Max(0, Environment.TickCount64)),
             cpuUsage,
             diskActivity,
             drives,
-            processList,
             warnings);
     }
 
@@ -362,25 +358,6 @@ public sealed class SystemInformationService
         var status = new MemoryStatusEx { Length = (uint)Marshal.SizeOf<MemoryStatusEx>() };
         success = GlobalMemoryStatusEx(ref status);
         return success ? status : new MemoryStatusEx();
-    }
-
-    private static List<ProcessUsageSnapshot> ReadTopProcesses()
-    {
-        var processes = new List<ProcessUsageSnapshot>();
-        foreach (var process in Process.GetProcesses())
-        {
-            try
-            {
-                processes.Add(new ProcessUsageSnapshot(process.ProcessName, process.WorkingSet64));
-            }
-            catch (Exception) { }
-            finally
-            {
-                process.Dispose();
-            }
-        }
-
-        return processes.OrderByDescending(process => process.WorkingSetBytes).Take(5).ToList();
     }
 
     private static int ParseInt(string? value) => int.TryParse(value, out var result) ? result : 0;

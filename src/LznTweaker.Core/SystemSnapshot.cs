@@ -11,11 +11,6 @@ public sealed record DriveSnapshot(string Name, long TotalBytes, long FreeBytes)
         : $"{bytes / 1_000_000_000d:0} GB";
 }
 
-public sealed record ProcessUsageSnapshot(string Name, long WorkingSetBytes)
-{
-    public string MemoryText => $"{WorkingSetBytes / 1_073_741_824d:0.00} GB";
-}
-
 public sealed record DiskActivitySnapshot(double BusyPercent, long ReadBytesPerSecond, long WriteBytesPerSecond);
 
 public sealed record SystemSnapshot(
@@ -34,21 +29,7 @@ public sealed record SystemSnapshot(
     long? MemoryCommitLimitBytes,
     string GraphicsAdapters,
     string Motherboard,
-    TimeSpan Uptime,
     double CpuUsagePercent,
     DiskActivitySnapshot? DiskActivity,
     IReadOnlyList<DriveSnapshot> Drives,
-    IReadOnlyList<ProcessUsageSnapshot> TopProcesses,
     IReadOnlyList<string> CollectionWarnings);
-
-public sealed record SystemRecommendation(
-    string Titulo,
-    string DescricaoDetalhada,
-    string NivelDeImpacto,
-    bool SeguroParaAplicarAutomaticamente,
-    string Tipo = "Informativo")
-{
-    public string AplicacaoAutomaticaText => SeguroParaAplicarAutomaticamente
-        ? "Pode ser aplicada automaticamente"
-        : "Não é aplicada automaticamente";
-}

@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:LznTweaker.Features.GameProfiles"
-             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI">
+             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
 
@@ -64,8 +64,8 @@
             <Setter Property="Width" Value="20" />
             <Setter Property="Height" Value="20" />
             <Setter Property="CornerRadius" Value="10" />
-            <Setter Property="Background" Value="#251F33" />
-            <Setter Property="BorderBrush" Value="#382E4D" />
+            <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Cursor" Value="Help" />
             <Setter Property="ToolTipService.InitialShowDelay" Value="120" />
@@ -98,7 +98,7 @@
             <Grid Margin="0,0,0,18">
                 <StackPanel>
                     <TextBlock Text="PERFIS DE JOGOS" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" />
-                    <TextBlock Text="Deadlock" FontSize="26" FontWeight="Bold" Margin="0,4,0,0" />
+                    <TextBlock Text="Deadlock" Style="{StaticResource Lzn.Text.Title}" Margin="0,4,0,0" />
                     <TextBlock Text="Substitui o gameinfo.gi do jogo por um perfil do OptimizationLock, guardando o original para o Desfazer."
                                Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap" />
                 </StackPanel>
@@ -124,13 +124,13 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                         <Button Style="{StaticResource SecondaryButtonStyle}" Content="↻ Detectar" Command="{Binding DetectCommand}" Padding="12,8" Margin="0,0,8,0" />
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Content="📁 Escolher pasta" Command="{Binding BrowseCommand}" Padding="12,8" />
+                        <Button Style="{StaticResource SecondaryButtonStyle}" Content="Escolher pasta" Command="{Binding BrowseCommand}" Padding="12,8" />
                     </StackPanel>
                 </Grid>
             </Border>
 
             <!-- Estado atual -->
-            <Border Style="{StaticResource CardStyle}" Background="#161220">
+            <Border Style="{StaticResource CardStyle}" Background="{StaticResource Lzn.Surface}">
                 <StackPanel>
                     <TextBlock Text="Estado da configuração" FontWeight="SemiBold" FontSize="12" />
                     <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
@@ -152,7 +152,7 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" />
-                                        <Border Background="#13261C" BorderBrush="#234837" BorderThickness="1" CornerRadius="4" Padding="6,1" Margin="10,0,0,0"
+                                        <Border Background="{StaticResource Lzn.SuccessSoft}" BorderBrush="{StaticResource Lzn.SuccessStroke}" BorderThickness="1" CornerRadius="4" Padding="6,1" Margin="10,0,0,0"
                                                 VerticalAlignment="Center" Visibility="{Binding IsApplied, Converter={StaticResource BoolToVisibility}}">
                                             <TextBlock Text="APLICADO" FontSize="9" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" />
                                         </Border>
@@ -170,15 +170,15 @@
                                     <Border Style="{StaticResource InfoTipStyle}">
                                         <Border.ToolTip>
                                             <ToolTip Background="Transparent" BorderThickness="0" Padding="0">
-                                                <Border Background="#161220" BorderBrush="#3D3056" BorderThickness="1" CornerRadius="10" Padding="14" MaxWidth="420">
+                                                <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="10" Padding="14" MaxWidth="420">
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6" />
-                                                        <TextBlock Text="{Binding InfoTip}" FontSize="11" Foreground="#C8BFD7" TextWrapping="Wrap" LineHeight="16" />
+                                                        <TextBlock Text="{Binding InfoTip}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
                                                     </StackPanel>
                                                 </Border>
                                             </ToolTip>
                                         </Border.ToolTip>
-                                        <TextBlock Text="?" FontSize="11" FontWeight="Bold" Foreground="#BFAEDF" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <TextBlock Text="?" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                 </StackPanel>
                             </Grid>
@@ -188,7 +188,7 @@
             </ItemsControl>
 
             <!-- Avisos -->
-            <Border Style="{StaticResource CardStyle}" Background="#1F192D" BorderBrush="#362A50" Margin="0,4,0,14">
+            <Border Style="{StaticResource CardStyle}" Background="{StaticResource Lzn.SurfaceHover}" BorderBrush="{StaticResource Lzn.AccentStroke}" Margin="0,4,0,14">
                 <StackPanel>
                     <TextBlock Text="Antes de aplicar" FontWeight="SemiBold" FontSize="12" Foreground="{StaticResource AccentTextBrush}" />
                     <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" LineHeight="17" Margin="0,6,0,0">
@@ -209,7 +209,7 @@
                 <Button Style="{StaticResource LinkButtonStyle}" Content="Projeto OptimizationLock ↗" VerticalAlignment="Center" HorizontalAlignment="Left"
                         Command="{Binding OpenSourceCommand}" />
                 <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}" Content="↺ Desfazer" Command="{Binding UndoCommand}" Padding="16,10" Margin="0,0,9,0" />
-                <Button Grid.Column="2" Style="{StaticResource PrimaryButtonStyle}" Content="⚡ Aplicar perfil selecionado" Command="{Binding ApplyCommand}" Padding="18,10" />
+                <Button Grid.Column="2" Style="{StaticResource PrimaryButtonStyle}" Content="Aplicar perfil selecionado" Command="{Binding ApplyCommand}" Padding="18,10" />
             </Grid>
         </StackPanel>
     </ScrollViewer>

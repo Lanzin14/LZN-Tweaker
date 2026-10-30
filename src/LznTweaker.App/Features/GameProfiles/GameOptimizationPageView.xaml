@@ -2,7 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:LznTweaker.Features.GameProfiles"
-             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI">
+             xmlns:core="clr-namespace:LznTweaker.Core.GameOptimization;assembly=LznTweaker.Core"
+             xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
+             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <Style x:Key="CardStyle" TargetType="Border">
@@ -20,8 +22,8 @@
             <Setter Property="Margin" Value="2,14,0,8" />
         </Style>
         <Style x:Key="Chip" TargetType="Border">
-            <Setter Property="Background" Value="#1D1A26" />
-            <Setter Property="BorderBrush" Value="#302B3D" />
+            <Setter Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Padding" Value="6,2" />
@@ -31,9 +33,116 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="4,0,12,24">
-            <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="Bold" />
+            <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" />
             <TextBlock Text="{Binding Description}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
             <TextBlock Text="{Binding DetectionText}" Foreground="{StaticResource AccentTextBrush}" FontSize="11" Margin="0,5,0,0" TextWrapping="Wrap" />
+
+            <!-- Configurações recomendadas (CS2): instruções manuais, nada é aplicado pelo app -->
+            <StackPanel Visibility="{Binding HasRecommendations, Converter={StaticResource BoolToVisibility}}" Margin="0,18,0,4">
+                <Grid>
+                    <TextBlock Text="Configurações recomendadas" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
+                    <Border Style="{StaticResource Lzn.Badge.Warn}" HorizontalAlignment="Right">
+                        <TextBlock Text="Instruções manuais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" />
+                    </Border>
+                </Grid>
+                <TextBlock Text="Siga os passos na ordem. O LZN Tweaker não aplica nem verifica estes ajustes." Style="{StaticResource Lzn.Text.Caption}" Margin="0,3,0,0" />
+
+                <!-- 1. Gerenciador de Tarefas -->
+                <Border Style="{StaticResource Lzn.Panel}" Margin="0,12,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
+                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="Gerenciador de Tarefas" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding TaskManagerSteps}" Focusable="False" Margin="32,4,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:ProcedureView}">
+                                    <StackPanel Margin="0,10,0,0">
+                                        <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" Margin="0,0,0,4" />
+                                        <ItemsControl ItemsSource="{Binding Steps}" Focusable="False">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type local:NumberedStep}">
+                                                    <Grid Margin="0,2">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="22" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding Number, StringFormat={}{0}.}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
+                                                        <TextBlock Grid.Column="1" Text="{Binding Text}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <Grid Margin="0,8,0,0" Visibility="{Binding Warning, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="22" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="&#xE7BA;" Style="{StaticResource Lzn.Icon}" FontSize="12" Foreground="{StaticResource Lzn.RiskWarn}" VerticalAlignment="Top" Margin="0,1,0,0" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Warning}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" LineHeight="16" />
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Vídeo e desempenho -->
+                <Border Style="{StaticResource Lzn.Panel}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
+                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="Vídeo e desempenho" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="32,4,0,6">
+                            <Run Text="Onde: " /><Run Text="{Binding VideoMenuPath, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        </TextBlock>
+                        <ItemsControl ItemsSource="{Binding VideoSettings}" Focusable="False" Margin="32,0,0,0" Grid.IsSharedSizeScope="True">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type core:InGameSetting}">
+                                    <Grid Margin="0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Cs2Name" MinWidth="210" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Cs2Value" MinWidth="150" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Margin="0,0,14,0" VerticalAlignment="Top" />
+                                        <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,14,0">
+                                            <TextBlock Text="{Binding Value}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
+                                        </Border>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding Dependency}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0"
+                                                       Visibility="{Binding Dependency, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. Avisos e compatibilidade -->
+                <ItemsControl ItemsSource="{Binding RecommendationNotes}" Focusable="False" Margin="4,10,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="18" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Info}" VerticalAlignment="Top" Margin="0,1,0,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
             <!-- Ações automáticas -->
             <StackPanel Visibility="{Binding HasActions, Converter={StaticResource BoolToVisibility}}">
@@ -53,10 +162,10 @@
                                         <TextBlock Text="{Binding Description}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" TextWrapping="Wrap" />
                                         <TextBlock Text="{Binding State}" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" TextWrapping="Wrap" />
                                         <WrapPanel>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Risk, StringFormat=Risco: {0}}" FontSize="10" Foreground="#E0BF80" /></Border>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding GamesAffected, StringFormat=Afeta: {0}}" FontSize="10" Foreground="#C9B9F2" /></Border>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Prerequisites, StringFormat=Requisitos: {0}}" FontSize="10" Foreground="#91BFB0" TextWrapping="Wrap" /></Border>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Reversibility}" FontSize="10" Foreground="#D9B17B" TextWrapping="Wrap" /></Border>
+                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Risk, StringFormat=Risco: {0}}" FontSize="10" Foreground="{StaticResource Lzn.RiskWarn}" /></Border>
+                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding GamesAffected, StringFormat=Afeta: {0}}" FontSize="10" Foreground="{StaticResource Lzn.AccentText}" /></Border>
+                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Prerequisites, StringFormat=Requisitos: {0}}" FontSize="10" Foreground="{StaticResource Lzn.RiskLow}" TextWrapping="Wrap" /></Border>
+                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Reversibility}" FontSize="10" Foreground="{StaticResource Lzn.RiskWarn}" TextWrapping="Wrap" /></Border>
                                         </WrapPanel>
                                         <TextBlock Text="{Binding ResultText}" Foreground="{Binding ResultBrush}" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap" />
                                     </StackPanel>
@@ -77,7 +186,7 @@
                 <ItemsControl ItemsSource="{Binding Backups}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:BackupItemViewModel}">
-                            <Border Style="{StaticResource CardStyle}" Background="#161220">
+                            <Border Style="{StaticResource CardStyle}" Background="{StaticResource Lzn.Surface}">
                                 <Grid>
                                     <StackPanel Margin="0,0,120,0">
                                         <TextBlock Text="{Binding Label}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" />
@@ -123,7 +232,7 @@
             <ItemsControl ItemsSource="{Binding Guidance}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type local:GuidanceItemViewModel}">
-                        <Border Style="{StaticResource CardStyle}" Background="#161220">
+                        <Border Style="{StaticResource CardStyle}" Background="{StaticResource Lzn.Surface}">
                             <Expander Foreground="{StaticResource TextPrimaryBrush}">
                                 <Expander.Header>
                                     <StackPanel>
@@ -135,7 +244,7 @@
                                     <ItemsControl ItemsSource="{Binding Steps}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding StringFormat=• {0}}" FontSize="11" Foreground="#C8BFD7" TextWrapping="Wrap" Margin="0,2" />
+                                                <TextBlock Text="{Binding StringFormat=• {0}}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,2" />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>

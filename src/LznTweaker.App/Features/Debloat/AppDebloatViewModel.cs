@@ -12,9 +12,9 @@ namespace LznTweaker.Features.Debloat;
 
 public sealed class AppxItemViewModel(AppxPackageInfo package)
 {
-    private static readonly SolidColorBrush Green = Freeze("#7ED9B2");
-    private static readonly SolidColorBrush Amber = Freeze("#E0BF80");
-    private static readonly SolidColorBrush Purple = Freeze("#C9B9F2");
+    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
+    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
+    private static readonly SolidColorBrush Purple = Freeze("#DDD0FF");
 
     public AppxPackageInfo Package { get; } = package;
     public string FriendlyName => Package.FriendlyName;

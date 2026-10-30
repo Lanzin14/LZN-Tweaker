@@ -9,9 +9,9 @@ namespace LznTweaker.Features.GameProfiles;
 
 public sealed partial class DeadlockProfileOption(GameConfigProfile profile) : ObservableObject
 {
-    private static readonly SolidColorBrush Green = Freeze("#7ED9B2");
-    private static readonly SolidColorBrush Amber = Freeze("#E0BF80");
-    private static readonly SolidColorBrush Red = Freeze("#F28B82");
+    private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
+    private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
+    private static readonly SolidColorBrush Red = Freeze("#F87171");
 
     [ObservableProperty]
     private bool _isSelected;

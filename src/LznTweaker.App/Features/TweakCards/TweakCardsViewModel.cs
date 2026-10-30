@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Maintenance;
 using LznTweaker.Core.Tweaks;
 using LznTweaker.Infrastructure;
+using LznTweaker.Shell;
 
 namespace LznTweaker.Features.TweakCards;
 
@@ -37,11 +38,11 @@ public partial class TweakCardsViewModel : ObservableObject
     {
         _services = services;
         Title = page.Title;
-        Description = page.Description;
+        Guide = page.Guide;
         var recommended = TweakPresetCatalog.GetSelection(TweakPreset.Standard);
         foreach (var tab in page.Tabs)
         {
-            Tabs.Add(new CardTabViewModel(tab.Key, tab.Title, tab.Glyph));
+            Tabs.Add(new CardTabViewModel(tab.Key, tab.Title, tab.Glyph, tab.Description));
             foreach (var id in tab.TweakIds)
             {
                 var definition = TweakCatalog.GetById(id);
@@ -55,8 +56,11 @@ public partial class TweakCardsViewModel : ObservableObject
         foreach (var tab in Tabs)
             tab.PropertyChanged += (sender, e) =>
             {
-                if (e.PropertyName == nameof(CardTabViewModel.IsSelected) && sender is CardTabViewModel { IsSelected: true })
+                if (e.PropertyName == nameof(CardTabViewModel.IsSelected) && sender is CardTabViewModel { IsSelected: true } selected)
+                {
+                    SelectedTabDescription = selected.Description;
                     RefreshView();
+                }
             };
         Tabs[0].IsSelected = true;
 
@@ -66,7 +70,10 @@ public partial class TweakCardsViewModel : ObservableObject
     }
 
     public string Title { get; }
-    public string Description { get; }
+    public CategoryGuide Guide { get; }
+
+    [ObservableProperty]
+    private string _selectedTabDescription = "";
     public ObservableCollection<CardTabViewModel> Tabs { get; } = [];
     public ObservableCollection<CardViewModel> Cards { get; } = [];
     public ICollectionView CardsView { get; }

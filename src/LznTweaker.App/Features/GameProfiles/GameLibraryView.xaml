@@ -1,8 +1,11 @@
 <UserControl x:Class="LznTweaker.Features.GameProfiles.GameLibraryView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:LznTweaker.Controls"
+             xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.GameProfiles"
-             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI">
+             xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
+             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
 
@@ -13,21 +16,24 @@
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ListBoxItem">
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        <Setter Property="Margin" Value="0,0,0,4" />
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
+                        <Setter Property="Margin" Value="0,0,0,8" />
+                        <Setter Property="Cursor" Value="Hand" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
-                                    <Border x:Name="Row" CornerRadius="9" Padding="11,9" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
+                                    <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="10,9" BorderThickness="1"
+                                            Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.StrokeSubtle}">
                                         <ContentPresenter />
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="#1F192C" />
+                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource AccentSoftBrush}" />
-                                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource AccentStrokeBrush}" />
+                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
+                                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -37,6 +43,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Logotipo do Windows desenhado em vetor (quatro painéis), na cor do texto atual. -->
+        <Geometry x:Key="WindowsLogo">M0,0 H7.4 V7.4 H0 Z M8.6,0 H16 V7.4 H8.6 Z M0,8.6 H7.4 V16 H0 Z M8.6,8.6 H16 V16 H8.6 Z</Geometry>
 
         <Style x:Key="TabStyle" TargetType="TabItem">
             <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
@@ -65,7 +74,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="230" />
+            <ColumnDefinition Width="268" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -73,7 +82,8 @@
         <Grid Grid.ColumnSpan="2" Margin="0,0,0,14">
             <StackPanel Margin="0,0,140,0">
                 <TextBlock Text="OTIMIZAÇÃO POR JOGO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" />
-                <TextBlock Text="Biblioteca de jogos" FontSize="26" FontWeight="Bold" Margin="0,4,0,0" />
+                <TextBlock Text="Biblioteca de jogos" Style="{StaticResource Lzn.Text.Title}" Margin="0,4,0,0" />
+                <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Games}" Margin="0,6,0,0" />
                 <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap" />
             </StackPanel>
             <Button HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource SecondaryButtonStyle}" Content="↻ Atualizar"
@@ -84,13 +94,59 @@
         <ListBox Grid.Row="1" Style="{StaticResource SectionListStyle}" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:LibrarySection}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Glyph}" FontSize="15" Width="26" VerticalAlignment="Center" Foreground="{StaticResource AccentHoverBrush}" />
-                        <StackPanel>
-                            <TextBlock Text="{Binding Title}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap" />
-                            <TextBlock Text="{Binding Subtitle}" FontSize="10" Foreground="{StaticResource TextMutedBrush}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Ícone: arte local do jogo, logotipo do Windows, monograma ou glifo -->
+                        <Grid Width="36" Height="36" VerticalAlignment="Center">
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding Icon}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" />
+                                </Border.Background>
+                            </Border>
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
+                                    Visibility="{Binding ShowsWindowsLogo, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <Path Data="{StaticResource WindowsLogo}" Fill="{StaticResource Lzn.Info}" Width="16" Height="16" Stretch="Uniform" />
+                            </Border>
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}"
+                                    Visibility="{Binding ShowsMonogram, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <TextBlock Text="{Binding Monogram}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
+                                    Visibility="{Binding ShowsGlyph, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                            </Border>
+                        </Grid>
+                        <StackPanel Grid.Column="1" Margin="10,0,8,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Lzn.Text.Caption}"
+                                       Visibility="{Binding Subtitle, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                         </StackPanel>
-                    </StackPanel>
+                        <!-- Plataformas compatíveis, lado a lado e com o mesmo tamanho -->
+                        <ItemsControl Grid.Column="2" ItemsSource="{Binding Platforms}" VerticalAlignment="Center" Focusable="False">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:PlatformBadge}">
+                                    <Grid Width="18" Height="18" Margin="4,0,0,0" ToolTip="{Binding Name}" Background="Transparent" AutomationProperties.Name="{Binding Name}">
+                                        <Image Source="{Binding Icon}" Width="16" Height="16" RenderOptions.BitmapScalingMode="HighQuality"
+                                               Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+                                        <Path Data="{StaticResource WindowsLogo}" Fill="{StaticResource Lzn.TextSecondary}" Width="13" Height="13" Stretch="Uniform"
+                                              Visibility="{Binding IsWindows, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+                                        <Border CornerRadius="4" Background="{StaticResource Lzn.SurfaceActive}"
+                                                Visibility="{Binding ShowsInitial, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                            <TextBlock Text="{Binding Initial}" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

@@ -14,7 +14,7 @@ internal static class CardBrushes
     public static readonly SolidColorBrush High = Freeze("#F87171");
     public static readonly SolidColorBrush Active = Freeze("#A78BFA");
     public static readonly SolidColorBrush Pending = Freeze("#F5C46B");
-    public static readonly SolidColorBrush Muted = Freeze("#74747F");
+    public static readonly SolidColorBrush Muted = Freeze("#8A8A96");
 
     private static SolidColorBrush Freeze(string color)
     {
@@ -236,11 +236,13 @@ public sealed partial class QuickActionCardViewModel(QuickActionDefinition defin
     public override bool IsVerifiable => false;
 }
 
-public sealed partial class CardTabViewModel(string key, string title, string glyph) : ObservableObject
+public sealed partial class CardTabViewModel(string key, string title, string glyph, string description = "") : ObservableObject
 {
     public string Key { get; } = key;
     public string Title { get; } = title;
     public string Glyph { get; } = glyph;
+    /// <summary>Frase curta sobre o conteúdo da aba; vazia quando a página já explica.</summary>
+    public string Description { get; } = description;
 
     [ObservableProperty]
     private bool _isSelected;

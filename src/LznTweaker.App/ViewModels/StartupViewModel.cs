@@ -9,14 +9,14 @@ namespace LznTweaker.ViewModels;
 
 public sealed class StartupItemViewModel : INotifyPropertyChanged
 {
-    private static readonly SolidColorBrush GreenBrush = new((Color)ColorConverter.ConvertFromString("#7ED9B2"));
-    private static readonly SolidColorBrush AmberBrush = new((Color)ColorConverter.ConvertFromString("#E0BF80"));
-    private static readonly SolidColorBrush RedBrush = new((Color)ColorConverter.ConvertFromString("#F28B82"));
-    private static readonly SolidColorBrush GrayBrush = new((Color)ColorConverter.ConvertFromString("#827A91"));
+    private static readonly SolidColorBrush GreenBrush = new((Color)ColorConverter.ConvertFromString("#6EE7B7"));
+    private static readonly SolidColorBrush AmberBrush = new((Color)ColorConverter.ConvertFromString("#F5C46B"));
+    private static readonly SolidColorBrush RedBrush = new((Color)ColorConverter.ConvertFromString("#F87171"));
+    private static readonly SolidColorBrush GrayBrush = new((Color)ColorConverter.ConvertFromString("#8A8A96"));
 
-    private static readonly SolidColorBrush GreenBg = new((Color)ColorConverter.ConvertFromString("#13261C"));
-    private static readonly SolidColorBrush AmberBg = new((Color)ColorConverter.ConvertFromString("#292012"));
-    private static readonly SolidColorBrush RedBg = new((Color)ColorConverter.ConvertFromString("#2D1418"));
+    private static readonly SolidColorBrush GreenBg = new((Color)ColorConverter.ConvertFromString("#10251C"));
+    private static readonly SolidColorBrush AmberBg = new((Color)ColorConverter.ConvertFromString("#2A2112"));
+    private static readonly SolidColorBrush RedBg = new((Color)ColorConverter.ConvertFromString("#2A1416"));
 
     private readonly StartupManagerService _service;
     private bool _isEnabled;

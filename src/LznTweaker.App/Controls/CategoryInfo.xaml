@@ -1,0 +1,48 @@
+<UserControl x:Class="LznTweaker.Controls.CategoryInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:LznTweaker.Controls"
+             xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
+             x:Name="Root" Focusable="False">
+    <!-- Descrição curta da página e "Saiba mais" com o que permite fazer, benefício esperado e cuidados. -->
+    <StackPanel DataContext="{Binding Guide, ElementName=Root}">
+        <TextBlock Text="{Binding Summary}" Style="{StaticResource Lzn.Text.Body}" />
+        <ToggleButton x:Name="MoreToggle" HorizontalAlignment="Left" Margin="0,6,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
+                      AutomationProperties.Name="Saiba mais sobre esta página">
+            <ToggleButton.Template>
+                <ControlTemplate TargetType="ToggleButton">
+                    <StackPanel Orientation="Horizontal" Background="Transparent">
+                        <TextBlock x:Name="Label" Text="Saiba mais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" />
+                        <TextBlock x:Name="Chevron" Text="&#xE70D;" Style="{StaticResource Lzn.Icon}" FontSize="9" Foreground="{StaticResource Lzn.AccentHover}" Margin="5,1,0,0" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Label" Property="Text" Value="Mostrar menos" />
+                            <Setter TargetName="Chevron" Property="Text" Value="&#xE70E;" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Label" Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ToggleButton.Template>
+        </ToggleButton>
+        <Border Margin="0,8,0,0" Padding="14,10,14,12" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceSunken}"
+                Visibility="{Binding IsChecked, ElementName=MoreToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+            <controls:AdaptiveGridPanel MinItemWidth="220" MaxColumns="3" Spacing="18">
+                <StackPanel>
+                    <TextBlock Text="O que permite fazer" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,3" />
+                    <TextBlock Text="{Binding WhatYouCanDo}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Benefício esperado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,3" />
+                    <TextBlock Text="{Binding Benefit}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
+                </StackPanel>
+                <StackPanel Visibility="{Binding Care, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                    <TextBlock Text="Cuidados" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,3" />
+                    <TextBlock Text="{Binding Care}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
+                </StackPanel>
+            </controls:AdaptiveGridPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

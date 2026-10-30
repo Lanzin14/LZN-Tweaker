@@ -3,170 +3,77 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:LznTweaker.Features.Home"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="Segoe UI">
+             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
-        <Style x:Key="Panel" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="Padding" Value="16" />
-        </Style>
-        <Style x:Key="Label" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+        <!-- Parágrafo de apresentação: corpo maior e entrelinha ~1,6 para leitura confortável. -->
+        <Style x:Key="Lead" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Text.Body}">
+            <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Subtitle}" />
+            <Setter Property="LineHeight" Value="25" />
+            <Setter Property="Margin" Value="0,0,0,16" />
         </Style>
     </UserControl.Resources>
 
+    <!-- Apresentação em coluna única: título, texto, princípios e uma ação. Informações de hardware ficam na página Hardware. -->
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="28,22,28,28">
-            <!-- Cabeçalho -->
-            <Grid Margin="0,0,0,18">
-                <StackPanel Margin="0,0,220,0">
-                    <TextBlock Text="Home" FontSize="26" FontWeight="Bold" />
-                    <TextBlock Text="Resumo do sistema, estado dos ajustes principais e atalhos. Somente leitura." FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,4,0,0" />
-                    <TextBlock Text="{Binding Dashboard.StatusMessage}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,6,0,0" />
+        <StackPanel Margin="56,56,56,40" MaxWidth="760" HorizontalAlignment="Left">
+            <TextBlock Text="LZN Tweaker" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,0,14" />
+            <TextBlock Text="Mais desempenho. Mais controle. Mais jogo." Style="{StaticResource Lzn.Text.Display}" Margin="0,0,0,28" />
+
+            <!-- Largura limitada (~70 caracteres por linha). -->
+            <StackPanel MaxWidth="660" HorizontalAlignment="Left">
+                <TextBlock Style="{StaticResource Lead}" Foreground="{StaticResource Lzn.Text}"
+                           Text="O LZN Tweaker reúne ferramentas e ajustes para ajudar você a otimizar o Windows e configurar seu PC para jogar." />
+                <TextBlock Style="{StaticResource Lead}"
+                           Text="Desenvolvido com foco em jogadores competitivos, o aplicativo prioriza desempenho, praticidade e transparência, com explicações claras sobre cada ajuste e seus possíveis efeitos." />
+                <TextBlock Style="{StaticResource Lead}"
+                           Text="A proposta não é prometer milagres ou FPS garantido, mas oferecer ferramentas úteis para você ter mais controle sobre o seu sistema." />
+                <TextBlock FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{StaticResource Lzn.AccentText}">
+                    <Run Text="LZN Tweaker" /><Run Text=" — otimize seu PC. Foque no jogo." Foreground="{StaticResource Lzn.TextSecondary}" FontWeight="Normal" />
+                </TextBlock>
+            </StackPanel>
+
+            <Button Style="{StaticResource Lzn.PrimaryButton}" HorizontalAlignment="Left" Margin="0,32,0,0"
+                    Command="{Binding NavigateCommand}" CommandParameter="general">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Conhecer os ajustes" FontSize="{StaticResource Lzn.FontSize.Body}" />
+                    <TextBlock Text="&#xE72A;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="10,0,0,0" />
                 </StackPanel>
-                <Button HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE72C;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
-                        <TextBlock Text="Atualizar" FontSize="12" />
-                    </StackPanel>
-                </Button>
-            </Grid>
+            </Button>
 
-            <!-- Hardware e Windows -->
-            <controls:AdaptiveGridPanel MinItemWidth="220" MaxColumns="4" Spacing="12" Margin="0,0,0,12">
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel><TextBlock Text="WINDOWS" Style="{StaticResource Label}" /><TextBlock Text="{Binding Dashboard.OperatingSystemName}" FontSize="15" FontWeight="SemiBold" Margin="0,10,0,4" TextWrapping="Wrap" /><TextBlock Text="{Binding Dashboard.OperatingSystemDetail}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" /></StackPanel>
-                </Border>
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel><TextBlock Text="PROCESSADOR" Style="{StaticResource Label}" /><TextBlock Text="{Binding Dashboard.ProcessorSummary}" FontSize="15" FontWeight="SemiBold" Margin="0,10,0,4" /><TextBlock Text="{Binding Dashboard.ProcessorDetail}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" /></StackPanel>
-                </Border>
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel><TextBlock Text="MEMÓRIA RAM" Style="{StaticResource Label}" /><TextBlock Text="{Binding Dashboard.MemorySummary}" FontSize="15" FontWeight="SemiBold" Margin="0,10,0,4" /><TextBlock Text="{Binding Dashboard.MemoryDetail}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" /></StackPanel>
-                </Border>
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel><TextBlock Text="ARMAZENAMENTO" Style="{StaticResource Label}" /><TextBlock Text="{Binding Dashboard.StorageSummary}" FontSize="15" FontWeight="SemiBold" Margin="0,10,0,4" /><TextBlock Text="{Binding Dashboard.StorageDetail}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" /></StackPanel>
-                </Border>
-            </controls:AdaptiveGridPanel>
-
-            <controls:AdaptiveGridPanel MinItemWidth="340" MaxColumns="2" Spacing="12" Margin="0,0,0,12">
-                <!-- Uso atual -->
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel>
-                        <TextBlock Text="USO ATUAL" Style="{StaticResource Label}" Margin="0,0,0,12" />
-                        <Grid Margin="0,4"><Grid.ColumnDefinitions><ColumnDefinition Width="110" /><ColumnDefinition Width="*" /><ColumnDefinition Width="44" /></Grid.ColumnDefinitions>
-                            <TextBlock Text="CPU" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="12" /><ProgressBar Grid.Column="1" Value="{Binding Dashboard.CpuUsage, Mode=OneWay}" Height="5" Background="#24242C" Foreground="{StaticResource Lzn.Accent}" BorderThickness="0" VerticalAlignment="Center" /><TextBlock Grid.Column="2" Text="{Binding Dashboard.CpuUsageText}" HorizontalAlignment="Right" FontSize="12" /></Grid>
-                        <Grid Margin="0,10,0,4"><Grid.ColumnDefinitions><ColumnDefinition Width="110" /><ColumnDefinition Width="*" /><ColumnDefinition Width="44" /></Grid.ColumnDefinitions>
-                            <TextBlock Text="Memória" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="12" /><ProgressBar Grid.Column="1" Value="{Binding Dashboard.MemoryUsage, Mode=OneWay}" Height="5" Background="#24242C" Foreground="{StaticResource Lzn.AccentHover}" BorderThickness="0" VerticalAlignment="Center" /><TextBlock Grid.Column="2" Text="{Binding Dashboard.MemoryUsageText}" HorizontalAlignment="Right" FontSize="12" /></Grid>
-                        <Grid Margin="0,10,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="110" /><ColumnDefinition Width="*" /><ColumnDefinition Width="44" /></Grid.ColumnDefinitions>
-                            <TextBlock Text="Disco do sistema" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="12" /><ProgressBar Grid.Column="1" Value="{Binding Dashboard.SystemDriveUsage, Mode=OneWay}" Height="5" Background="#24242C" Foreground="#7C3AED" BorderThickness="0" VerticalAlignment="Center" /><TextBlock Grid.Column="2" Text="{Binding Dashboard.SystemDriveUsageText}" HorizontalAlignment="Right" FontSize="12" /></Grid>
-                        <TextBlock Text="{Binding Dashboard.GraphicsSummary}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,14,0,0" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding Dashboard.UptimeSummary}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,4,0,0" />
-                    </StackPanel>
-                </Border>
-                <!-- Ajustes principais -->
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel>
-                        <Grid Margin="0,0,0,8">
-                            <TextBlock Text="AJUSTES PRINCIPAIS" Style="{StaticResource Label}" />
-                            <Button HorizontalAlignment="Right" Style="{StaticResource Lzn.ToolbarButton}" Content="Abrir General" FontSize="11" Command="{Binding NavigateCommand}" CommandParameter="general" />
-                        </Grid>
-                        <ItemsControl ItemsSource="{Binding KeyTweaks}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type local:KeyTweakState}">
-                                    <Grid Margin="0,5">
-                                        <TextBlock Text="{Binding Title}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextTrimming="CharacterEllipsis" Margin="0,0,90,0" />
-                                        <TextBlock Text="{Binding State}" FontSize="11" FontWeight="SemiBold" Foreground="{Binding Brush}" HorizontalAlignment="Right" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
-            </controls:AdaptiveGridPanel>
-
-            <!-- Atalhos -->
-            <TextBlock Text="ATALHOS" Style="{StaticResource Label}" Margin="2,6,0,10" />
-            <ItemsControl ItemsSource="{Binding Shortcuts}" Margin="0,0,0,12">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate><controls:AdaptiveGridPanel MinItemWidth="200" MaxColumns="3" Spacing="12" /></ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:HomeShortcut}">
-                        <Button Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding PageKey}" Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="Card" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="1" CornerRadius="12" Padding="14,12">
-                                        <ContentPresenter />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Card" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
-                                            <Setter TargetName="Card" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                                        </Trigger>
-                                        <Trigger Property="IsKeyboardFocused" Value="True">
-                                            <Setter TargetName="Card" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="18" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,12,0" />
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" />
-                                    <TextBlock Text="{Binding Description}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
-                                </StackPanel>
+            <!-- Confiança e transparência: uma faixa discreta com três princípios, sem cards individuais. -->
+            <Border Style="{StaticResource Lzn.Panel}" Margin="0,48,0,0" Padding="24,22">
+                <ItemsControl ItemsSource="{Binding Principles}" Focusable="False">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><controls:AdaptiveGridPanel MinItemWidth="200" MaxColumns="3" Spacing="28" /></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:HomePrinciple}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="18" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Left" Margin="0,0,0,12" />
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Subtitle}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
                             </StackPanel>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
 
-            <!-- Recomendações e unidades -->
-            <controls:AdaptiveGridPanel MinItemWidth="340" MaxColumns="2" Spacing="12">
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel>
-                        <TextBlock Text="RECOMENDAÇÕES" Style="{StaticResource Label}" Margin="0,0,0,10" />
-                        <ItemsControl ItemsSource="{Binding Dashboard.Recommendations}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{StaticResource Lzn.SurfaceRaised}" CornerRadius="8" Padding="12" Margin="0,0,0,8">
-                                        <StackPanel>
-                                            <Grid><TextBlock Text="{Binding Titulo}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,70,0" /><TextBlock Text="{Binding NivelDeImpacto}" FontSize="10" Foreground="{StaticResource Lzn.RiskWarn}" HorizontalAlignment="Right" /></Grid>
-                                            <TextBlock Text="{Binding DescricaoDetalhada}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0" LineHeight="16" />
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Panel}">
-                    <StackPanel>
-                        <TextBlock Text="UNIDADES" Style="{StaticResource Label}" Margin="0,0,0,6" />
-                        <ItemsControl ItemsSource="{Binding Dashboard.Drives}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,6,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="50" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" /><TextBlock Grid.Column="1" Text="{Binding TotalText}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" /><TextBlock Grid.Column="2" Text="{Binding FreeText}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" /></Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <TextBlock Text="PROCESSOS COM MAIS RAM" Style="{StaticResource Label}" Margin="0,16,0,6" />
-                        <ItemsControl ItemsSource="{Binding Dashboard.TopProcesses}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,5,0,0"><TextBlock Text="{Binding Name}" FontSize="12" TextTrimming="CharacterEllipsis" Margin="0,0,70,0" /><TextBlock Text="{Binding MemoryText}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Right" /></Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
-            </controls:AdaptiveGridPanel>
-            <TextBlock Text="{Binding Dashboard.LastUpdated}" HorizontalAlignment="Center" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,18,0,0" />
+            <!-- Sobre: logo, nome e versão lida do assembly. Links oficiais entram aqui quando existirem. -->
+            <Grid Margin="0,32,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Source="pack://application:,,,/LznTweaker;component/Assets/Brand/lzn-logo-mark.png" Height="34" Stretch="Uniform" VerticalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="Logo do LZN Tweaker" />
+                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="Sobre o LZN Tweaker" Style="{StaticResource Lzn.Text.Overline}" />
+                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,3,0,0">
+                        <Run Text="Versão " /><Run Text="{Binding AppVersion, Mode=OneWay}" /><Run Text=" · para Windows 10 e 11" />
+                    </TextBlock>
+                    <TextBlock Text="Site e canais oficiais ainda não foram publicados." Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

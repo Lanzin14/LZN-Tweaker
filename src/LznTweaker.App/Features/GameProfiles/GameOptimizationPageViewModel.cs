@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -11,11 +11,11 @@ namespace LznTweaker.Features.GameProfiles;
 
 internal static class StatusBrushes
 {
-    public static readonly SolidColorBrush Green = Freeze("#7ED9B2");
-    public static readonly SolidColorBrush Amber = Freeze("#E0BF80");
-    public static readonly SolidColorBrush Red = Freeze("#F28B82");
-    public static readonly SolidColorBrush Purple = Freeze("#C9B9F2");
-    public static readonly SolidColorBrush Gray = Freeze("#827A91");
+    public static readonly SolidColorBrush Green = Freeze("#6EE7B7");
+    public static readonly SolidColorBrush Amber = Freeze("#F5C46B");
+    public static readonly SolidColorBrush Red = Freeze("#F87171");
+    public static readonly SolidColorBrush Purple = Freeze("#DDD0FF");
+    public static readonly SolidColorBrush Gray = Freeze("#8A8A96");
 
     private static SolidColorBrush Freeze(string color)
     {
@@ -25,7 +25,7 @@ internal static class StatusBrushes
     }
 }
 
-/// <summary>Ação automatizável: limpeza de um cache de shaders ou redefinição de uma pasta da Steam.</summary>
+/// <summary>Ação automatizável: limpeza de um cache de shaders ou backup e recriação do cache de shaders de um jogo na Steam.</summary>
 public sealed partial class OptimizationActionViewModel : ObservableObject
 {
     [ObservableProperty]
@@ -57,7 +57,6 @@ public sealed partial class OptimizationActionViewModel : ObservableObject
     public string State { get; }
     public ShaderCacheLocation? ShaderCache { get; private init; }
     public SteamFolderTarget? SteamFolder { get; private init; }
-    public bool IsDestructiveForUserData => SteamFolder?.Kind == SteamFolderKind.UserConfig;
 
     public static OptimizationActionViewModel ForShaderCache(ShaderCacheLocation location) => new(
         $"Limpar {location.Label}",
@@ -67,19 +66,12 @@ public sealed partial class OptimizationActionViewModel : ObservableObject
         $"{ShaderCacheService.FormatBytes(location.Bytes)} em {location.Files:N0} arquivo(s) · {location.Vendor}")
     { ShaderCache = location };
 
-    public static OptimizationActionViewModel ForSteamFolder(SteamFolderTarget target) => target.Kind == SteamFolderKind.UserConfig
-        ? new($"Redefinir {target.Label}",
-            "Renomeia userdata\\…\\730 para um backup e deixa o CS2 recriar as configurações padrão. Você PERDE binds e ajustes pessoais até restaurar o backup.",
-            "Médio", "Steam e CS2 fechados. Siga a orientação da Steam Cloud antes de abrir o jogo.", target.Game.Name,
-            "Reversível: \"Restaurar\" devolve a pasta original (a recriada é guardada ao lado).",
-            $"{ShaderCacheService.FormatBytes(target.Bytes)} em {target.Files:N0} arquivo(s) · {target.FolderPath}")
-        { SteamFolder = target }
-        : new($"Redefinir {target.Label}",
-            $"Renomeia steamapps\\shadercache\\{target.Game.SteamAppId} para um backup; a Steam e o jogo recriam o cache.",
-            "Baixo", "Steam e o jogo fechados.", target.Game.Name,
-            "Reversível: \"Restaurar\" devolve a pasta original.",
-            $"{ShaderCacheService.FormatBytes(target.Bytes)} em {target.Files:N0} arquivo(s) · {target.FolderPath}")
-        { SteamFolder = target };
+    public static OptimizationActionViewModel ForSteamFolder(SteamFolderTarget target) => new($"Redefinir {target.Label}",
+        $"Renomeia steamapps\\shadercache\\{target.Game.SteamAppId} para um backup; a Steam e o jogo recriam o cache.",
+        "Baixo", "Steam e o jogo fechados.", target.Game.Name,
+        "Reversível: \"Restaurar\" devolve a pasta original.",
+        $"{ShaderCacheService.FormatBytes(target.Bytes)} em {target.Files:N0} arquivo(s) · {target.FolderPath}")
+    { SteamFolder = target };
 
     public void SetResult(TweakOperationResult result)
     {
@@ -127,6 +119,15 @@ public sealed class GuidanceItemViewModel(GuidanceItem item)
     public IReadOnlyList<string> Steps => Item.Steps;
     public string Details => $"Quando: {Item.Condition} · Evidência: {Item.Evidence} · Risco: {Item.Risk} · Afeta: {Item.GamesAffected}";
     public Brush TitleBrush => Item.Refused ? StatusBrushes.Gray : StatusBrushes.Purple;
+}
+
+public sealed record NumberedStep(int Number, string Text);
+
+/// <summary>Procedimento manual com passos numerados para a tela.</summary>
+public sealed record ProcedureView(string Title, IReadOnlyList<NumberedStep> Steps, string? Warning)
+{
+    public static ProcedureView From(ManualProcedure procedure) =>
+        new(procedure.Title, procedure.Steps.Select((text, index) => new NumberedStep(index + 1, text)).ToArray(), procedure.Warning);
 }
 
 public sealed class BackupItemViewModel(SteamFolderBackup backup)
@@ -177,6 +178,15 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
     public bool HasBackups => Backups.Count > 0;
     public bool HasDiagnostics => Diagnostics.Count > 0;
 
+    // "Configurações recomendadas": instruções manuais, só na página do CS2.
+    public bool HasRecommendations => _area == OptimizationArea.Cs2;
+    public IReadOnlyList<ProcedureView> TaskManagerSteps => HasRecommendations
+        ? Cs2Recommendations.TaskManager.Select(ProcedureView.From).ToArray()
+        : [];
+    public IReadOnlyList<InGameSetting> VideoSettings => HasRecommendations ? Cs2Recommendations.Video : [];
+    public IReadOnlyList<string> RecommendationNotes => HasRecommendations ? Cs2Recommendations.Notes : [];
+    public string VideoMenuPath => Cs2Recommendations.VideoMenuPath;
+
     /// <summary>Jogo desta página, quando é uma página de jogo.</summary>
     public DetectedGame? Game { get; private set; }
 
@@ -210,8 +220,9 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
         }
         if (game is { IsInstalled: true })
         {
+            // A redefinição das configurações locais do CS2 (userdata) não é oferecida; backups antigos dela continuam restauráveis abaixo.
             var targets = await Task.Run(() => _steamFolders.GetTargets(game, steamRoot));
-            foreach (var target in targets)
+            foreach (var target in targets.Where(target => target.Kind != SteamFolderKind.UserConfig))
                 Actions.Add(OptimizationActionViewModel.ForSteamFolder(target));
         }
         await LoadBackupsAsync();
@@ -248,16 +259,11 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
             return;
         }
 
-        var userData = selected.Where(action => action.IsDestructiveForUserData).ToArray();
         var confirmation =
             "Serão executadas:\n\n" + string.Join("\n", selected.Select(action => $"• {action.Name} — risco {action.Risk}")) + "\n\n" +
             "• Antes de tudo, um ponto de restauração é criado (obrigatório).\n" +
             (selected.Any(action => action.ShaderCache is not null)
                 ? "• Caches de shaders não têm backup: os jogos vão recompilar e podem travar por alguns instantes nas primeiras partidas.\n"
-                : string.Empty) +
-            (userData.Length > 0
-                ? "• ATENÇÃO: as configurações locais do CS2 voltam ao padrão, incluindo binds. A pasta antiga fica guardada como backup.\n" +
-                  "• Antes de abrir o CS2, siga a orientação \"Steam Cloud ao redefinir configurações\" (página Steam), senão a nuvem pode devolver o arquivo antigo.\n"
                 : string.Empty) +
             "\nDeseja continuar?";
         if (!_dialogs.Confirm(confirmation, Title))

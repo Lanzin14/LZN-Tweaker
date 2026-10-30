@@ -19,6 +19,14 @@
     <ProjectReference Include="..\LznTweaker.Core\LznTweaker.Core.csproj" />
   </ItemGroup>
 
+  <!-- Marca: embutida no executável (pack://application) para funcionar igual no desenvolvimento e na publicação.
+       Assets\Brand\source guarda a logo oficial completa e não é compilada. -->
+  <ItemGroup>
+    <Resource Include="app.ico" />
+    <Resource Include="Assets\Brand\lzn-logo-mark.png" />
+    <None Include="Assets\Brand\source\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />

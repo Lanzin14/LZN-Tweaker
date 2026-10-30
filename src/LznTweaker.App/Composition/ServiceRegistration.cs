@@ -6,12 +6,14 @@ using LznTweaker.Core.Debloat;
 using LznTweaker.Core.Execution;
 using LznTweaker.Core.GameOptimization;
 using LznTweaker.Core.GameTuning;
+using LznTweaker.Core.Gpu;
 using LznTweaker.Core.Maintenance;
 using LznTweaker.Core.Startup;
 using LznTweaker.Core.Tweaks;
 using LznTweaker.Features.Backups;
 using LznTweaker.Features.Debloat;
 using LznTweaker.Features.GameProfiles;
+using LznTweaker.Features.Gpu;
 using LznTweaker.Features.Hardware;
 using LznTweaker.Features.Home;
 using LznTweaker.Features.TweakCards;
@@ -49,6 +51,8 @@ public static class ServiceRegistration
         services.AddSingleton<ShaderCacheService>();
         services.AddSingleton<SteamFolderBackupService>();
         services.AddSingleton<SystemToolsService>();
+        services.AddSingleton<GpuDetectionService>();
+        services.AddSingleton<GpuPreferencesStore>();
 
         // Infraestrutura da interface
         services.AddSingleton<IUserDialogs, UserDialogs>();
@@ -72,6 +76,8 @@ public static class ServiceRegistration
         services.AddSingleton<FixesPageView>();
         services.AddSingleton<HardwareViewModel>();
         services.AddSingleton<HardwareView>();
+        services.AddSingleton<GpuViewModel>();
+        services.AddSingleton<GpuView>();
         services.AddSingleton<TweaksViewModel>();
         services.AddSingleton<TweaksView>();
         services.AddSingleton<CleanupViewModel>();

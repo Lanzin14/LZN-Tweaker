@@ -19,7 +19,7 @@ public sealed partial class HistoryEntryViewModel(TweakOperationResult entry, st
     private static readonly SolidColorBrush Green = Freeze("#6EE7B7");
     private static readonly SolidColorBrush Amber = Freeze("#F5C46B");
     private static readonly SolidColorBrush Red = Freeze("#F87171");
-    private static readonly SolidColorBrush Gray = Freeze("#74747F");
+    private static readonly SolidColorBrush Gray = Freeze("#8A8A96");
 
     public TweakOperationResult Entry { get; } = entry;
     public string When => Entry.StartedAt.LocalDateTime.ToString("g");

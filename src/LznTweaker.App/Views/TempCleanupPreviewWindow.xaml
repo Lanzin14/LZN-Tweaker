@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Prévia de limpeza" Height="680" Width="900" MinHeight="520" MinWidth="700"
         WindowStartupLocation="CenterOwner" Background="{StaticResource AppBackgroundBrush}"
-        Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI" ResizeMode="CanResize">
+        Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}" ResizeMode="CanResize">
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,0,16">
-            <TextBlock Text="Prévia de limpeza" FontSize="22" FontWeight="Bold" />
+            <TextBlock Text="Prévia de limpeza" Style="{StaticResource Lzn.Text.Section}" />
             <TextBlock Text="Somente arquivos da pasta temporária deste usuário. Arquivos em uso ou modificados depois desta análise serão ignorados."
                        Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" />
             <Grid Margin="0,12,0,0">

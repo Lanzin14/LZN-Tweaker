@@ -13,21 +13,21 @@ public sealed record TweakPresetOption(TweakPreset Preset, string Name, string D
 
 public sealed class TweakItemViewModel(TweakDefinition definition) : INotifyPropertyChanged
 {
-    private static readonly SolidColorBrush GreenBrush = new((Color)ColorConverter.ConvertFromString("#7ED9B2"));
-    private static readonly SolidColorBrush GreenBorder = new((Color)ColorConverter.ConvertFromString("#234837"));
-    private static readonly SolidColorBrush GreenBg = new((Color)ColorConverter.ConvertFromString("#13261C"));
+    private static readonly SolidColorBrush GreenBrush = new((Color)ColorConverter.ConvertFromString("#6EE7B7"));
+    private static readonly SolidColorBrush GreenBorder = new((Color)ColorConverter.ConvertFromString("#1F4A37"));
+    private static readonly SolidColorBrush GreenBg = new((Color)ColorConverter.ConvertFromString("#10251C"));
 
-    private static readonly SolidColorBrush AmberBrush = new((Color)ColorConverter.ConvertFromString("#E0BF80"));
-    private static readonly SolidColorBrush AmberBorder = new((Color)ColorConverter.ConvertFromString("#4F3E22"));
-    private static readonly SolidColorBrush AmberBg = new((Color)ColorConverter.ConvertFromString("#292012"));
+    private static readonly SolidColorBrush AmberBrush = new((Color)ColorConverter.ConvertFromString("#F5C46B"));
+    private static readonly SolidColorBrush AmberBorder = new((Color)ColorConverter.ConvertFromString("#4D3A1C"));
+    private static readonly SolidColorBrush AmberBg = new((Color)ColorConverter.ConvertFromString("#2A2112"));
 
-    private static readonly SolidColorBrush RedBrush = new((Color)ColorConverter.ConvertFromString("#F28B82"));
-    private static readonly SolidColorBrush RedBorder = new((Color)ColorConverter.ConvertFromString("#54232A"));
-    private static readonly SolidColorBrush RedBg = new((Color)ColorConverter.ConvertFromString("#2D1418"));
+    private static readonly SolidColorBrush RedBrush = new((Color)ColorConverter.ConvertFromString("#F87171"));
+    private static readonly SolidColorBrush RedBorder = new((Color)ColorConverter.ConvertFromString("#5A2328"));
+    private static readonly SolidColorBrush RedBg = new((Color)ColorConverter.ConvertFromString("#2A1416"));
 
-    private static readonly SolidColorBrush PurpleBrush = new((Color)ColorConverter.ConvertFromString("#D8CCFF"));
-    private static readonly SolidColorBrush PurpleBorder = new((Color)ColorConverter.ConvertFromString("#43345E"));
-    private static readonly SolidColorBrush PurpleBg = new((Color)ColorConverter.ConvertFromString("#211933"));
+    private static readonly SolidColorBrush PurpleBrush = new((Color)ColorConverter.ConvertFromString("#DDD0FF"));
+    private static readonly SolidColorBrush PurpleBorder = new((Color)ColorConverter.ConvertFromString("#4A3A7A"));
+    private static readonly SolidColorBrush PurpleBg = new((Color)ColorConverter.ConvertFromString("#1D1731"));
 
     private bool _isSelected;
     private string _stateText = "Estado não consultado";

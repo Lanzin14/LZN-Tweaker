@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Changes;
@@ -8,16 +10,44 @@ using LznTweaker.Infrastructure;
 
 namespace LznTweaker.Features.GameProfiles;
 
-public sealed partial class LibrarySection(string glyph, string title, GameOptimizationPageViewModel page, SupportedGame? game = null) : ObservableObject
+public enum LibraryPlatform { Windows, Steam, Riot }
+
+/// <summary>Ícone de plataforma ao lado do jogo. Sem arquivo local, mostra só a inicial (Windows usa o logotipo vetorial).</summary>
+public sealed record PlatformBadge(LibraryPlatform Platform, string Name, ImageSource? Icon)
 {
-    public string Glyph { get; } = glyph;
+    public bool IsWindows => Platform == LibraryPlatform.Windows;
+    public bool HasIcon => Icon is not null;
+    public bool ShowsInitial => !IsWindows && Icon is null;
+    public string Initial => Name[..1];
+}
+
+/// <param name="monogram">Texto do ícone quando não há arte local (ex.: "CS2").</param>
+/// <param name="glyph">Glifo do Segoe Fluent Icons para seções que não são jogos.</param>
+public sealed partial class LibrarySection(string title, GameOptimizationPageViewModel page, LibraryPlatform[] platforms,
+    SupportedGame? game = null, string? monogram = null, string? glyph = null, bool windowsLogo = false) : ObservableObject
+{
     public string Title { get; } = title;
     public GameOptimizationPageViewModel Page { get; } = page;
     public SupportedGame? Game { get; } = game;
     public bool IsDeadlock => Game?.Id == SupportedGames.DeadlockId;
+    public LibraryPlatform[] PlatformKinds { get; } = platforms;
+    public string? Monogram { get; } = monogram;
+    public string? Glyph { get; } = glyph;
+    public bool ShowsWindowsLogo { get; } = windowsLogo;
 
     [ObservableProperty]
     private string _subtitle = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasIcon), nameof(ShowsMonogram), nameof(ShowsGlyph))]
+    private ImageSource? _icon;
+
+    [ObservableProperty]
+    private IReadOnlyList<PlatformBadge> _platforms = [];
+
+    public bool HasIcon => Icon is not null;
+    public bool ShowsMonogram => Icon is null && Monogram is not null;
+    public bool ShowsGlyph => Icon is null && Monogram is null && Glyph is not null;
 }
 
 /// <summary>Biblioteca de otimização: Windows, Steam, cada jogo e hardware. Cada seção mantém a própria página e estado.</summary>
@@ -40,20 +70,27 @@ public sealed partial class GameLibraryViewModel : ObservableObject
 
         Sections =
         [
-            new("⊞", "Windows (todos os jogos)", Page(OptimizationArea.Windows, "Windows — vale para todos os jogos",
-                "Caches de shaders do DirectX e da GPU, energia, Game Bar, MPO, temporizador e discos.")),
-            new("◎", "Steam (compartilhado)", Page(OptimizationArea.Steam, "Steam — opções do cliente",
-                "Overlay, gravação, downloads, shaders e Steam Cloud. Os caches por jogo ficam na página de cada jogo.")),
-            new("◆", SupportedGames.Cs2.Name, Page(OptimizationArea.Cs2, "Counter-Strike 2",
-                "Cache de shaders da Steam (App ID 730), configurações locais em userdata e diagnóstico do cs2.exe."), SupportedGames.Cs2),
-            new("◇", SupportedGames.Valorant.Name, Page(OptimizationArea.Valorant, "VALORANT",
-                "Somente itens suportados pelo VALORANT. Nada do CS2 é reaproveitado e o Vanguard nunca é tocado."), SupportedGames.Valorant),
-            new("◈", SupportedGames.Overwatch2.Name, Page(OptimizationArea.Overwatch2, "Overwatch 2 (Steam)",
-                "Cache de shaders da Steam (App ID 2357570) e diagnóstico do Overwatch.exe. As configurações pessoais do jogo não são editadas."), SupportedGames.Overwatch2),
-            new("◉", SupportedGames.Deadlock.Name, Page(OptimizationArea.Deadlock, "Deadlock — ajustes compartilhados",
-                "Cache de shaders da Steam (App ID 1422450) e diagnóstico do deadlock.exe. O perfil do gameinfo.gi fica na outra aba."), SupportedGames.Deadlock),
-            new("▣", "Hardware e diagnóstico", Page(OptimizationArea.Hardware, "Hardware — somente diagnóstico",
-                "RAM, XMP/EXPO, BIOS, chipset, ReBAR e ferramentas de medição. O app nunca altera BIOS, XMP, overclock ou undervolt."))
+            new("Windows (todos os jogos)", Page(OptimizationArea.Windows, "Windows — vale para todos os jogos",
+                "Itens do Windows que afetam todos os jogos: caches de shaders do DirectX e da placa de vídeo, energia, Game Bar e disco."),
+                [LibraryPlatform.Windows], windowsLogo: true),
+            new("Steam (compartilhado)", Page(OptimizationArea.Steam, "Steam — opções do cliente",
+                "Opções do cliente Steam, como overlay, gravação, downloads e Steam Cloud. O cache de shaders de cada jogo fica na página do jogo."),
+                [LibraryPlatform.Steam], glyph: "\uE7FC"),
+            new(SupportedGames.Cs2.Name, Page(OptimizationArea.Cs2, "Counter-Strike 2",
+                "Cache de shaders do CS2 na Steam, configurações recomendadas e verificação do jogo."),
+                [LibraryPlatform.Windows, LibraryPlatform.Steam], SupportedGames.Cs2, "CS2"),
+            new(SupportedGames.Valorant.Name, Page(OptimizationArea.Valorant, "VALORANT",
+                "Só o que vale para o VALORANT. Nada do CS2 é reaproveitado e o anticheat Vanguard nunca é tocado."),
+                [LibraryPlatform.Windows, LibraryPlatform.Riot], SupportedGames.Valorant, "VAL"),
+            new(SupportedGames.Overwatch2.Name, Page(OptimizationArea.Overwatch2, "Overwatch 2 (Steam)",
+                "Cache de shaders do Overwatch na Steam e verificação do jogo. As configurações pessoais do jogo não são editadas."),
+                [LibraryPlatform.Windows, LibraryPlatform.Steam], SupportedGames.Overwatch2, "OW"),
+            new(SupportedGames.Deadlock.Name, Page(OptimizationArea.Deadlock, "Deadlock — ajustes compartilhados",
+                "Cache de shaders do Deadlock na Steam e verificação do jogo. Os perfis do gameinfo.gi ficam na outra aba."),
+                [LibraryPlatform.Windows, LibraryPlatform.Steam], SupportedGames.Deadlock, "DL"),
+            new("Hardware e diagnóstico", Page(OptimizationArea.Hardware, "Hardware — somente diagnóstico",
+                "Orientações sobre memória RAM, XMP/EXPO, BIOS, chipset e Resizable BAR. Só diagnóstico: o app nunca altera BIOS, XMP, overclock ou undervolt."),
+                [], glyph: "\uE950")
         ];
         SelectedSection = Sections[0];
     }
@@ -86,6 +123,7 @@ public sealed partial class GameLibraryViewModel : ObservableObject
         {
             var games = await Task.Run(() => SupportedGames.All.Select(_locator.Locate).ToArray());
             var steamRoot = _locator.Steam.SteamRoot;
+            LoadArtwork(steamRoot);
             foreach (var section in Sections)
             {
                 var detected = section.Game is null ? null : games.First(game => game.Game.Id == section.Game.Id);
@@ -122,6 +160,24 @@ public sealed partial class GameLibraryViewModel : ObservableObject
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private void LoadArtwork(string? steamRoot)
+    {
+        var steamIcon = steamRoot is null ? null : LocalArtwork.ExecutableIcon(Path.Combine(steamRoot, "steam.exe"));
+        var riotIcon = LocalArtwork.ExecutableIcon(LocalArtwork.RiotClientPath());
+        foreach (var section in Sections)
+        {
+            section.Icon = section.Game?.SteamAppId is { } appId
+                ? LocalArtwork.SteamAppIcon(steamRoot, appId)
+                : section.PlatformKinds is [LibraryPlatform.Steam] ? steamIcon : null;
+            section.Platforms = section.PlatformKinds.Select(platform => platform switch
+            {
+                LibraryPlatform.Steam => new PlatformBadge(platform, "Steam", steamIcon),
+                LibraryPlatform.Riot => new PlatformBadge(platform, "Riot Client", riotIcon),
+                _ => new PlatformBadge(platform, "Windows", null)
+            }).ToArray();
         }
     }
 

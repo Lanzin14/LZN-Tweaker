@@ -90,29 +90,29 @@ public sealed class SystemCleanupService
     public static IReadOnlyList<CleanupCategoryInfo> GetSupportedCategories() =>
     [
         new(CleanupCategoryType.UserTemp, "Temporários do Usuário (%TEMP%)",
-            "Arquivos transitórios criados por aplicativos em execução na sua conta. Seguro para limpar.",
+            "Arquivos temporários que os programas criam na sua conta. Os que estiverem em uso são mantidos.",
             Environment.GetEnvironmentVariable("TEMP") ?? Path.GetTempPath()),
 
         new(CleanupCategoryType.SystemTemp, "Temporários do Sistema (Windows Temp)",
-            "Arquivos temporários criados por serviços do Windows e instaladores globais.",
+            "Arquivos temporários de serviços do Windows e de instaladores.",
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp"),
             RequiresElevation: true),
 
         new(CleanupCategoryType.WindowsUpdateCache, "Cache do Windows Update",
-            "Instaladores de atualizações já processadas em SoftwareDistribution\\Download.",
+            "Instaladores de atualizações que o Windows já aplicou (SoftwareDistribution\\Download).",
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "SoftwareDistribution", "Download"),
             RequiresElevation: true),
 
         new(CleanupCategoryType.SystemLogs, "Relatórios e Logs Residuais",
-            "Dumps de falhas e logs de relatórios que já não são mais necessários.",
+            "Relatórios de travamentos antigos. Só são úteis se você estiver investigando um erro.",
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CrashDumps")),
 
         new(CleanupCategoryType.ShaderCache, "Cache de Compilação de Shaders (DirectX)",
-            "Caches antigos de shaders gráficos. Jogos recompilam automaticamente caso necessário.",
+            "Shaders já preparados pelo DirectX. Os jogos recriam o cache, mas as primeiras partidas podem ter travadas.",
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "D3DSCache")),
 
         new(CleanupCategoryType.RecycleBin, "Lixeira do Windows",
-            "Arquivos previamente excluídos aguardando descarte definitivo.",
+            "Arquivos que você já apagou. Esvaziar a Lixeira é definitivo.",
             "Todos os volumes do sistema")
     ];
 

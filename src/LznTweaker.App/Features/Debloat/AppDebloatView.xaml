@@ -1,8 +1,10 @@
 <UserControl x:Class="LznTweaker.Features.Debloat.AppDebloatView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:LznTweaker.Controls"
+             xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.Debloat"
-             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI">
+             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
 
@@ -34,7 +36,7 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="#1F192C" />
+                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="Row" Property="Background" Value="{StaticResource AccentSoftBrush}" />
@@ -71,17 +73,17 @@
                 </StackPanel>
                 <TextBlock Grid.Column="1" Text="{Binding BadgeText}" Foreground="{Binding BadgeBrush}" FontSize="10" FontWeight="SemiBold"
                            VerticalAlignment="Center" Margin="8,0,8,0" />
-                <Border Grid.Column="2" Width="18" Height="18" CornerRadius="9" Background="#251F33" BorderBrush="#382E4D" BorderThickness="1"
+                <Border Grid.Column="2" Width="18" Height="18" CornerRadius="9" Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1"
                         VerticalAlignment="Center" Cursor="Help" ToolTipService.InitialShowDelay="120" ToolTipService.ShowDuration="30000">
                     <Border.ToolTip>
                         <ToolTip Background="Transparent" BorderThickness="0" Padding="0">
-                            <Border Background="#161220" BorderBrush="#3D3056" BorderThickness="1" CornerRadius="10" Padding="12" MaxWidth="380">
-                                <TextBlock Text="{Binding InfoTip}" FontSize="11" Foreground="#C8BFD7" TextWrapping="Wrap" LineHeight="16" />
+                            <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="10" Padding="12" MaxWidth="380">
+                                <TextBlock Text="{Binding InfoTip}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
                             </Border>
                         </ToolTip>
                     </Border.ToolTip>
                     <TextBlock Text="{Binding IsSystem, Converter={x:Static local:InfoGlyphConverter.Instance}}" FontSize="10" FontWeight="Bold"
-                               Foreground="#BFAEDF" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                               Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
             </Grid>
         </DataTemplate>
@@ -100,9 +102,8 @@
         <Grid Margin="0,0,0,14">
             <StackPanel>
                 <TextBlock Text="DEBLOAT" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" />
-                <TextBlock Text="Aplicativos pré-instalados" FontSize="26" FontWeight="Bold" Margin="0,4,0,0" />
-                <TextBlock Text="Mova os apps para a direita e remova em lote. Pacotes do sistema, frameworks e componentes de outros programas não aparecem aqui."
-                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap" />
+                <TextBlock Text="Aplicativos pré-instalados" Style="{StaticResource Lzn.Text.Title}" Margin="0,4,0,0" />
+                <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Debloat}" Margin="0,6,0,0" />
             </StackPanel>
             <Button HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource SecondaryButtonStyle}" Content="↻ Atualizar"
                     Command="{Binding RefreshCommand}" Padding="12,8" />
@@ -110,9 +111,9 @@
 
         <!-- Status e aviso de conta -->
         <StackPanel Grid.Row="1" Margin="0,0,0,12">
-            <Border Background="#2D1418" BorderBrush="#54232A" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,8"
+            <Border Background="{StaticResource Lzn.DangerSoft}" BorderBrush="{StaticResource Lzn.DangerStroke}" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,8"
                     Visibility="{Binding AccountWarning, Converter={x:Static local:NotNullToVisibilityConverter.Instance}}">
-                <TextBlock Text="{Binding AccountWarning}" Foreground="#F28B82" FontSize="12" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding AccountWarning}" Foreground="{StaticResource Lzn.RiskHigh}" FontSize="12" TextWrapping="Wrap" />
             </Border>
             <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap" />
         </StackPanel>
@@ -136,7 +137,7 @@
                     <Border DockPanel.Dock="Top" Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1"
                             CornerRadius="8" Padding="10,6" Margin="0,0,0,10">
                         <Grid>
-                            <TextBlock Text="🔍 Buscar app…" Foreground="{StaticResource TextMutedBrush}" FontSize="12" IsHitTestVisible="False"
+                            <TextBlock Text="Buscar app…" Foreground="{StaticResource TextMutedBrush}" FontSize="12" IsHitTestVisible="False"
                                        Visibility="{Binding SearchText, Converter={x:Static local:EmptyToVisibilityConverter.Instance}}" />
                             <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0"
                                      Foreground="{StaticResource TextPrimaryBrush}" CaretBrush="{StaticResource TextPrimaryBrush}" FontSize="12" />
@@ -192,12 +193,12 @@
         <Grid Grid.Row="3" Margin="0,14,0,14">
             <TextBlock Text="Um ponto de restauração é criado antes de cada lote (obrigatório). Ele protege o restante do sistema, mas não reinstala apps da Store."
                        Foreground="{StaticResource TextMutedBrush}" FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,260,0" />
-            <Button HorizontalAlignment="Right" Style="{StaticResource PrimaryButtonStyle}" Content="🗑 Remover selecionados"
+            <Button HorizontalAlignment="Right" Style="{StaticResource PrimaryButtonStyle}" Content="Remover selecionados"
                     Command="{Binding RemoveSelectedCommand}" Padding="18,10" />
         </Grid>
 
         <!-- Removidos pelo LznTweaker (lidos do histórico) -->
-        <Border Grid.Row="4" Style="{StaticResource CardStyle}" Background="#161220">
+        <Border Grid.Row="4" Style="{StaticResource CardStyle}" Background="{StaticResource Lzn.Surface}">
             <DockPanel>
                 <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                     <StackPanel>

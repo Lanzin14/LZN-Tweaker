@@ -1,36 +1,36 @@
 <UserControl x:Class="LznTweaker.Features.TweakCards.TweakCardsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.TweakCards"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="Segoe UI">
+             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <!-- Selo de risco: ícone + texto, explicação no hover -->
         <DataTemplate x:Key="RiskBadge" DataType="{x:Type local:CardViewModel}">
-            <StackPanel Orientation="Horizontal" Background="Transparent" ToolTip="{Binding RiskTooltip}" ToolTipService.InitialShowDelay="150">
-                <TextBlock Text="{Binding RiskGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="12" Foreground="{Binding RiskBrush}" Margin="0,0,6,0" />
-                <TextBlock Text="{Binding RiskText}" FontSize="11" FontWeight="SemiBold" Foreground="{Binding RiskBrush}" VerticalAlignment="Center" />
-            </StackPanel>
+            <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Left" ToolTip="{Binding RiskTooltip}" ToolTipService.InitialShowDelay="150">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding RiskGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{Binding RiskBrush}" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding RiskText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{Binding RiskBrush}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
         </DataTemplate>
 
         <Style x:Key="InfoButton" TargetType="Button">
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
-            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisual}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Chrome" Width="24" Height="24" CornerRadius="6" Background="Transparent">
+                        <Border x:Name="Chrome" Width="28" Height="28" CornerRadius="{StaticResource Lzn.Radius.Sm}" Background="Transparent">
                             <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
                                 <Setter Property="Foreground" Value="{StaticResource Lzn.AccentHover}" />
-                            </Trigger>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -40,7 +40,7 @@
 
         <!-- Card de ajuste do catálogo -->
         <DataTemplate DataType="{x:Type local:TweakCardViewModel}">
-            <Border Style="{StaticResource Lzn.Card}" MinHeight="136">
+            <Border Style="{StaticResource Lzn.Card}" MinHeight="148">
                 <DockPanel>
                     <Grid DockPanel.Dock="Top">
                         <Grid.ColumnDefinitions>
@@ -48,8 +48,10 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="17" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,10,0" />
-                        <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
                                    ToolTip="{Binding Title}" />
                         <Button Grid.Column="2" Style="{StaticResource InfoButton}" ToolTip="Detalhes, efeitos e restauração"
                                 Command="{Binding DataContext.OpenDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
@@ -61,25 +63,28 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="1" Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="11" VerticalAlignment="Center" Margin="8,0,10,0" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,12,0" VerticalAlignment="Center">
+                            <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding StateBrush}" Margin="0,0,6,0" />
+                            <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" />
+                        </StackPanel>
                         <CheckBox Grid.Column="2" Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding IsOn}" IsEnabled="{Binding IsSwitchEnabled}"
                                   ToolTip="{Binding SwitchTooltip}" ToolTipService.ShowOnDisabled="True"
                                   Visibility="{Binding IsToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
                                   AutomationProperties.Name="{Binding Title}" />
-                        <Button Grid.Column="2" Style="{StaticResource Lzn.ToolbarButton}" Content="{Binding ActionButtonText}" FontSize="11"
+                        <Button Grid.Column="2" Style="{StaticResource Lzn.ToolbarButton}" Content="{Binding ActionButtonText}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Padding="12,6"
                                 Visibility="{Binding IsAction, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
                                 ToolTip="Ação pontual: entra na fila e é executada ao revisar e aplicar."
                                 Command="{Binding DataContext.ToggleQueueCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
                     </Grid>
                     <StackPanel>
-                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap"
-                                   TextTrimming="CharacterEllipsis" MaxHeight="34" LineHeight="17" Margin="0,8,0,0" />
+                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap"
+                                   TextTrimming="CharacterEllipsis" MaxHeight="36" LineHeight="18" Margin="0,10,0,0" />
                         <WrapPanel Margin="0,6,0,0">
-                            <Border Background="#1A1530" CornerRadius="4" Padding="6,1" Margin="0,0,6,0"
+                            <Border Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,8,0"
                                     Visibility="{Binding IsRecommended, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <TextBlock Text="Recomendado" FontSize="10" Foreground="{StaticResource Lzn.AccentHover}" />
+                                <TextBlock Text="Recomendado" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
                             </Border>
-                            <TextBlock Text="{Binding RestartText}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding RestartText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
                         </WrapPanel>
                     </StackPanel>
                 </DockPanel>
@@ -88,7 +93,7 @@
 
         <!-- Card de ação imediata -->
         <DataTemplate DataType="{x:Type local:QuickActionCardViewModel}">
-            <Border Style="{StaticResource Lzn.Card}" MinHeight="136">
+            <Border Style="{StaticResource Lzn.Card}" MinHeight="148">
                 <DockPanel>
                     <Grid DockPanel.Dock="Top">
                         <Grid.ColumnDefinitions>
@@ -96,8 +101,10 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="17" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,10,0" />
-                        <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding Title}" />
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding Title}" />
                         <Button Grid.Column="2" Style="{StaticResource InfoButton}" ToolTip="Detalhes"
                                 Command="{Binding DataContext.OpenDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
                     </Grid>
@@ -108,15 +115,18 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="1" Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="11" VerticalAlignment="Center" Margin="8,0,10,0" />
-                        <Button Grid.Column="2" Style="{StaticResource Lzn.ToolbarButton}" Content="{Binding ButtonText}" FontSize="11"
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,12,0" VerticalAlignment="Center">
+                            <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding StateBrush}" Margin="0,0,6,0" />
+                            <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <Button Grid.Column="2" Style="{StaticResource Lzn.ToolbarButton}" Content="{Binding ButtonText}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Padding="12,6"
                                 IsEnabled="{Binding IsRunning, Converter={x:Static local:InverseBooleanConverter.Instance}}"
                                 Command="{Binding DataContext.RunQuickActionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
                     </Grid>
                     <StackPanel>
-                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap"
-                                   TextTrimming="CharacterEllipsis" MaxHeight="34" LineHeight="17" Margin="0,8,0,0" />
-                        <TextBlock Text="{Binding Note}" FontSize="10" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,6,0,0"
+                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap"
+                                   TextTrimming="CharacterEllipsis" MaxHeight="36" LineHeight="18" Margin="0,10,0,0" />
+                        <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,8,0,0" TextWrapping="Wrap"
                                    Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                     </StackPanel>
                 </DockPanel>
@@ -126,23 +136,23 @@
         <!-- Detalhes de ajuste -->
         <DataTemplate x:Key="TweakDetails" DataType="{x:Type local:TweakCardViewModel}">
             <StackPanel>
-                <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="Bold" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" />
                     <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="11" Margin="12,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
-                <TextBlock Text="O QUE FAZ" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,18,0,4" />
-                <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" />
-                <TextBlock Text="COMO E EFEITOS ESPERADOS" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,14,0,4" />
-                <TextBlock Text="{Binding Definition.TechnicalReason}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" />
-                <TextBlock Text="LIMITAÇÕES E COMPATIBILIDADE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,14,0,4" />
-                <TextBlock Text="{Binding Definition.Compatibility}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" />
-                <TextBlock Text="RESTAURAÇÃO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,14,0,4" />
+                <TextBlock Text="O que faz" Style="{StaticResource Lzn.Text.Overline}" Margin="0,18,0,6" />
+                <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" />
+                <TextBlock Text="Como e efeitos esperados" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
+                <TextBlock Text="{Binding Definition.TechnicalReason}" Style="{StaticResource Lzn.Text.Body}" />
+                <TextBlock Text="Limitações e compatibilidade" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
+                <TextBlock Text="{Binding Definition.Compatibility}" Style="{StaticResource Lzn.Text.Body}" />
+                <TextBlock Text="Restauração" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
                 <TextBlock Text="{Binding RollbackText}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
                 <TextBlock FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0">
                     <Run Text="{Binding RestartText, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding AdministratorText, Mode=OneWay}" />
                 </TextBlock>
-                <TextBlock Text="ESTADO DETECTADO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,14,0,4" />
+                <TextBlock Text="Estado detectado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
                 <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
                 <TextBlock Text="{Binding SwitchTooltip}" FontSize="11" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" Margin="0,8,0,0" />
                 <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
@@ -151,11 +161,11 @@
 
         <DataTemplate x:Key="ActionDetails" DataType="{x:Type local:QuickActionCardViewModel}">
             <StackPanel>
-                <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="Bold" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
                 <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" HorizontalAlignment="Left" Margin="0,8,0,0" />
-                <TextBlock Text="O QUE FAZ" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,18,0,4" />
-                <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" />
-                <TextBlock Text="{Binding Definition.Confirmation}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" Margin="0,10,0,0"
+                <TextBlock Text="O que faz" Style="{StaticResource Lzn.Text.Overline}" Margin="0,18,0,6" />
+                <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" />
+                <TextBlock Text="{Binding Definition.Confirmation}" Style="{StaticResource Lzn.Text.Body}" Margin="0,10,0,0"
                            Visibility="{Binding Definition.Confirmation, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                 <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{StaticResource Lzn.RiskWarn}" TextWrapping="Wrap" Margin="0,10,0,0"
                            Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
@@ -180,9 +190,9 @@
             <!-- Cabeçalho -->
             <Grid Margin="0,0,0,16">
                 <StackPanel Margin="0,0,220,0">
-                    <TextBlock Text="{Binding Title}" FontSize="26" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Description}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,4,0,0" TextWrapping="Wrap" />
-                    <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Title}" />
+                    <controls:CategoryInfo Guide="{Binding Guide}" Margin="0,6,0,0" />
+                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,6,0,0" />
                 </StackPanel>
                 <Button HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}"
                         ToolTip="Ler novamente o estado real dos ajustes">
@@ -194,7 +204,8 @@
             </Grid>
 
             <!-- Abas contextuais -->
-            <ItemsControl Grid.Row="1" ItemsSource="{Binding Tabs}" Margin="0,0,0,12">
+            <StackPanel Grid.Row="1" Margin="0,0,0,12">
+            <ItemsControl ItemsSource="{Binding Tabs}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
@@ -211,6 +222,9 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            <TextBlock Text="{Binding SelectedTabDescription}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="4,8,0,0"
+                       Visibility="{Binding SelectedTabDescription, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+            </StackPanel>
 
             <!-- Pesquisa, filtros e ordenação -->
             <Grid Grid.Row="2" Margin="0,0,0,14">
@@ -222,16 +236,15 @@
                 </Grid.ColumnDefinitions>
                 <TextBox Style="{StaticResource Lzn.SearchBox}" Height="36" Tag="Pesquisar ajustes…" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          AutomationProperties.Name="Pesquisar ajustes" />
-                <ToggleButton x:Name="FilterToggle" Grid.Column="1" Margin="8,0,0,0" Cursor="Hand" FocusVisualStyle="{x:Null}">
+                <ToggleButton x:Name="FilterToggle" Grid.Column="1" Margin="8,0,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}" AutomationProperties.Name="Filtros">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
-                            <Border x:Name="Chrome" CornerRadius="9" Padding="12,8" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}">
+                            <Border x:Name="Chrome" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,8" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}">
                                 <ContentPresenter VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" /></Trigger>
-                                <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.Accent}" /></Trigger>
-                                <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" /></Trigger>
+                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" /></Trigger>
+                                <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentSoft}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" /></Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </ToggleButton.Template>
@@ -244,18 +257,18 @@
                 </ToggleButton>
                 <Popup Grid.Column="1" PlacementTarget="{Binding ElementName=FilterToggle}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                        IsOpen="{Binding IsChecked, ElementName=FilterToggle, Mode=TwoWay}" VerticalOffset="6">
-                    <Border Background="#16161C" BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="1" CornerRadius="10" Padding="14" Width="250">
+                    <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="14" Width="260">
                         <StackPanel>
-                            <TextBlock Text="RISCO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,0,6" />
+                            <TextBlock Text="Risco" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,6" />
                             <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding RiskOptions}" SelectedItem="{Binding RiskFilter}" />
-                            <TextBlock Text="ESTADO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,12,0,6" />
+                            <TextBlock Text="Estado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,12,0,6" />
                             <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding StateOptions}" SelectedItem="{Binding StateFilter}" />
                             <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Limpar filtros" FontSize="11" HorizontalAlignment="Left" Margin="0,12,0,0"
                                     Command="{Binding ClearFiltersCommand}" />
                         </StackPanel>
                     </Border>
                 </Popup>
-                <Border Grid.Column="2" Margin="8,0,0,0" CornerRadius="9" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" Padding="10,0,4,0">
+                <Border Grid.Column="2" Margin="8,0,0,0" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" Padding="10,0,4,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE8CB;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,0,4,0" />
                         <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SortMode}" MinWidth="120"
@@ -288,19 +301,19 @@
                     <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Limpar busca e filtros" FontSize="12" HorizontalAlignment="Center" Margin="0,12,0,0"
                             Command="{Binding ClearFiltersCommand}" />
                 </StackPanel>
-                <Border VerticalAlignment="Top" Background="#2A1416" BorderBrush="#5A2328" BorderThickness="1" CornerRadius="10" Padding="12"
+                <Border VerticalAlignment="Top" Background="{StaticResource Lzn.DangerSoft}" BorderBrush="{StaticResource Lzn.DangerStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="12"
                         Visibility="{Binding LoadError, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                     <TextBlock Text="{Binding LoadError}" Foreground="{StaticResource Lzn.RiskHigh}" TextWrapping="Wrap" />
                 </Border>
             </Grid>
 
             <!-- Barra de alterações pendentes -->
-            <Border Grid.Row="4" Margin="0,0,0,16" Background="#141020" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="12" Padding="14,10"
+            <Border Grid.Row="4" Margin="0,0,0,16" Background="{StaticResource Lzn.AccentSoft}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16,12"
                     Visibility="{Binding HasPending, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                 <Grid>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,280,0">
                         <TextBlock Text="&#xE7BA;" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,10,0" />
-                        <TextBlock Text="{Binding PendingSummary}" FontSize="12" TextWrapping="Wrap" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding PendingSummary}" FontSize="{StaticResource Lzn.FontSize.Body}" TextWrapping="Wrap" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Descartar" FontSize="12" Margin="0,0,8,0" Command="{Binding DiscardCommand}" />
@@ -317,14 +330,14 @@
 
         <!-- Painel de detalhes -->
         <Grid Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
-            <Border Background="#99000000">
+            <Border Background="{StaticResource Lzn.Overlay}">
                 <Border.InputBindings>
                     <MouseBinding MouseAction="LeftClick" Command="{Binding CloseDetailsCommand}" />
                 </Border.InputBindings>
             </Border>
-            <Border HorizontalAlignment="Right" Width="400" Background="#111116" BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="1,0,0,0">
+            <Border HorizontalAlignment="Right" Width="420" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1,0,0,0">
                 <DockPanel Margin="22,20,22,20">
-                    <Button DockPanel.Dock="Top" HorizontalAlignment="Right" Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding CloseDetailsCommand}" ToolTip="Fechar (Esc)">
+                    <Button DockPanel.Dock="Top" HorizontalAlignment="Right" Style="{StaticResource Lzn.GhostButton}" Command="{Binding CloseDetailsCommand}" ToolTip="Fechar (Esc)" AutomationProperties.Name="Fechar detalhes">
                         <TextBlock Text="&#xE711;" Style="{StaticResource Lzn.Icon}" FontSize="11" />
                     </Button>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">

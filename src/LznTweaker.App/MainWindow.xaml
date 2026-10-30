@@ -2,58 +2,47 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="clr-namespace:LznTweaker.Shell"
-        Title="LznTweaker" Height="880" Width="1400"
+        Title="LZN Tweaker" Icon="pack://application:,,,/LznTweaker;component/app.ico" Height="880" Width="1400"
         MinHeight="640" MinWidth="980"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Lzn.Background}" Foreground="{StaticResource Lzn.Text}"
-        FontFamily="Segoe UI" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+        FontFamily="{StaticResource Lzn.Font}" FontSize="{StaticResource Lzn.FontSize.Body}" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource Lzn.Background}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="188" />
+            <ColumnDefinition Width="208" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar fixa -->
         <Border Background="{StaticResource Lzn.Sidebar}" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,1,0">
             <DockPanel Margin="12,18,12,12">
-                <!-- Cabeçalho: logotipo e versão -->
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,0,0,22">
-                    <Border Width="32" Height="32" CornerRadius="9" VerticalAlignment="Center">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#8B5CF6" Offset="0" />
-                                <GradientStop Color="#5B21B6" Offset="1" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Border.Effect>
-                            <DropShadowEffect Color="#7C3AED" BlurRadius="14" ShadowDepth="0" Opacity="0.5" />
-                        </Border.Effect>
-                        <TextBlock Text="L" FontSize="18" FontWeight="Black" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="LznTweaker" FontWeight="Bold" FontSize="15" />
-                        <TextBlock Text="{Binding AppVersion}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" />
-                    </StackPanel>
+                <!-- Cabeçalho: logo oficial (símbolo + LZN; o "Tweaker" escuro da arte não aparece sobre fundo escuro) e versão -->
+                <StackPanel DockPanel.Dock="Top" Margin="6,2,6,20">
+                    <Image Source="pack://application:,,,/LznTweaker;component/Assets/Brand/lzn-logo-mark.png" Height="46" Stretch="Uniform" HorizontalAlignment="Left"
+                           RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="LZN Tweaker" ToolTip="LZN Tweaker" />
+                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="2,6,0,0">
+                        <Run Text="Tweaker" Foreground="{StaticResource Lzn.TextSecondary}" FontWeight="SemiBold" /><Run Text=" · " /><Run Text="{Binding AppVersion, Mode=OneWay}" />
+                    </TextBlock>
                 </StackPanel>
 
                 <!-- Rodapé: status, usuário, Windows e privilégios -->
-                <Border DockPanel.Dock="Bottom" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="1"
-                        CornerRadius="10" Padding="10" Margin="0,12,0,0">
+                <Border DockPanel.Dock="Bottom" Style="{StaticResource Lzn.Panel}" Padding="12" Margin="0,12,0,0">
                     <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <Ellipse Width="7" Height="7" Fill="{StaticResource Lzn.RiskLow}" VerticalAlignment="Center" Margin="0,0,7,0" />
-                            <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextTrimming="CharacterEllipsis" MaxWidth="135" />
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{StaticResource Lzn.RiskLow}" Margin="0,0,8,0" />
+                            <TextBlock Text="{Binding StatusText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextTrimming="CharacterEllipsis" MaxWidth="150"
+                                       ToolTip="{Binding StatusText}" />
                         </StackPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Border Width="28" Height="28" CornerRadius="14" Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="1">
+                            <Border Width="28" Height="28" CornerRadius="14" Background="{StaticResource Lzn.AccentSoft}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1">
                                 <TextBlock Text="{Binding UserInitial}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
@@ -72,7 +61,7 @@
                                 </TextBlock>
                             </StackPanel>
                         </Grid>
-                        <TextBlock Text="{Binding WindowsVersion}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                        <TextBlock Text="{Binding WindowsVersion}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,10,0,0" />
                     </StackPanel>
                 </Border>
 
@@ -84,7 +73,7 @@
                         <GroupStyle>
                             <GroupStyle.HeaderTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextMuted}" Margin="10,12,0,4" />
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource Lzn.Text.Overline}" Margin="10,14,0,6" />
                                 </DataTemplate>
                             </GroupStyle.HeaderTemplate>
                         </GroupStyle>
@@ -118,24 +107,28 @@
         <ItemsControl Grid.Column="1" ItemsSource="{Binding Toasts}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" Width="340">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type shell:ToastViewModel}">
-                    <Border Background="#16161C" BorderBrush="{Binding AccentBrush}" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,8,0,0">
+                    <!-- Notificação: superfície elevada com faixa colorida pelo tipo (sucesso, aviso, erro). -->
+                    <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Margin="0,8,0,0">
                         <Border.Effect>
-                            <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="2" Opacity="0.6" />
+                            <DropShadowEffect Color="Black" BlurRadius="24" ShadowDepth="4" Opacity="0.5" />
                         </Border.Effect>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" Foreground="{Binding AccentBrush}" VerticalAlignment="Top" Margin="0,1,10,0" />
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding Title}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding Message}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                            <Border Width="3" Margin="0,10" CornerRadius="0,2,2,0" Background="{Binding AccentBrush}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" Foreground="{Binding AccentBrush}" VerticalAlignment="Top" Margin="11,13,10,0" />
+                            <StackPanel Grid.Column="2" Margin="0,12,0,12">
+                                <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Message}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
                             </StackPanel>
-                            <Button Grid.Column="2" Content="&#xE711;" FontFamily="{StaticResource Lzn.IconFont}" FontSize="10" VerticalAlignment="Top" Margin="8,0,0,0"
-                                    Background="Transparent" BorderThickness="0" Foreground="{StaticResource Lzn.TextMuted}" Cursor="Hand" ToolTip="Fechar"
-                                    Command="{Binding DataContext.DismissToastCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                            <Button Grid.Column="3" Style="{StaticResource Lzn.GhostButton}" VerticalAlignment="Top" Margin="6,6,6,0" ToolTip="Fechar" AutomationProperties.Name="Fechar notificação"
+                                    Command="{Binding DataContext.DismissToastCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}">
+                                <TextBlock Text="&#xE711;" Style="{StaticResource Lzn.Icon}" FontSize="10" />
+                            </Button>
                         </Grid>
                     </Border>
                 </DataTemplate>

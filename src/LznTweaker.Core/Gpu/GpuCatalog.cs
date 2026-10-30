@@ -1,0 +1,442 @@
+namespace LznTweaker.Core.Gpu;
+
+public enum GpuApplyMethod { Automatic, PartiallyAutomatic, Manual }
+
+/// <summary>Explicação de uma configuração em linguagem simples (sem promessas de ganho).</summary>
+public sealed record GpuSettingGuide(string WhatItDoes, string Benefit, string Downsides, string WhenToUse, string Compatibility, string HowToRestore);
+
+/// <param name="Options">Valores como aparecem no driver (em inglês; a versão traduzida do driver pode exibir outros nomes).</param>
+/// <param name="LatencyValue">Recomendação do modo "Competitivo — FPS e baixa latência".</param>
+/// <param name="StableValue">Recomendação do modo "Competitivo — FPS estável".</param>
+public sealed record GpuDriverSetting(
+    string Id,
+    GpuVendor Vendor,
+    string Name,
+    string ManualPath,
+    IReadOnlyList<string> Options,
+    string LatencyValue,
+    string StableValue,
+    GpuApplyMethod Method,
+    GpuSettingGuide Guide,
+    string? Caution = null);
+
+/// <param name="VisibilityValue">Valor alternativo quando o usuário prioriza enxergar inimigos; nulo = o LOW não atrapalha a leitura.</param>
+public sealed record GameGraphicsSetting(string Name, string LowValue, string? Note = null, string? VisibilityValue = null, string? VisibilityNote = null);
+
+public sealed record GameVendorAdvice(GpuVendor Vendor, string Recommendation, string Detail);
+
+/// <param name="CapSetting">Nome da opção de limite de FPS no menu do jogo.</param>
+public sealed record GpuGameProfile(
+    string GameId,
+    string Name,
+    string ShortName,
+    string? SteamAppId,
+    string MenuPath,
+    string CapSetting,
+    IReadOnlyList<GameVendorAdvice> VendorAdvice,
+    IReadOnlyList<GameGraphicsSetting> Settings,
+    string TestAdvice,
+    string? Caveat);
+
+public sealed record GpuLatencyScenario(string Title, string Goal, IReadOnlyList<string> Steps, string Tradeoff);
+
+/// <summary>
+/// Recomendações de driver e de jogo da página Placa de Vídeo. Os nomes seguem os menus reais (NVIDIA Control Panel /
+/// NVIDIA App, AMD Software: Adrenalin Edition e os menus de vídeo de cada jogo, conferidos em outubro de 2026).
+/// Tudo é aplicado manualmente pelo usuário: o app não usa métodos não documentados no driver nem edita arquivos de jogos.
+/// </summary>
+public static class GpuCatalog
+{
+    public const string AutomationNote =
+        "Nesta versão, o LZN Tweaker não altera o driver nem os jogos. As interfaces documentadas para isso (NVAPI da NVIDIA e ADLX da AMD) " +
+        "ainda não estão integradas, e o app não edita arquivos de configuração de jogos. Cada item mostra o caminho para configurar manualmente " +
+        "e o que esperar. \"Aplicado\" e \"Restaurado\" só aparecem para mudanças feitas pelo próprio app.";
+
+    private const string NvidiaPath = "NVIDIA Control Panel > Manage 3D settings (ou NVIDIA App > Graphics)";
+    private const string AmdPath = "AMD Software: Adrenalin Edition > Gaming > Graphics";
+
+    public static IReadOnlyList<GpuDriverSetting> DriverSettings { get; } =
+    [
+        // ─── NVIDIA ───
+        new("nv-power", GpuVendor.Nvidia, "Power management mode", NvidiaPath + " > Global Settings / Program Settings",
+            ["Normal / NVIDIA driver controlled", "Adaptive", "Prefer maximum performance", "Prefer consistent performance"],
+            "Normal no global · Prefer maximum performance só no perfil do jogo",
+            "Normal no global · Prefer maximum performance só no perfil do jogo",
+            GpuApplyMethod.Manual,
+            new("Define se a GPU pode reduzir clocks em cargas leves ou se fica em estados de desempenho mais altos.",
+                "Pode evitar quedas de clock em certos jogos leves, o que ajuda a estabilidade do frametime.",
+                "Aumenta consumo, temperatura e ruído, inclusive fora dos jogos se usado no global.",
+                "Use por jogo (Program Settings) e compare antes de manter. No global, deixe o padrão.",
+                "Todas as GeForce. Os nomes das opções variam conforme a versão do driver.",
+                "Volte a opção para o padrão (Normal / NVIDIA driver controlled) ou use \"Restore\" no perfil do programa."),
+            "Pode ajudar a manter a GPU em estados de desempenho mais elevados, mas aumenta o consumo e pode elevar a temperatura."),
+        new("nv-llm", GpuVendor.Nvidia, "Low Latency Mode", NvidiaPath + " > Program Settings",
+            ["Off", "On", "Ultra"],
+            "Off quando o jogo tem Reflex · Ultra para testar em jogos sem Reflex",
+            "Off quando o jogo tem Reflex · On em jogos sem Reflex",
+            GpuApplyMethod.Manual,
+            new("Limita a fila de quadros que o processador prepara antes da GPU, reduzindo a espera entre o comando e a imagem.",
+                "Menor latência em jogos limitados pela GPU que não têm NVIDIA Reflex.",
+                "Em alguns jogos pode reduzir o FPS ou piorar o frametime; Ultra também limita o FPS abaixo da taxa do monitor quando há G-SYNC + V-Sync.",
+                "Somente em jogos sem Reflex. Com Reflex ativo no jogo, o Reflex prevalece e este modo pode ficar em Off.",
+                "GeForce em DirectX 9/10/11. Em DirectX 12 e Vulkan, o controle é do jogo (Reflex).",
+                "Volte para Off no perfil do jogo."),
+            "Não combine Ultra com Reflex como regra: o Reflex do jogo substitui este modo."),
+        new("nv-refresh", GpuVendor.Nvidia, "Preferred refresh rate", NvidiaPath + " > Global Settings",
+            ["Application-controlled", "Highest available"],
+            "Highest available", "Highest available",
+            GpuApplyMethod.Manual,
+            new("Faz o driver usar a maior taxa de atualização disponível quando o jogo não define uma.",
+                "Evita jogos rodando a 60 Hz por engano em monitores de alta taxa.",
+                "Nenhuma relevante; alguns jogos antigos preferem a taxa definida por eles.",
+                "Sempre que o monitor tiver mais de 60 Hz.",
+                "GeForce; o item aparece por monitor.",
+                "Volte para Application-controlled."),
+            null),
+        new("nv-shadercache", GpuVendor.Nvidia, "Shader Cache Size", NvidiaPath + " > Global Settings",
+            ["Driver Default", "Disabled", "10GB", "100GB", "Unlimited"],
+            "Driver Default ou Unlimited", "Driver Default ou Unlimited",
+            GpuApplyMethod.Manual,
+            new("Guarda no disco os shaders já compilados para não recompilar a cada partida.",
+                "Menos travadas (stutter) na primeira vez que efeitos aparecem e em mapas já jogados.",
+                "Usa espaço em disco; Unlimited pode crescer bastante.",
+                "Mantenha ligado. Use Unlimited se tiver espaço livre e notar recompilações frequentes.",
+                "GeForce; valores disponíveis variam por driver.",
+                "Volte para Driver Default. Nunca deixe Disabled."),
+            "Desativar o cache aumenta o stutter; não é uma otimização."),
+        new("nv-texfilter", GpuVendor.Nvidia, "Texture filtering - Quality", NvidiaPath + " > Global Settings / Program Settings",
+            ["High performance", "Performance", "Quality", "High quality"],
+            "High performance", "Quality",
+            GpuApplyMethod.Manual,
+            new("Controla otimizações do driver na filtragem de texturas.",
+                "High performance pode render alguns quadros a mais em GPUs mais fracas.",
+                "Texturas um pouco mais serrilhadas ou com cintilação a distância.",
+                "High performance no perfil competitivo; Quality (padrão) se notar perda visual.",
+                "GeForce.",
+                "Volte para Quality (padrão)."),
+            null),
+        new("nv-vsync", GpuVendor.Nvidia, "Vertical sync", NvidiaPath + " > Program Settings",
+            ["Use the 3D application setting", "Off", "On", "Adaptive", "Fast"],
+            "Off (sem VRR) · On no driver se usar G-SYNC", "Conforme Monitor e Latência (G-SYNC: On no driver, Off no jogo)",
+            GpuApplyMethod.Manual,
+            new("Sincroniza a entrega de quadros com o monitor para evitar tearing.",
+                "Imagem sem cortes; com G-SYNC, evita tearing quando o FPS encosta no limite do monitor.",
+                "Sem VRR, adiciona latência e pode travar o FPS na taxa do monitor.",
+                "FPS irrestrito: Off. Com G-SYNC: On no driver e Off no jogo (nunca os dois).",
+                "GeForce; o comportamento com G-SYNC depende de o monitor ser compatível.",
+                "Volte para Use the 3D application setting."),
+            "Use V-Sync no driver ou no jogo, nunca nos dois ao mesmo tempo."),
+        new("nv-maxfps", GpuVendor.Nvidia, "Max Frame Rate", NvidiaPath + " > Global Settings / Program Settings",
+            ["Off", "On (limite por jogo)"],
+            "Off no global", "Off no global · limite por jogo se os testes mostrarem benefício",
+            GpuApplyMethod.Manual,
+            new("Limita o FPS pelo driver.",
+                "Frametime mais regular e menos calor quando a GPU sobra.",
+                "Um limite global atrapalha jogos diferentes; um limite mal escolhido reduz o FPS à toa.",
+                "Prefira o limite do próprio jogo. Use o do driver só por jogo, quando o jogo não tiver limite.",
+                "GeForce (20 a 1000 FPS).",
+                "Volte para Off."),
+            null),
+        new("nv-nis", GpuVendor.Nvidia, "Image Scaling", NvidiaPath + " > Global Settings",
+            ["Off", "On"],
+            "Off", "Off",
+            GpuApplyMethod.Manual,
+            new("Renderiza em resolução menor e aumenta para a nativa com nitidez.",
+                "Mais FPS para quem aceita perder nitidez.",
+                "Imagem menos nítida; exige escolher uma resolução menor no jogo.",
+                "Só se precisar de FPS e aceitar upscaling. Prefira o upscaler do próprio jogo.",
+                "GeForce.",
+                "Volte para Off e restaure a resolução nativa no jogo."),
+            null),
+
+        // ─── AMD ───
+        new("amd-antilag", GpuVendor.Amd, "Radeon Anti-Lag", AmdPath + " (perfil do jogo)",
+            ["Off", "On"],
+            "On no perfil de jogos sem Anti-Lag 2", "On no perfil de jogos sem Anti-Lag 2",
+            GpuApplyMethod.Manual,
+            new("Recurso do driver que ajusta o ritmo do processador para reduzir a fila de quadros.",
+                "Menor latência em jogos limitados pela GPU.",
+                "Pode reduzir um pouco o FPS em alguns jogos.",
+                "Por jogo, quando o jogo não oferece Radeon Anti-Lag 2.",
+                "Radeon com Adrenalin. Não funciona junto com o Radeon Chill.",
+                "Desligue no perfil do jogo."),
+            "É diferente do Anti-Lag+ (retirado em 2023 após banimentos no CS2) e do Anti-Lag 2, que é integrado ao jogo."),
+        new("amd-antilag2", GpuVendor.Amd, "Radeon Anti-Lag 2", "Menu de vídeo do próprio jogo (não fica no driver)",
+            ["Ativar no jogo quando disponível", "Desativado"],
+            "Ativar no menu do jogo quando suportado", "Ativar no menu do jogo quando suportado",
+            GpuApplyMethod.Manual,
+            new("Reduz a latência de entrada em jogos que oferecem integração compatível. Não funciona em qualquer jogo automaticamente.",
+                "Menor latência, com controle feito pelo próprio jogo.",
+                "Nenhuma conhecida além de um possível pequeno custo de FPS.",
+                "Sempre que o jogo oferecer a opção.",
+                "Depende do suporte do jogo, da GPU (Radeon RX 400 ou mais nova) e do driver.",
+                "Desative no menu do jogo."),
+            "Não trate como equivalente ao Radeon Anti-Lag do driver."),
+        new("amd-chill", GpuVendor.Amd, "Radeon Chill", AmdPath,
+            ["Off", "On"],
+            "Off", "Off (prefira o limite de FPS do jogo)",
+            GpuApplyMethod.Manual,
+            new("Reduz o FPS dinamicamente quando há pouco movimento, para economizar energia.",
+                "Menos consumo e temperatura.",
+                "O FPS varia com o movimento, o que prejudica jogos competitivos e desativa o Anti-Lag.",
+                "Fora de jogos competitivos.",
+                "Radeon. Incompatível com Radeon Anti-Lag e Radeon Boost.",
+                "Volte para Off."),
+            null),
+        new("amd-boost", GpuVendor.Amd, "Radeon Boost", AmdPath,
+            ["Off", "On"],
+            "Off", "Off",
+            GpuApplyMethod.Manual,
+            new("Reduz a resolução durante movimentos rápidos de câmera.",
+                "Mais FPS nos movimentos rápidos.",
+                "A nitidez varia justamente quando você mira; a imagem muda de qualidade.",
+                "Só para quem aceita resolução dinâmica.",
+                "Radeon, em jogos suportados.",
+                "Volte para Off."),
+            null),
+        new("amd-enhancedsync", GpuVendor.Amd, "Radeon Enhanced Sync", AmdPath,
+            ["Off", "On"],
+            "Off", "Off (teste se o tearing incomodar)",
+            GpuApplyMethod.Manual,
+            new("Sincronização que reduz tearing sem travar o FPS na taxa do monitor.",
+                "Menos tearing com latência menor que o V-Sync tradicional.",
+                "Em alguns jogos causa stutter.",
+                "Como teste, se o tearing incomodar e não houver FreeSync.",
+                "Radeon.",
+                "Volte para Off."),
+            null),
+        new("amd-vsync", GpuVendor.Amd, "Wait for Vertical Refresh", AmdPath,
+            ["Always Off", "Off, unless application specifies", "On, unless application specifies", "Always On"],
+            "Off, unless application specifies", "Off, unless application specifies",
+            GpuApplyMethod.Manual,
+            new("V-Sync do driver.",
+                "Remove tearing.",
+                "Adiciona latência e limita o FPS à taxa do monitor.",
+                "Deixe desligado para FPS irrestrito e controle o V-Sync no jogo.",
+                "Segundo a AMD, vale para jogos OpenGL; em DirectX e Vulkan, vale o V-Sync do jogo.",
+                "Volte para o padrão (Off, unless application specifies)."),
+            "Os nomes exatos das opções podem variar conforme a versão do Adrenalin."),
+        new("amd-texfilter", GpuVendor.Amd, "Texture Filtering Quality", AmdPath + " > Advanced",
+            ["Performance", "Standard", "High"],
+            "Performance", "Standard",
+            GpuApplyMethod.Manual,
+            new("Controla otimizações do driver na filtragem de texturas.",
+                "Performance pode render alguns quadros a mais.",
+                "Pequena perda de qualidade nas texturas.",
+                "Performance no perfil competitivo; Standard (padrão) se notar perda visual.",
+                "Radeon.",
+                "Volte para Standard."),
+            null),
+        new("amd-surface", GpuVendor.Amd, "Surface Format Optimization", AmdPath + " > Advanced",
+            ["On", "Off"],
+            "On", "On",
+            GpuApplyMethod.Manual,
+            new("Permite ao driver usar formatos de superfície mais leves quando o jogo permite.",
+                "Pequeno ganho de desempenho em alguns jogos.",
+                "Raramente, diferença visual mínima.",
+                "Mantenha ligado (é o padrão).",
+                "Radeon; a opção pode não aparecer em todas as GPUs.",
+                "Volte para On (padrão)."),
+            null),
+        new("amd-shadercache", GpuVendor.Amd, "Shader Cache", AmdPath + " > Advanced",
+            ["AMD Optimized", "On", "Off"],
+            "AMD Optimized (padrão)", "AMD Optimized (padrão)",
+            GpuApplyMethod.Manual,
+            new("Guarda os shaders compilados para não recompilar em cada partida.",
+                "Menos stutter em mapas e efeitos já vistos.",
+                "Usa espaço em disco.",
+                "Mantenha no padrão. Use \"Reset Shader Cache\" só se houver problemas após atualizar o driver.",
+                "Radeon; os valores disponíveis variam por versão.",
+                "Volte para AMD Optimized."),
+            "Desligar o cache aumenta o stutter; não é uma otimização."),
+        new("amd-tessellation", GpuVendor.Amd, "Tessellation Mode", AmdPath + " > Advanced",
+            ["AMD Optimized", "Use application settings", "Override application settings"],
+            "AMD Optimized", "AMD Optimized",
+            GpuApplyMethod.Manual,
+            new("Controla o nível de tesselação (detalhe geométrico) pedido pelo jogo.",
+                "O modo AMD Optimized evita níveis exagerados sem mexer na aparência normal.",
+                "Forçar níveis baixos pode alterar a geometria de alguns jogos.",
+                "Mantenha AMD Optimized (padrão).",
+                "Radeon.",
+                "Volte para AMD Optimized."),
+            null),
+        new("amd-hyprrx", GpuVendor.Amd, "HYPR-RX", AmdPath,
+            ["Off", "On", "HYPR-RX Eco"],
+            "Off", "Off",
+            GpuApplyMethod.Manual,
+            new("Atalho que liga vários recursos de uma vez: AMD Fluid Motion Frames (AFMF), Radeon Super Resolution, Radeon Anti-Lag e Radeon Boost; o modo Eco também liga o Radeon Chill.",
+                "Mais FPS exibido e menor latência sem configurar item por item.",
+                "AFMF gera quadros intermediários (o FPS exibido não é o FPS real do jogo), RSR e Boost reduzem a nitidez e o Eco ativa o Chill.",
+                "Só se você aceita esses recursos juntos. No competitivo, prefira configurar cada item.",
+                "Radeon recentes; o conjunto de recursos muda com o driver.",
+                "Desligue o HYPR-RX e confira se os recursos que ele ativou voltaram ao estado anterior."),
+            "Revise o que o HYPR-RX ativa antes de usar: ele pode ligar recursos que você desligou."),
+    ];
+
+    public static IReadOnlyList<GpuGameProfile> Games { get; } =
+    [
+        new("cs2", "Counter-Strike 2", "CS2", "730",
+            "Settings > Video > Advanced Video", "Maximum FPS (In Game)",
+            [
+                new(GpuVendor.Nvidia, "NVIDIA Reflex Low Latency: Enabled",
+                    "Teste Enabled + Boost como alternativa: pode manter os clocks elevados e aumentar o consumo, sem garantia de melhora. Com Reflex ativo, deixe o Low Latency Mode do driver em Off. Prefer maximum performance só no perfil do cs2.exe, se você medir benefício."),
+                new(GpuVendor.Amd, "AMD Anti-Lag 2: Enabled (no menu do jogo)",
+                    "Suporte oficial desde o Adrenalin 24.6.1. Se a opção não aparecer, atualize o driver; como alternativa, use o Radeon Anti-Lag no perfil do jogo. Nunca use o antigo Anti-Lag+, que causou banimentos VAC em 2023."),
+            ],
+            [
+                new("Resolution", "Nativa", "Reduzir é opcional, não imposto."),
+                new("NVIDIA Reflex Low Latency", "Enabled (NVIDIA)", "Só aparece com GPU NVIDIA; Enabled + Boost é opção de teste."),
+                new("AMD Anti-Lag 2", "Enabled (AMD)", "Só aparece com GPU Radeon e driver compatível."),
+                new("Boost Player Contrast", "Enabled", "Destaca os jogadores; mantenha ativado mesmo no LOW."),
+                new("Wait for Vertical Sync", "Disabled", "Ligue só no cenário com VRR, se preferir o V-Sync do jogo ao do driver."),
+                new("Multisampling Anti-Aliasing Mode", "CMAA2", "Custo baixo e bordas aceitáveis; None é o mais leve.", "4x MSAA", "Bordas mais limpas ajudam a distinguir silhuetas."),
+                new("Global Shadow Quality", "Low", null, "High", "Sombras mais completas ajudam a perceber jogadores próximos de cantos."),
+                new("Dynamic Shadows", "Sun Only", null, "All", "Mostra as sombras de todas as fontes de luz."),
+                new("Model / Texture Detail", "Low"),
+                new("Texture Filtering Mode", "Bilinear", null, "Anisotropic 4x", "Texturas mais nítidas a distância."),
+                new("Shader Detail", "Low"),
+                new("Particle Detail", "Low"),
+                new("Ambient Occlusion", "Disabled"),
+                new("High Dynamic Range", "Performance"),
+                new("FidelityFX Super Resolution", "Disabled (Highest Quality)", "Mantém a resolução nativa; use FSR só se precisar de FPS."),
+            ],
+            "Teste em partidas reais ou em mapas da comunidade com bots, sempre na mesma cena, e observe o 1% low, não só o FPS máximo.",
+            "Motion Blur, Depth of Field, Film Grain e Chromatic Aberration não existem nos menus do CS2. O app não edita arquivos do jogo (ex.: cs2_video.txt)."),
+        new("valorant", "VALORANT", "VAL", null,
+            "Settings > Video > General / Graphics Quality", "Limit FPS Always / Max FPS Always",
+            [
+                new(GpuVendor.Nvidia, "NVIDIA Reflex Low Latency: On",
+                    "On + Boost é opcional para teste e pode aumentar o consumo. Com Reflex ativo, deixe o Low Latency Mode do driver em Off."),
+                new(GpuVendor.Amd, "AMD Anti-Lag 2: ativar se a opção aparecer no menu",
+                    "Há relatos de suporte a partir do patch 12.09 (maio de 2026), sem confirmação nas notas oficiais da Riot. Confirme se a opção existe no seu jogo; o app não afirma que ela está ativa. Sem ela, use o Radeon Anti-Lag no perfil do jogo."),
+            ],
+            [
+                new("Display Mode", "Fullscreen"),
+                new("Resolution", "Nativa", "Reduzir é opcional, não imposto."),
+                new("NVIDIA Reflex Low Latency", "On (NVIDIA)", "Só aparece com GPU NVIDIA."),
+                new("Multithreaded Rendering", "On"),
+                new("Material Quality", "Low"),
+                new("Texture Quality", "Low", "Afeta pouco o FPS se houver VRAM sobrando."),
+                new("Detail Quality", "Low"),
+                new("UI Quality", "Low"),
+                new("Vignette", "Off"),
+                new("VSync", "Off"),
+                new("Anti-Aliasing", "None", null, "MSAA 2x", "Bordas menos serrilhadas nas silhuetas."),
+                new("Anisotropic Filtering", "1x", null, "4x", "Texturas mais nítidas a distância."),
+                new("Improve Clarity", "Off", null, "On", "Realça contornos."),
+                new("Experimental Sharpening", "Off"),
+                new("Bloom", "Off"),
+                new("Distortion", "Off"),
+                new("Cast Shadows", "Off"),
+            ],
+            "Use o modo de prática (Range) ou partidas reais e compare o 1% low nas mesmas condições.",
+            "O VALORANT não tem Motion Blur, Film Grain ou Chromatic Aberration. O LZN Tweaker nunca toca no Vanguard nem em arquivos do jogo."),
+        new("overwatch2", "Overwatch 2", "OW", "2357570",
+            "Options > Video (Video / Graphics Quality)", "Frame Rate: Custom (limite)",
+            [
+                new(GpuVendor.Nvidia, "NVIDIA Reflex: Enabled",
+                    "Enabled + Boost é opção de teste. Não force Low Latency Mode Ultra no driver com o Reflex ativo."),
+                new(GpuVendor.Amd, "Radeon Anti-Lag (driver), no perfil do jogo",
+                    "Não há confirmação oficial de Anti-Lag 2 no Overwatch; não presuma suporte."),
+            ],
+            [
+                new("Display Mode", "Fullscreen"),
+                new("Dynamic Render Scale", "Off", "Evita nitidez variando durante as lutas."),
+                new("Render Scale", "100%", "Reduzir é opcional, se precisar de FPS."),
+                new("V-Sync", "Off"),
+                new("Triple Buffering", "Off"),
+                new("Reduce Buffering", "On"),
+                new("NVIDIA Reflex", "Enabled (NVIDIA)", "Só aparece com GPU NVIDIA."),
+                new("High Quality Upsampling", "Default"),
+                new("Texture Quality", "Low", "Afeta pouco o FPS se houver VRAM sobrando."),
+                new("Texture Filtering Quality", "Low - 1x", null, "4x", "Texturas mais nítidas a distância."),
+                new("Local Fog Detail", "Low"),
+                new("Dynamic Reflections", "Off"),
+                new("Shadow Detail", "Low"),
+                new("Model Detail", "Low"),
+                new("Effects Detail", "Low"),
+                new("Lighting Quality", "Low"),
+                new("Antialias Quality", "Low - FXAA", null, "Medium", "Bordas menos serrilhadas."),
+                new("Refraction Quality", "Low"),
+                new("Screenshot Quality", "1x"),
+                new("Ambient Occlusion", "Off"),
+                new("Local Reflections", "Off"),
+                new("Damage FX", "Default"),
+            ],
+            "Teste durante lutas com muitos efeitos (ultimates, várias equipes) e observe os 1% lows.",
+            "Em 2026 o jogo passou a se chamar apenas Overwatch no menu. Não há Motion Blur, Film Grain ou Chromatic Aberration ajustáveis."),
+        new("deadlock", "Deadlock", "DL", "1422450",
+            "Settings > Video (Advanced Settings)", "In-Game Maximum FPS",
+            [
+                new(GpuVendor.Nvidia, "NVIDIA Reflex, se a opção aparecer no menu",
+                    "Adicionado em fevereiro de 2025; o nome e os valores podem mudar entre versões. Boost é alternativa de teste."),
+                new(GpuVendor.Amd, "Radeon Anti-Lag (driver), no perfil do jogo",
+                    "Não há confirmação de Anti-Lag 2 no Deadlock. Use-o somente se a opção aparecer no menu do jogo."),
+            ],
+            [
+                new("Window Mode", "Fullscreen"),
+                new("Resolution", "Nativa", "Reduzir é opcional, não imposto."),
+                new("Upscaling Technology", "Desativado (nativa)", "FSR 2 ou DLSS só se precisar de FPS."),
+                new("Anti-Aliasing", "FXAA", "Custo baixo; desligar deixa bordas muito serrilhadas."),
+                new("Screen Space AO", "Off"),
+                new("Distance Field Shadows", "Off"),
+                new("Shadow Quality", "Low", null, "Medium", "Ajuda a ler posições pelas sombras."),
+                new("Fog Quality", "Low"),
+                new("Post Process Bloom", "Off"),
+                new("Effects Bloom", "Off"),
+                new("V-Sync", "Off"),
+                new("Area Lights", "Off"),
+                new("Depth of Field", "Off"),
+                new("Displacement Mapping", "Off"),
+            ],
+            "Avalie em lutas de equipe intensas, não só em áreas vazias, comparando o 1% low.",
+            "O Deadlock está em acesso antecipado e os menus mudam com frequência. Os perfis do gameinfo.gi ficam em Jogos > Deadlock."),
+    ];
+
+    public static IReadOnlyList<GpuLatencyScenario> Scenarios { get; } =
+    [
+        new("Modo A — FPS irrestrito",
+            "Maior FPS possível e menor latência, aceitando tearing.",
+            [
+                "V-Sync desligado no jogo e no driver.",
+                "NVIDIA Reflex ou AMD Anti-Lag (2, quando o jogo tiver) ativado.",
+                "Sem limite global de FPS no driver.",
+                "Limite no próprio jogo só se ele deixar o frametime mais estável nos seus testes.",
+            ],
+            "Consequência possível: tearing (cortes horizontais na imagem)."),
+        new("Modo B — Baixa latência com VRR",
+            "Imagem mais fluida sem tearing; o objetivo não é necessariamente o maior FPS.",
+            [
+                "Confirme que o monitor tem G-SYNC/FreeSync e que ele está ligado no driver e no monitor.",
+                "NVIDIA: G-SYNC ligado, V-Sync On no driver e Off no jogo, Reflex ativo no jogo (o Reflex já limita o FPS abaixo da taxa do monitor).",
+                "AMD: FreeSync ligado no driver e um limite de FPS um pouco abaixo da taxa máxima do monitor.",
+                "Limite pelo menos 3 FPS abaixo da taxa máxima para permanecer na faixa do VRR.",
+            ],
+            "Custo: um pouco mais de latência que o modo irrestrito, em troca de imagem sem cortes."),
+    ];
+
+    /// <summary>Orientação de limite de FPS conforme a resposta do usuário sobre VRR e a taxa lida do monitor.</summary>
+    public static string CapAdvice(VrrAnswer vrr, int? refreshRateHz)
+    {
+        var hz = refreshRateHz is { } rate ? $"{rate} Hz" : "a taxa do seu monitor";
+        return vrr switch
+        {
+            VrrAnswer.Available => refreshRateHz is { } r and > 10
+                ? $"Com VRR em {hz}: limite em torno de {r - 3} FPS (3 abaixo da taxa) para ficar dentro da faixa. Com NVIDIA, Reflex + V-Sync no driver já faz esse limite automaticamente."
+                : "Com VRR: limite o FPS alguns quadros abaixo da taxa do monitor para ficar dentro da faixa.",
+            VrrAnswer.NotAvailable =>
+                $"Sem VRR em {hz}: V-Sync desligado e sem limite global. Use um limite no jogo só se seus testes mostrarem frametimes mais estáveis.",
+            _ => $"Escolha uma resposta acima. Sem VRR, o caminho é o Modo A (FPS irrestrito); com VRR, o Modo B, com limite um pouco abaixo de {hz}."
+        };
+    }
+
+    /// <summary>Orientação de limite para um jogo, sem aplicar nada.</summary>
+    public static string GameCapAdvice(GpuGameProfile game, GpuOptimizationMode mode, VrrAnswer vrr, int? refreshRateHz)
+    {
+        if (vrr == VrrAnswer.Available && refreshRateHz is { } hz and > 10)
+            return $"Com VRR: {game.CapSetting} em torno de {hz - 3} FPS, ou deixe o Reflex limitar automaticamente (NVIDIA).";
+        return mode == GpuOptimizationMode.CompetitiveStable
+            ? $"{game.CapSetting}: teste um limite que o PC mantenha quase sempre (perto do seu 1% low) e compare o frametime com e sem limite."
+            : $"{game.CapSetting}: sem limite ou um limite alto; limite só se melhorar a estabilidade nos seus testes.";
+    }
+}
