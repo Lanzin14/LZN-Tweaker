@@ -111,15 +111,11 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="28,22,28,28">
             <!-- Cabeçalho -->
-            <Grid Margin="0,0,0,16">
-                <StackPanel Margin="0,0,360,0">
-                    <TextBlock Text="Placa de Vídeo" Style="{StaticResource Lzn.Text.Title}" />
-                    <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Gpu}" Margin="0,6,0,0" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <controls:PageHeader Title="Placa de Vídeo" Guide="{x:Static shell:CategoryGuides.Gpu}">
+                <StackPanel Orientation="Horizontal">
                     <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding DetectCommand}" Margin="0,0,8,0" ToolTip="Ler novamente a placa, o driver e o monitor">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE72C;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
+                            <TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
                             <TextBlock Text="Atualizar detecção" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
                         </StackPanel>
                     </Button>
@@ -131,7 +127,7 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
-            </Grid>
+            </controls:PageHeader>
 
             <!-- Placa detectada: modelo e estado; detalhes técnicos em "Saiba mais" (começa recolhido) -->
             <Border Style="{StaticResource Lzn.Panel}" Padding="18,12">

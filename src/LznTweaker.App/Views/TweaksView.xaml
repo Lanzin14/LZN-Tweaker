@@ -130,18 +130,10 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="28,22,32,32">
-
-            <!-- Title & Subtitle Header -->
-            <Grid Margin="0,0,0,18">
-                <StackPanel>
-                    <TextBlock Text="Biblioteca de Tweaks" Style="{StaticResource Lzn.Text.Title}" />
-                    <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Advanced}" Margin="0,6,0,0" />
-                </StackPanel>
-                <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource Lzn.SurfaceActive}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="8" Padding="10,6">
-                    <TextBlock Text="EXECUÇÃO COORDENADA" Foreground="{StaticResource Lzn.AccentText}" FontSize="9" FontWeight="Bold" />
-                </Border>
-            </Grid>
+        <StackPanel Margin="28,22,28,28">
+            <!-- Os mesmos ajustes também estão na Geral (docs/REDESIGN-OBSIDIAN.md, decisão 8.1): o aviso evita aplicar pelos dois lugares. -->
+            <controls:PageHeader Title="Avançado" Guide="{x:Static shell:CategoryGuides.Advanced}"
+                                 Status="Estes ajustes também estão na página Geral. Aplique por um lugar só." Margin="0,0,0,18" />
 
             <!-- Presets Bar & Quick Selection -->
             <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,0,0,16">

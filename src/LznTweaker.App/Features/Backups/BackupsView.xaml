@@ -13,21 +13,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="0,0,0,16">
-            <StackPanel Margin="0,0,340,0">
-                <TextBlock Text="Backups" Style="{StaticResource Lzn.Text.Title}" />
-                <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Backups}" Margin="0,6,0,0" />
-                <TextBlock Text="{Binding Summary}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,6,0,0" TextWrapping="Wrap" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <controls:PageHeader Title="Histórico" Guide="{x:Static shell:CategoryGuides.Backups}" Status="{Binding Summary}">
+            <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE72C;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Atualizar" FontSize="12" /></StackPanel>
+                    <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Atualizar" FontSize="12" /></StackPanel>
                 </Button>
                 <Button Style="{StaticResource Lzn.GlowButton}" Command="{Binding RestoreSelectedCommand}" ToolTip="Restaura em lote os ajustes marcados que têm valor anterior registrado">
                     <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE7A7;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Restaurar selecionados" FontSize="12" /></StackPanel>
                 </Button>
             </StackPanel>
-        </Grid>
+        </controls:PageHeader>
 
         <Grid Grid.Row="1" Margin="0,0,0,12">
             <Grid.ColumnDefinitions>

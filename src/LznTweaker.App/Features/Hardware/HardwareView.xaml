@@ -26,12 +26,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Margin="0,0,0,14">
-            <TextBlock Text="Hardware" Style="{StaticResource Lzn.Text.Title}" />
-            <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Hardware}" Margin="0,6,0,0" />
-            <!-- Resultado da leitura (concluída, parcial ou com falha); antes ficava na Home. -->
-            <TextBlock Text="{Binding Dashboard.StatusMessage}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,6,0,0" />
-        </StackPanel>
+        <!-- Status: resultado da leitura (concluída, parcial ou com falha). -->
+        <controls:PageHeader Title="Hardware" Guide="{x:Static shell:CategoryGuides.Hardware}" Status="{Binding Dashboard.StatusMessage}" Margin="0,0,0,14" />
 
         <controls:AdaptiveGridPanel Grid.Row="1" MinItemWidth="200" MaxColumns="5" Spacing="10" Margin="0,0,8,12" DataContext="{Binding Dashboard}">
             <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="CPU" Style="{StaticResource Label}" /><TextBlock Text="{Binding ProcessorDetail}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding CpuUsageText, StringFormat=Uso: {0}}" FontSize="11" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,4,0,0" /></StackPanel></Border>

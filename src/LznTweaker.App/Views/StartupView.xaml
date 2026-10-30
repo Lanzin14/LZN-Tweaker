@@ -87,18 +87,8 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="30,22,34,32">
-
-            <!-- Title & Subtitle Header -->
-            <Grid Margin="0,0,0,20">
-                <StackPanel>
-                    <TextBlock Text="Gerenciador de Inicialização" Style="{StaticResource Lzn.Text.Title}" />
-                    <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Startup}" Margin="0,6,0,0" />
-                </StackPanel>
-                <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource Lzn.SurfaceActive}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="8" Padding="10,6">
-                    <TextBlock Text="COMPATIBILIDADE NATIVA (STARTUPAPPROVED)" Foreground="{StaticResource Lzn.AccentText}" FontSize="9" FontWeight="Bold" />
-                </Border>
-            </Grid>
+        <StackPanel Margin="28,22,28,28">
+            <controls:PageHeader Title="Inicialização" Guide="{x:Static shell:CategoryGuides.Startup}" Status="Usa o mesmo controle do Gerenciador de Tarefas do Windows: o que for desativado aqui aparece desativado lá também." Margin="0,0,0,20" />
 
             <!-- Search & Actions Top Bar -->
             <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,0,0,16">

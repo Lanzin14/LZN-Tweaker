@@ -62,18 +62,8 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="30,22,34,32">
-
-            <!-- Title & Subtitle Header -->
-            <Grid Margin="0,0,0,20">
-                <StackPanel>
-                    <TextBlock Text="Limpeza do Sistema &amp; Cache" Style="{StaticResource Lzn.Text.Title}" />
-                    <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Cleanup}" Margin="0,6,0,0" />
-                </StackPanel>
-                <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource Lzn.SurfaceActive}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="8" Padding="10,6">
-                    <TextBlock Text="ARQUIVOS EM USO SÃO PRESERVADOS" Foreground="{StaticResource Lzn.RiskLow}" FontSize="9" FontWeight="Bold" />
-                </Border>
-            </Grid>
+        <StackPanel Margin="28,22,28,28">
+            <controls:PageHeader Title="Limpeza" Guide="{x:Static shell:CategoryGuides.Cleanup}" Status="Arquivos em uso são preservados: o que estiver aberto fica onde está." Margin="0,0,0,20" />
 
             <!-- Top Action & Space Summary Card -->
             <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,0,18">

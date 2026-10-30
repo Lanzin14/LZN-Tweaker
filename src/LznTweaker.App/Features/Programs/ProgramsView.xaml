@@ -190,8 +190,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="28,22,28,28">
-            <TextBlock Text="Programas" Style="{StaticResource Lzn.Text.Title}" />
-            <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Programs}" Margin="0,6,0,0" />
+            <controls:PageHeader Title="Programas" Guide="{x:Static shell:CategoryGuides.Programs}" Margin="0" />
 
             <!-- Recomendação, não obrigação -->
             <Border Style="{StaticResource Lzn.Panel}" Margin="0,16,0,0" Padding="18,14">

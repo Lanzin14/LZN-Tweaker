@@ -99,15 +99,11 @@
         </Grid.RowDefinitions>
 
         <!-- Cabeçalho -->
-        <Grid Margin="0,0,0,14">
-            <StackPanel>
-                <TextBlock Text="DEBLOAT" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" />
-                <TextBlock Text="Aplicativos pré-instalados" Style="{StaticResource Lzn.Text.Title}" Margin="0,4,0,0" />
-                <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Debloat}" Margin="0,6,0,0" />
-            </StackPanel>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource SecondaryButtonStyle}" Content="↻ Atualizar"
-                    Command="{Binding RefreshCommand}" Padding="12,8" />
-        </Grid>
+        <controls:PageHeader Title="Remover apps" Guide="{x:Static shell:CategoryGuides.Debloat}" Margin="0,0,0,14">
+            <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}">
+                <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Atualizar" FontSize="12" /></StackPanel>
+            </Button>
+        </controls:PageHeader>
 
         <!-- Status e aviso de conta -->
         <StackPanel Grid.Row="1" Margin="0,0,0,12">

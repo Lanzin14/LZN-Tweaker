@@ -326,20 +326,11 @@
             </Grid.RowDefinitions>
 
             <!-- Cabeçalho -->
-            <Grid Margin="0,0,0,16">
-                <StackPanel Margin="0,0,220,0">
-                    <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Title}" />
-                    <controls:CategoryInfo Guide="{Binding Guide}" Margin="0,6,0,0" />
-                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,6,0,0" />
-                </StackPanel>
-                <Button HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}"
-                        ToolTip="Ler novamente o estado real dos ajustes">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE72C;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
-                        <TextBlock Text="Verificar estado" FontSize="12" />
-                    </StackPanel>
+            <controls:PageHeader Title="{Binding Title}" Guide="{Binding Guide}" Status="{Binding StatusText}">
+                <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}" ToolTip="Ler novamente o estado real dos ajustes">
+                    <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Verificar estado" FontSize="12" /></StackPanel>
                 </Button>
-            </Grid>
+            </controls:PageHeader>
 
             <!-- Abas contextuais -->
             <StackPanel Grid.Row="1" Margin="0,0,0,12">
