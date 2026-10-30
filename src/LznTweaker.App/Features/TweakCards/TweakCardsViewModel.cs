@@ -86,7 +86,7 @@ public partial class TweakCardsViewModel : ObservableObject
 
     public string Title { get; }
     public CategoryGuide Guide { get; }
-    /// <summary>Lista compacta com detalhe fixo (hoje, só a página Geral); as demais páginas usam a grade de cards.</summary>
+    /// <summary>Lista compacta com detalhe fixo (Geral, Network e Fixes); sem a opção, a página usa a grade de cards.</summary>
     public bool UsesListLayout { get; }
 
     [ObservableProperty]

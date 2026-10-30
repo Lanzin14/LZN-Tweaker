@@ -122,7 +122,7 @@ public static class TweakCardPages
                 Confirmation: "O catálogo Winsock será redefinido para o padrão. Alguns programas de VPN ou filtros de rede podem precisar ser reinstalados, e o PC precisa ser reiniciado para concluir.\n\nContinuar?",
                 Note: "Requer reinicialização")],
             Description: "Para quando a internet para de funcionar depois de instalar ou remover VPN, antivírus ou outro programa de rede.")
-    ]);
+    ], ListLayout: true);
 
     public static TweakCardsPage Fixes { get; } = new("Fixes", CategoryGuides.Fixes,
     [
@@ -151,5 +151,5 @@ public static class TweakCardPages
                 RiskLevel.Warning, "Abrir", Tool: SystemTool.OpenSystemRestore,
                 Note: "Restaurar um ponto desfaz mudanças de sistema feitas depois dele.")],
             Description: "Atalhos para as ferramentas de reparo e recuperação do próprio Windows.")
-    ]);
+    ], ListLayout: true);
 }
