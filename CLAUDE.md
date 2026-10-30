@@ -18,7 +18,17 @@ Antes de mudar código, use o grafo em `graphify-out/` (ver `docs/GRAPHIFY.md`) 
 Áreas sensíveis (`sensitive_paths` em `tools/graph/expectations.json`) alteram o Windows: preserve backup, ponto de
 restauração obrigatório, `VerifyScript`, desfazer e o registro no histórico. Teste sem aplicar mudanças reais ao sistema.
 
+## Padrões
+
+Receitas em `docs/COMO-CRIAR.md` (página nova, ajuste novo, perfil de jogo, visual, erros). Em resumo:
+MVVM com CommunityToolkit (sem `Click=` nem `MessageBox` em code-behind; diálogos por `IUserDialogs`),
+cores só pelo tema (`Themes/`, `ThemeBrushes` em C#), recomendação nunca aparece como "Aplicado",
+e falhas inesperadas vão para o `AppLog`.
+
 ## Build e testes
 
 O app aberto trava `src/LznTweaker.App/bin`; compile com `-p:BaseOutputPath="$env:TEMP\lzn-build\"`.
 Os testes rodam sem elevação: `dotnet test .\tests\LznTweaker.Core.Tests -p:BaseOutputPath="$env:TEMP\lzn-test\"`.
+Interface: `dotnet test .\tests\LznTweaker.App.Smoke -p:BaseOutputPath="$env:TEMP\lzn-smoke-test\"` abre todas as
+páginas e falha com erro de XAML, recurso ou binding (prints em `%TEMP%\lzn-smoke`).
+Faça um commit por mudança e nunca trabalhe com a árvore suja.
