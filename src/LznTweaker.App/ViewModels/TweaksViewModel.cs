@@ -3,9 +3,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Media;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Changes;
 using LznTweaker.Core.Tweaks;
+using LznTweaker.Infrastructure;
 
 namespace LznTweaker.ViewModels;
 
@@ -122,6 +125,9 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
     private readonly TweakBatchExecutor _batchExecutor;
     private readonly TweakOperationHistory _history;
     private readonly TempCleanupPreviewService _tempCleanupPreviewService;
+    private readonly RestorePointPrompt _restorePointPrompt;
+    private readonly IUserDialogs _dialogs;
+    private readonly ITempCleanupPreviewDialog _tempCleanupPreview;
     private IReadOnlyDictionary<string, TweakOperationResult> _undoCandidates = new Dictionary<string, TweakOperationResult>();
     private TweakPresetOption _selectedPresetOption;
     private string _availabilityMessage = "Consultando disponibilidade…";
@@ -134,12 +140,27 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
         RestorePointGuard restorePointGuard,
         TweakBatchExecutor batchExecutor,
         TweakOperationHistory history,
-        TempCleanupPreviewService tempCleanupPreviewService)
+        TempCleanupPreviewService tempCleanupPreviewService,
+        RestorePointPrompt restorePointPrompt,
+        IUserDialogs dialogs,
+        ITempCleanupPreviewDialog tempCleanupPreview)
     {
         _restorePointGuard = restorePointGuard;
         _batchExecutor = batchExecutor;
         _history = history;
         _tempCleanupPreviewService = tempCleanupPreviewService;
+        _restorePointPrompt = restorePointPrompt;
+        _dialogs = dialogs;
+        _tempCleanupPreview = tempCleanupPreview;
+
+        // Mesmo fluxo de segurança das outras páginas: revisão, ponto de restauração obrigatório e só então o lote.
+        ApplyPresetCommand = new RelayCommand<TweakPreset>(ApplyPreset);
+        ClearSelectionCommand = new RelayCommand(ClearSelection);
+        RefreshCommand = new AsyncRelayCommand(() => RefreshAsync());
+        RunCommand = new AsyncRelayCommand(RunWithReviewAsync);
+        UndoCommand = new AsyncRelayCommand(UndoWithReviewAsync);
+        OpenProtectionCommand = new RelayCommand(OpenSystemProtection);
+        ShowDetailsCommand = new RelayCommand(ShowSelectedDetails);
 
         Presets =
         [
@@ -164,6 +185,13 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+    public IRelayCommand<TweakPreset> ApplyPresetCommand { get; }
+    public IRelayCommand ClearSelectionCommand { get; }
+    public IAsyncRelayCommand RefreshCommand { get; }
+    public IAsyncRelayCommand RunCommand { get; }
+    public IAsyncRelayCommand UndoCommand { get; }
+    public IRelayCommand OpenProtectionCommand { get; }
+    public IRelayCommand ShowDetailsCommand { get; }
     public ObservableCollection<TweakPresetOption> Presets { get; }
     public ObservableCollection<TweakItemViewModel> Items { get; }
     public IReadOnlyList<TweakItemViewModel> EssentialItems { get; }
@@ -352,33 +380,100 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
         }
     }
 
-    /// <summary>Estado da rede de segurança obrigatória antes de qualquer lote.</summary>
-    public Task<RestorePointReadiness> CheckRestorePointAsync(CancellationToken cancellationToken = default) =>
-        _restorePointGuard.CheckAsync(cancellationToken);
-
-    public async Task<TweakOperationResult?> EnableSystemProtectionAsync(CancellationToken cancellationToken = default)
+    /// <summary>Revisão do lote, ponto de restauração obrigatório (RestorePointPrompt) e execução.</summary>
+    private async Task RunWithReviewAsync()
     {
-        if (IsBusy)
-            return null;
-        IsBusy = true;
+        if (SelectedCount == 0 || IsBusy)
+            return;
+        if (!await _restorePointPrompt.EnsureAvailableAsync())
+            return;
+        // A Proteção do Sistema pode ter sido ativada agora; o item do ponto de restauração mostra o novo estado.
+        await UpdateItemStateAsync(Items.First(item => item.Definition.Id == TweakCatalog.CreateRestorePointId), CancellationToken.None);
+
+        IReadOnlyList<TempCleanupFile> selectedTempFiles = [];
+        if (Items.Any(item => item.IsSelected && item.Definition.Id == TweakCatalog.DeleteTemporaryFilesId))
+        {
+            try
+            {
+                var chosen = _tempCleanupPreview.Choose(await CreateTempCleanupPreviewAsync());
+                if (chosen is null)
+                    return;
+                selectedTempFiles = chosen;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+            {
+                _dialogs.ShowError($"Não foi possível gerar a prévia: {ex.Message}", "Prévia de limpeza");
+                return;
+            }
+        }
+
+        if (!_dialogs.Confirm(BuildReview(selectedTempFiles), "Confirmar execução dos Tweaks"))
+            return;
+        await RunSelectedAsync(selectedTempFiles);
+    }
+
+    private string BuildReview(IReadOnlyList<TempCleanupFile> selectedTempFiles)
+    {
+        var selected = Items.Where(item => item.IsSelected).ToArray();
+        var lines = string.Join(Environment.NewLine, selected.Select(item => $"• {item.Name} — risco {item.RiskLevel}"));
+        var cleanupLine = selected.Any(item => item.Definition.Id == TweakCatalog.DeleteTemporaryFilesId)
+            ? $"\n• Temporários escolhidos: {selectedTempFiles.Count:N0} arquivo(s), {FormatBytes(selectedTempFiles.Sum(file => file.Length))}."
+            : string.Empty;
+        var requiresUac = selected.Any(item => item.Definition.RequiresAdministrator);
+        var withoutRollback = selected.Count(item => !item.Definition.HasReliableRollback && item.Definition.Id != TweakCatalog.CreateRestorePointId);
+        return "O lote será executado em um único processo coordenado:\n\n" + lines + cleanupLine + "\n\n" +
+            (requiresUac ? "• Operações administrativas usam a elevação com que o LznTweaker foi iniciado.\n" : "• Este lote não requer administrador.\n") +
+            "• Antes de tudo, um ponto de restauração é criado (obrigatório). Se o Windows não criar nem houver um ponto das últimas 24 horas, nenhuma outra alteração é feita.\n" +
+            "• Cada operação é registrada no histórico; falhas não interrompem operações independentes, e uma falha no meio de um ajuste desfaz as partes já aplicadas dele.\n" +
+            (withoutRollback > 0
+                ? $"• {withoutRollback} item(ns) não têm reversão automática pelo app (ações pontuais ou scripts de sistema).\n"
+                : "• O estado anterior de todos os itens será registrado para o Undo.\n") +
+            "• Nenhum reinício será feito automaticamente.\n\nDeseja executar?";
+    }
+
+    private async Task UndoWithReviewAsync()
+    {
+        if (!CanUndoSelected)
+            return;
+        var names = string.Join(Environment.NewLine, UndoableSelectedNames.Select(name => $"• {name}"));
+        if (_dialogs.Confirm(
+                "O app verificará se os valores ainda correspondem aos que ele aplicou. Se outro programa ou você os alterou desde então, aquela reversão será ignorada para preservar o estado atual.\n\n" +
+                names + "\n\nContinuar?", "Confirmar reversão"))
+            await UndoSelectedAsync();
+    }
+
+    private void OpenSystemProtection()
+    {
         try
         {
-            var result = await _restorePointGuard.EnableProtectionAsync(cancellationToken);
-            OperationMessage = $"{result.RequestedState}: {result.Outcome} — {result.Message}";
-            var restorePointItem = Items.First(item => item.Definition.Id == TweakCatalog.CreateRestorePointId);
-            await UpdateItemStateAsync(restorePointItem, cancellationToken);
-            return result;
+            Process.Start(new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "SystemPropertiesProtection.exe")) { UseShellExecute = true });
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {
-            OperationMessage = $"Não foi possível ativar a Proteção do Sistema: {ex.Message}";
-            return null;
-        }
-        finally
-        {
-            IsBusy = false;
+            _dialogs.ShowError($"Não foi possível abrir Proteção do Sistema: {ex.Message}", "LznTweaker");
         }
     }
+
+    private void ShowSelectedDetails()
+    {
+        var definition = Items.FirstOrDefault(item => item.IsSelected)?.Definition ?? TweakCatalog.GetById(TweakCatalog.CreateRestorePointId);
+        _dialogs.ShowInfo(
+            $"{definition.Name}\n\n" +
+            $"Motivo técnico: {definition.TechnicalReason}\n\n" +
+            $"Compatibilidade: {definition.Compatibility}\n" +
+            $"Risco: {definition.RiskLevel}\n" +
+            $"Requer administrador: {definition.RequiresAdministrator}\n" +
+            $"Requer reinicialização: {definition.RequiresRestart}\n" +
+            $"Reversão confiável: {definition.HasReliableRollback}\n\n" +
+            $"Referência WinUtil: {definition.SourceUrl}",
+            "Detalhes do tweak");
+    }
+
+    private static string FormatBytes(long bytes) => bytes >= 1_073_741_824
+        ? $"{bytes / 1_073_741_824d:0.00} GB"
+        : bytes >= 1_048_576
+            ? $"{bytes / 1_048_576d:0.0} MB"
+            : $"{bytes / 1_024d:0} KB";
 
     private async Task UpdateItemStateAsync(TweakItemViewModel item, CancellationToken cancellationToken)
     {

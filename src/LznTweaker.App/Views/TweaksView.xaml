@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:shell="clr-namespace:LznTweaker.Shell"
+             xmlns:tweaks="clr-namespace:LznTweaker.Core.Tweaks;assembly=LznTweaker.Core"
              Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <Style x:Key="PanelCardStyle" TargetType="Border">
@@ -154,31 +155,31 @@
                         <!-- Preset Quick Buttons -->
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="PRESETS:" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" Margin="0,0,10,0" />
-                            <Button Style="{StaticResource PresetPillButtonStyle}" Click="PresetStandard_Click">
+                            <Button Style="{StaticResource PresetPillButtonStyle}" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Standard}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE734;" Style="{StaticResource Lzn.Icon}" Foreground="{StaticResource Lzn.AccentHover}" FontSize="10" Margin="0,0,6,0" />
                                     <TextBlock Text="Standard (Recomendado)" />
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource PresetPillButtonStyle}" Click="PresetMinimal_Click">
+                            <Button Style="{StaticResource PresetPillButtonStyle}" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Minimal}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE945;" Style="{StaticResource Lzn.Icon}" Foreground="{StaticResource Lzn.RiskLow}" FontSize="10" Margin="0,0,6,0" />
                                     <TextBlock Text="Mínimo" />
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource PresetPillButtonStyle}" Click="PresetAdvanced_Click">
+                            <Button Style="{StaticResource PresetPillButtonStyle}" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Advanced}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE713;" Style="{StaticResource Lzn.Icon}" Foreground="{StaticResource Lzn.RiskWarn}" FontSize="10" Margin="0,0,6,0" />
                                     <TextBlock Text="Avançado" />
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource PresetPillButtonStyle}" Click="ClearSelection_Click">
+                            <Button Style="{StaticResource PresetPillButtonStyle}" Command="{Binding ClearSelectionCommand}">
                                 <TextBlock Text="✕ Limpar Seleção" />
                             </Button>
                         </StackPanel>
 
                         <!-- Refresh State Button -->
-                        <Button Grid.Column="1" Style="{StaticResource PresetPillButtonStyle}" Click="Refresh_Click" Margin="0">
+                        <Button Grid.Column="1" Style="{StaticResource PresetPillButtonStyle}" Command="{Binding RefreshCommand}" Margin="0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="↻ " FontSize="11" />
                                 <TextBlock Text="Detectar Estado Real" />
@@ -301,10 +302,10 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Button Style="{StaticResource SecondaryButtonStyle}" Content="Abrir Proteção do Sistema" Click="OpenProtection_Click" HorizontalAlignment="Left" Padding="14,10" />
-                <Button Style="{StaticResource SecondaryButtonStyle}" Grid.Column="1" Content="Detalhes do Selecionado" Click="Details_Click" Margin="9,0,0,0" Padding="14,10" />
-                <Button Style="{StaticResource SecondaryButtonStyle}" Grid.Column="2" Content="↺ Undo Selecionados" Click="UndoSelected_Click" IsEnabled="{Binding CanUndoSelected}" Margin="9,0,0,0" Padding="14,10" />
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Column="3" Content="Executar Tweaks Selecionados" Click="RunTweaks_Click" IsEnabled="{Binding CanApply}" Margin="9,0,0,0" Padding="18,10" />
+                <Button Style="{StaticResource SecondaryButtonStyle}" Content="Abrir Proteção do Sistema" Command="{Binding OpenProtectionCommand}" HorizontalAlignment="Left" Padding="14,10" />
+                <Button Style="{StaticResource SecondaryButtonStyle}" Grid.Column="1" Content="Detalhes do Selecionado" Command="{Binding ShowDetailsCommand}" Margin="9,0,0,0" Padding="14,10" />
+                <Button Style="{StaticResource SecondaryButtonStyle}" Grid.Column="2" Content="↺ Undo Selecionados" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndoSelected}" Margin="9,0,0,0" Padding="14,10" />
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Column="3" Content="Executar Tweaks Selecionados" Command="{Binding RunCommand}" IsEnabled="{Binding CanApply}" Margin="9,0,0,0" Padding="18,10" />
             </Grid>
 
             <!-- Footer Note -->

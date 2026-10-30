@@ -57,6 +57,7 @@ public static class ServiceRegistration
         // Infraestrutura da interface
         services.AddSingleton<IUserDialogs, UserDialogs>();
         services.AddSingleton<RestorePointPrompt>();
+        services.AddSingleton<ITempCleanupPreviewDialog, TempCleanupPreviewDialog>();
         services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<NavigationService>();
         services.AddSingleton<INavigationService>(provider => provider.GetRequiredService<NavigationService>());
