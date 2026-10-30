@@ -230,7 +230,8 @@
                 <TextBlock Text="Estado detectado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
                 <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
                 <TextBlock Text="{Binding SwitchTooltip}" FontSize="11" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" Margin="0,8,0,0" />
-                <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
+                <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0"
+                           Visibility="{Binding Definition.SourceUrl, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
             </StackPanel>
         </DataTemplate>
 

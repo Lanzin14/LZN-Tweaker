@@ -48,7 +48,7 @@ public sealed class AppxItemViewModel(AppxPackageInfo package)
         $"{Package.FriendlyName}\nPacote: {Package.Name} · versão {Package.Version}\n\n" +
         Package.Category switch
         {
-            AppxCategory.Sponsored => "App promocional ou pré-instalado da lista curada (base: preset AppxDefault do WinUtil). Seguro para remover.",
+            AppxCategory.Sponsored => "App promocional ou pré-instalado da lista curada. Seguro para remover.",
             AppxCategory.System => "App da Microsoft que faz parte da experiência do Windows. A remoção pode afetar funcionalidades do Windows " +
                                    "ou de outros apps que dependem dele.",
             _ => "App que não está na lista curada; provavelmente foi instalado por você. Remova só se tiver certeza."

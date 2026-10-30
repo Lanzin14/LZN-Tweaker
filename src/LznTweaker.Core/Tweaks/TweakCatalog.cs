@@ -49,7 +49,7 @@ public sealed record TweakDefinition(
     bool RequiresRestart,
     bool HasReliableRollback,
     bool IsOneShotOperation,
-    string SourceUrl,
+    string? SourceUrl,
     IReadOnlyList<RegistryValueChange>? RegistryChanges = null,
     string? RestartNote = null,
     IReadOnlyList<RegistryValueChange>? HklmRegistryChanges = null,
@@ -111,7 +111,6 @@ public static class TweakCatalog
     private const string ExplorerAdvancedPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
     private const string ThemePersonalizePath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
     private const string GameConfigStorePath = @"System\GameConfigStore";
-    private const string WinUtilSourceUrl = "https://github.com/ChrisTitusTech/winutil/blob/main/config/tweaks.json";
 
     // O nome do plano é traduzido pelo Windows ("Desempenho Máximo" em pt-BR); "M.{1,2}ximo" tolera a
     // decodificação da saída do powercfg pelo console. Planos são sempre ativados/removidos pelo GUID.
@@ -144,7 +143,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: true,
-            WinUtilSourceUrl),
+            null),
 
         new(
             EndTaskOnTaskbarId,
@@ -159,7 +158,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings", "TaskbarEndTask", Microsoft.Win32.RegistryValueKind.DWord, 1)]),
 
         new(
@@ -175,7 +174,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: true,
-            WinUtilSourceUrl),
+            null),
 
         new(
             DisableTelemetryId,
@@ -190,7 +189,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: true,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             RestartNote: "Reinicialização recomendada para efetivar completamente.",
             HklmRegistryChanges:
             [
@@ -233,7 +232,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             HklmRegistryChanges:
             [
                 new(@"SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableWindowsConsumerFeatures", Microsoft.Win32.RegistryValueKind.DWord, 1)
@@ -252,7 +251,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             HklmRegistryChanges:
             [
                 new(@"SOFTWARE\Policies\Microsoft\Windows\System", "EnableActivityFeed", Microsoft.Win32.RegistryValueKind.DWord, 0),
@@ -273,7 +272,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             RegistryChanges:
             [
                 new(GameConfigStorePath, "GameDVR_Enabled", Microsoft.Win32.RegistryValueKind.DWord, 0)
@@ -296,7 +295,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             InvokeScript: "powercfg /h off",
             UndoScript: "powercfg /h on",
             VerifyScript: "(Get-ItemProperty -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power' -Name HibernateEnabled -ErrorAction Stop).HibernateEnabled -eq 0"),
@@ -314,7 +313,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: true,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             RestartNote: "Reinicialização necessária para aplicar a mudança de prioridade.",
             HklmRegistryChanges:
             [
@@ -334,7 +333,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             HklmRegistryChanges:
             [
                 new(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location", "Value", Microsoft.Win32.RegistryValueKind.String, "Deny")
@@ -353,7 +352,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             RegistryChanges:
             [
                 new(@"SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy", "01", Microsoft.Win32.RegistryValueKind.DWord, 0)
@@ -372,7 +371,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             HklmRegistryChanges:
             [
                 new(@"SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis", Microsoft.Win32.RegistryValueKind.DWord, 1)
@@ -427,7 +426,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: true,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize", "StartupDelayInMSec", Microsoft.Win32.RegistryValueKind.DWord, 0)],
             RestartNote: "Vale a partir do próximo logon."),
 
@@ -444,7 +443,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [
                 new RegistryValueChange(ThemePersonalizePath, "AppsUseLightTheme", Microsoft.Win32.RegistryValueKind.DWord, 0),
                 new RegistryValueChange(ThemePersonalizePath, "SystemUsesLightTheme", Microsoft.Win32.RegistryValueKind.DWord, 0)
@@ -463,7 +462,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(ExplorerAdvancedPath, "HideFileExt", Microsoft.Win32.RegistryValueKind.DWord, 0)],
             RestartNote: "Pode exigir reinício manual do Explorador"),
 
@@ -480,7 +479,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"SOFTWARE\Policies\Microsoft\Windows\Explorer", "DisableSearchBoxSuggestions", Microsoft.Win32.RegistryValueKind.DWord, 1)]),
 
         new(
@@ -496,7 +495,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"Control Panel\Keyboard", "InitialKeyboardIndicators", Microsoft.Win32.RegistryValueKind.String, "2")]),
 
         new(
@@ -512,7 +511,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: true,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             RestartNote: "Visível a partir da próxima inicialização.",
             HklmRegistryChanges:
             [
@@ -532,7 +531,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"Control Panel\Desktop", "WindowArrangementActive", Microsoft.Win32.RegistryValueKind.String, "0")]),
 
         new(
@@ -548,7 +547,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [
                 new RegistryValueChange(ExplorerAdvancedPath, "EnableSnapAssistFlyout", Microsoft.Win32.RegistryValueKind.DWord, 0),
                 new RegistryValueChange(ExplorerAdvancedPath, "SnapAssist", Microsoft.Win32.RegistryValueKind.DWord, 0)
@@ -567,7 +566,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [
                 new RegistryValueChange(@"Control Panel\Mouse", "MouseSpeed", Microsoft.Win32.RegistryValueKind.String, "0"),
                 new RegistryValueChange(@"Control Panel\Mouse", "MouseThreshold1", Microsoft.Win32.RegistryValueKind.String, "0"),
@@ -587,7 +586,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"Control Panel\Accessibility\StickyKeys", "Flags", Microsoft.Win32.RegistryValueKind.String, "506")]),
 
         new(
@@ -603,7 +602,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(ExplorerAdvancedPath, "Hidden", Microsoft.Win32.RegistryValueKind.DWord, 1)]),
 
         new(
@@ -619,7 +618,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"Software\Microsoft\Windows\CurrentVersion\Search", "SearchboxTaskbarMode", Microsoft.Win32.RegistryValueKind.DWord, 0)]),
 
         new(
@@ -635,7 +634,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(ExplorerAdvancedPath, "ShowTaskViewButton", Microsoft.Win32.RegistryValueKind.DWord, 0)]),
 
         new(
@@ -651,7 +650,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(ExplorerAdvancedPath, "TaskbarDa", Microsoft.Win32.RegistryValueKind.DWord, 0)]),
 
         new(
@@ -667,7 +666,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(ExplorerAdvancedPath, "TaskbarAl", Microsoft.Win32.RegistryValueKind.DWord, 0)]),
 
         // ════════════════════════════════════════════════════════════════════
@@ -687,7 +686,7 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             InvokeScript: """
 $hostsPath = Join-Path $env:SystemRoot 'System32\drivers\etc\hosts'
 $marker = '# LznTweaker Adobe Block'
@@ -723,7 +722,7 @@ ipconfig /flushdns | Out-Null
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             InvokeScript: """
 $svcs = @('AdobeUpdateService','AdobeARMservice','AGSService','AGMService','AdobeFlashPlayerUpdateSvc')
 foreach ($s in $svcs) {
@@ -754,7 +753,7 @@ Get-ScheduledTask -TaskPath '\Adobe*' -ErrorAction SilentlyContinue | Enable-Sch
             RequiresRestart: true,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             RestartNote: "Reinicialização obrigatória para desativar o IPv6.",
             HklmRegistryChanges:
             [
@@ -774,7 +773,7 @@ Get-ScheduledTask -TaskPath '\Adobe*' -ErrorAction SilentlyContinue | Enable-Sch
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             InvokeScript: "netsh interface teredo set state disabled",
             UndoScript: "netsh interface teredo set state default",
             VerifyScript: "[string](Get-NetTeredoConfiguration -ErrorAction Stop).Type -eq 'Disabled'"),
@@ -792,7 +791,7 @@ Get-ScheduledTask -TaskPath '\Adobe*' -ErrorAction SilentlyContinue | Enable-Sch
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(@"Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications", "GlobalUserDisabled", Microsoft.Win32.RegistryValueKind.DWord, 1)]),
 
         new(
@@ -808,7 +807,7 @@ Get-ScheduledTask -TaskPath '\Adobe*' -ErrorAction SilentlyContinue | Enable-Sch
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             [new RegistryValueChange(GameConfigStorePath, "GameDVR_FSEBehaviorMode", Microsoft.Win32.RegistryValueKind.DWord, 2)]),
 
         new(
@@ -824,7 +823,7 @@ Get-ScheduledTask -TaskPath '\Adobe*' -ErrorAction SilentlyContinue | Enable-Sch
             RequiresRestart: false,
             HasReliableRollback: true,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             HklmRegistryChanges:
             [
                 new(@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", Microsoft.Win32.RegistryValueKind.DWord, 1)
@@ -842,12 +841,12 @@ Get-ScheduledTask -TaskPath '\Adobe*' -ErrorAction SilentlyContinue | Enable-Sch
             "Se já existir um plano Ultimate Performance (\"Desempenho Máximo\" em pt-BR), ativa o existente pelo GUID; caso contrário, cria uma única cópia com powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61. O plano ativo é confirmado depois. Não altera configurações individuais do plano.",
             TweakCategory.PerformancePlans,
             "Médio",
-            "Windows 10 1803+ e Windows 11. Não recomendado para laptops (WinUtil: \"NOT FOR LAPTOPS\"): aumenta consumo e temperatura sem ganho garantido.",
+            "Windows 10 1803+ e Windows 11. Não recomendado para laptops: aumenta consumo e temperatura sem ganho garantido.",
             RequiresAdministrator: true,
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             InvokeScript: UltimatePlanLookup + """
 if ($ultimatePlans.Count -gt 0) {
     $guid = $ultimatePlans[0].Guid
@@ -879,7 +878,7 @@ $active = [string](powercfg /getactivescheme)
             RequiresRestart: false,
             HasReliableRollback: false,
             IsOneShotOperation: false,
-            WinUtilSourceUrl,
+            null,
             InvokeScript: UltimatePlanLookup + """
 if ($ultimatePlans.Count -eq 0) { throw 'Nenhum plano Ultimate Performance encontrado; nada foi alterado.' }
 $balanced = '381b4222-f694-41f0-9685-ff5bb260df2e'

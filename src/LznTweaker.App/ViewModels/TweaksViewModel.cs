@@ -92,7 +92,7 @@ public sealed class TweakItemViewModel(TweakDefinition definition) : INotifyProp
     public string AdministratorText => Definition.RequiresAdministrator ? "Exige administrador (UAC)" : "Sem administrador";
     public string RestartText => Definition.RestartNote ?? (Definition.RequiresRestart ? "Exige reinicialização" : "Sem reinicialização");
     public string RollbackText => Definition.HasReliableRollback ? "Possui reversão confiável" : "Sem reversão automática";
-    public string SourceUrl => Definition.SourceUrl;
+    public string? SourceUrl => Definition.SourceUrl;
 
     public Brush RiskBrush => Definition.RiskLevel switch
     {
@@ -164,9 +164,9 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
 
         Presets =
         [
-            new(TweakPreset.Standard, "Standard (Recomendado)", "Itens do preset Standard do WinUtil que este app implementa; apenas marca as opções, nada é executado."),
-            new(TweakPreset.Minimal, "Mínimo", "Preset Minimal do WinUtil (Consumer Features e Telemetria) mais o ponto de restauração; apenas marca as opções."),
-            new(TweakPreset.Advanced, "Avançado", "Standard mais a desativação de Recall e Copilot (itens de IA do preset Advanced do WinUtil); apenas marca as opções."),
+            new(TweakPreset.Standard, "Standard (Recomendado)", "Seleção padrão de ajustes que este app implementa; apenas marca as opções, nada é executado."),
+            new(TweakPreset.Minimal, "Mínimo", "Só Consumer Features e Telemetria, mais o ponto de restauração; apenas marca as opções."),
+            new(TweakPreset.Advanced, "Avançado", "Standard mais a desativação de Recall e Copilot; apenas marca as opções."),
             new(TweakPreset.Custom, "Personalizado", "Seleção manual livre de itens.")
         ];
 
@@ -464,8 +464,8 @@ public sealed class TweaksViewModel : INotifyPropertyChanged
             $"Risco: {definition.RiskLevel}\n" +
             $"Requer administrador: {definition.RequiresAdministrator}\n" +
             $"Requer reinicialização: {definition.RequiresRestart}\n" +
-            $"Reversão confiável: {definition.HasReliableRollback}\n\n" +
-            $"Referência WinUtil: {definition.SourceUrl}",
+            $"Reversão confiável: {definition.HasReliableRollback}" +
+            (definition.SourceUrl is null ? "" : $"\n\nReferência: {definition.SourceUrl}"),
             "Detalhes do tweak");
     }
 
