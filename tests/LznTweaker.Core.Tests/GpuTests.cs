@@ -134,19 +134,17 @@ public sealed class GpuTests
         try
         {
             var store = new GpuPreferencesStore(Path.Combine(folder, "gpu.json"));
-            Assert.Equal(GpuOptimizationMode.CompetitiveLatency, store.Load().Mode);
+            Assert.Equal(VrrAnswer.NotAnswered, store.Load().Vrr);
 
-            var preferences = new GpuPreferences { Mode = GpuOptimizationMode.Custom, Vrr = VrrAnswer.Available };
-            preferences.CustomValues["nv-llm"] = "On";
-            store.Save(preferences);
+            store.Save(new GpuPreferences { Vrr = VrrAnswer.Available });
+            Assert.Equal(VrrAnswer.Available, store.Load().Vrr);
 
-            var loaded = store.Load();
-            Assert.Equal(GpuOptimizationMode.Custom, loaded.Mode);
-            Assert.Equal(VrrAnswer.Available, loaded.Vrr);
-            Assert.Equal("On", loaded.CustomValues["nv-llm"]);
+            // Arquivo de uma versão com os modos de otimização: os campos antigos são ignorados, a resposta de VRR fica.
+            File.WriteAllText(store.FilePath, """{ "Mode": "Custom", "Vrr": "NotAvailable", "CustomValues": { "nv-llm": "On" } }""");
+            Assert.Equal(VrrAnswer.NotAvailable, store.Load().Vrr);
 
             File.WriteAllText(store.FilePath, "{ corrompido");
-            Assert.Equal(GpuOptimizationMode.CompetitiveLatency, store.Load().Mode);
+            Assert.Equal(VrrAnswer.NotAnswered, store.Load().Vrr);
             Assert.True(File.Exists(store.FilePath + ".invalido"));
         }
         finally

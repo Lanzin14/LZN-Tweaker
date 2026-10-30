@@ -6,16 +6,14 @@ public enum GpuApplyMethod { Automatic, PartiallyAutomatic, Manual }
 public sealed record GpuSettingGuide(string WhatItDoes, string Benefit, string Downsides, string WhenToUse, string Compatibility, string HowToRestore);
 
 /// <param name="Options">Valores como aparecem no driver (em inglês; a versão traduzida do driver pode exibir outros nomes).</param>
-/// <param name="LatencyValue">Recomendação do modo "Competitivo — FPS e baixa latência".</param>
-/// <param name="StableValue">Recomendação do modo "Competitivo — FPS estável".</param>
+/// <param name="RecommendedValue">Valor recomendado para jogos competitivos (FPS alto e baixa latência).</param>
 public sealed record GpuDriverSetting(
     string Id,
     GpuVendor Vendor,
     string Name,
     string ManualPath,
     IReadOnlyList<string> Options,
-    string LatencyValue,
-    string StableValue,
+    string RecommendedValue,
     GpuApplyMethod Method,
     GpuSettingGuide Guide,
     string? Caution = null);
@@ -61,7 +59,6 @@ public static class GpuCatalog
         new("nv-power", GpuVendor.Nvidia, "Power management mode", NvidiaPath + " > Global Settings / Program Settings",
             ["Normal / NVIDIA driver controlled", "Adaptive", "Prefer maximum performance", "Prefer consistent performance"],
             "Normal no global · Prefer maximum performance só no perfil do jogo",
-            "Normal no global · Prefer maximum performance só no perfil do jogo",
             GpuApplyMethod.Manual,
             new("Define se a GPU pode reduzir clocks em cargas leves ou se fica em estados de desempenho mais altos.",
                 "Pode evitar quedas de clock em certos jogos leves, o que ajuda a estabilidade do frametime.",
@@ -73,7 +70,6 @@ public static class GpuCatalog
         new("nv-llm", GpuVendor.Nvidia, "Low Latency Mode", NvidiaPath + " > Program Settings",
             ["Off", "On", "Ultra"],
             "Off quando o jogo tem Reflex · Ultra para testar em jogos sem Reflex",
-            "Off quando o jogo tem Reflex · On em jogos sem Reflex",
             GpuApplyMethod.Manual,
             new("Limita a fila de quadros que o processador prepara antes da GPU, reduzindo a espera entre o comando e a imagem.",
                 "Menor latência em jogos limitados pela GPU que não têm NVIDIA Reflex.",
@@ -84,7 +80,7 @@ public static class GpuCatalog
             "Não combine Ultra com Reflex como regra: o Reflex do jogo substitui este modo."),
         new("nv-refresh", GpuVendor.Nvidia, "Preferred refresh rate", NvidiaPath + " > Global Settings",
             ["Application-controlled", "Highest available"],
-            "Highest available", "Highest available",
+            "Highest available",
             GpuApplyMethod.Manual,
             new("Faz o driver usar a maior taxa de atualização disponível quando o jogo não define uma.",
                 "Evita jogos rodando a 60 Hz por engano em monitores de alta taxa.",
@@ -95,7 +91,7 @@ public static class GpuCatalog
             null),
         new("nv-shadercache", GpuVendor.Nvidia, "Shader Cache Size", NvidiaPath + " > Global Settings",
             ["Driver Default", "Disabled", "10GB", "100GB", "Unlimited"],
-            "Driver Default ou Unlimited", "Driver Default ou Unlimited",
+            "Driver Default ou Unlimited",
             GpuApplyMethod.Manual,
             new("Guarda no disco os shaders já compilados para não recompilar a cada partida.",
                 "Menos travadas (stutter) na primeira vez que efeitos aparecem e em mapas já jogados.",
@@ -106,7 +102,7 @@ public static class GpuCatalog
             "Desativar o cache aumenta o stutter; não é uma otimização."),
         new("nv-texfilter", GpuVendor.Nvidia, "Texture filtering - Quality", NvidiaPath + " > Global Settings / Program Settings",
             ["High performance", "Performance", "Quality", "High quality"],
-            "High performance", "Quality",
+            "High performance",
             GpuApplyMethod.Manual,
             new("Controla otimizações do driver na filtragem de texturas.",
                 "High performance pode render alguns quadros a mais em GPUs mais fracas.",
@@ -117,7 +113,7 @@ public static class GpuCatalog
             null),
         new("nv-vsync", GpuVendor.Nvidia, "Vertical sync", NvidiaPath + " > Program Settings",
             ["Use the 3D application setting", "Off", "On", "Adaptive", "Fast"],
-            "Off (sem VRR) · On no driver se usar G-SYNC", "Conforme Monitor e Latência (G-SYNC: On no driver, Off no jogo)",
+            "Off (sem VRR) · On no driver se usar G-SYNC",
             GpuApplyMethod.Manual,
             new("Sincroniza a entrega de quadros com o monitor para evitar tearing.",
                 "Imagem sem cortes; com G-SYNC, evita tearing quando o FPS encosta no limite do monitor.",
@@ -128,7 +124,7 @@ public static class GpuCatalog
             "Use V-Sync no driver ou no jogo, nunca nos dois ao mesmo tempo."),
         new("nv-maxfps", GpuVendor.Nvidia, "Max Frame Rate", NvidiaPath + " > Global Settings / Program Settings",
             ["Off", "On (limite por jogo)"],
-            "Off no global", "Off no global · limite por jogo se os testes mostrarem benefício",
+            "Off no global",
             GpuApplyMethod.Manual,
             new("Limita o FPS pelo driver.",
                 "Frametime mais regular e menos calor quando a GPU sobra.",
@@ -139,7 +135,7 @@ public static class GpuCatalog
             null),
         new("nv-nis", GpuVendor.Nvidia, "Image Scaling", NvidiaPath + " > Global Settings",
             ["Off", "On"],
-            "Off", "Off",
+            "Off",
             GpuApplyMethod.Manual,
             new("Renderiza em resolução menor e aumenta para a nativa com nitidez.",
                 "Mais FPS para quem aceita perder nitidez.",
@@ -152,7 +148,7 @@ public static class GpuCatalog
         // ─── AMD ───
         new("amd-antilag", GpuVendor.Amd, "Radeon Anti-Lag", AmdPath + " (perfil do jogo)",
             ["Off", "On"],
-            "On no perfil de jogos sem Anti-Lag 2", "On no perfil de jogos sem Anti-Lag 2",
+            "On no perfil de jogos sem Anti-Lag 2",
             GpuApplyMethod.Manual,
             new("Recurso do driver que ajusta o ritmo do processador para reduzir a fila de quadros.",
                 "Menor latência em jogos limitados pela GPU.",
@@ -163,7 +159,7 @@ public static class GpuCatalog
             "É diferente do Anti-Lag+ (retirado em 2023 após banimentos no CS2) e do Anti-Lag 2, que é integrado ao jogo."),
         new("amd-antilag2", GpuVendor.Amd, "Radeon Anti-Lag 2", "Menu de vídeo do próprio jogo (não fica no driver)",
             ["Ativar no jogo quando disponível", "Desativado"],
-            "Ativar no menu do jogo quando suportado", "Ativar no menu do jogo quando suportado",
+            "Ativar no menu do jogo quando suportado",
             GpuApplyMethod.Manual,
             new("Reduz a latência de entrada em jogos que oferecem integração compatível. Não funciona em qualquer jogo automaticamente.",
                 "Menor latência, com controle feito pelo próprio jogo.",
@@ -174,7 +170,7 @@ public static class GpuCatalog
             "Não trate como equivalente ao Radeon Anti-Lag do driver."),
         new("amd-chill", GpuVendor.Amd, "Radeon Chill", AmdPath,
             ["Off", "On"],
-            "Off", "Off (prefira o limite de FPS do jogo)",
+            "Off",
             GpuApplyMethod.Manual,
             new("Reduz o FPS dinamicamente quando há pouco movimento, para economizar energia.",
                 "Menos consumo e temperatura.",
@@ -185,7 +181,7 @@ public static class GpuCatalog
             null),
         new("amd-boost", GpuVendor.Amd, "Radeon Boost", AmdPath,
             ["Off", "On"],
-            "Off", "Off",
+            "Off",
             GpuApplyMethod.Manual,
             new("Reduz a resolução durante movimentos rápidos de câmera.",
                 "Mais FPS nos movimentos rápidos.",
@@ -196,7 +192,7 @@ public static class GpuCatalog
             null),
         new("amd-enhancedsync", GpuVendor.Amd, "Radeon Enhanced Sync", AmdPath,
             ["Off", "On"],
-            "Off", "Off (teste se o tearing incomodar)",
+            "Off",
             GpuApplyMethod.Manual,
             new("Sincronização que reduz tearing sem travar o FPS na taxa do monitor.",
                 "Menos tearing com latência menor que o V-Sync tradicional.",
@@ -207,7 +203,7 @@ public static class GpuCatalog
             null),
         new("amd-vsync", GpuVendor.Amd, "Wait for Vertical Refresh", AmdPath,
             ["Always Off", "Off, unless application specifies", "On, unless application specifies", "Always On"],
-            "Off, unless application specifies", "Off, unless application specifies",
+            "Off, unless application specifies",
             GpuApplyMethod.Manual,
             new("V-Sync do driver.",
                 "Remove tearing.",
@@ -218,7 +214,7 @@ public static class GpuCatalog
             "Os nomes exatos das opções podem variar conforme a versão do Adrenalin."),
         new("amd-texfilter", GpuVendor.Amd, "Texture Filtering Quality", AmdPath + " > Advanced",
             ["Performance", "Standard", "High"],
-            "Performance", "Standard",
+            "Performance",
             GpuApplyMethod.Manual,
             new("Controla otimizações do driver na filtragem de texturas.",
                 "Performance pode render alguns quadros a mais.",
@@ -229,7 +225,7 @@ public static class GpuCatalog
             null),
         new("amd-surface", GpuVendor.Amd, "Surface Format Optimization", AmdPath + " > Advanced",
             ["On", "Off"],
-            "On", "On",
+            "On",
             GpuApplyMethod.Manual,
             new("Permite ao driver usar formatos de superfície mais leves quando o jogo permite.",
                 "Pequeno ganho de desempenho em alguns jogos.",
@@ -240,7 +236,7 @@ public static class GpuCatalog
             null),
         new("amd-shadercache", GpuVendor.Amd, "Shader Cache", AmdPath + " > Advanced",
             ["AMD Optimized", "On", "Off"],
-            "AMD Optimized (padrão)", "AMD Optimized (padrão)",
+            "AMD Optimized (padrão)",
             GpuApplyMethod.Manual,
             new("Guarda os shaders compilados para não recompilar em cada partida.",
                 "Menos stutter em mapas e efeitos já vistos.",
@@ -251,7 +247,7 @@ public static class GpuCatalog
             "Desligar o cache aumenta o stutter; não é uma otimização."),
         new("amd-tessellation", GpuVendor.Amd, "Tessellation Mode", AmdPath + " > Advanced",
             ["AMD Optimized", "Use application settings", "Override application settings"],
-            "AMD Optimized", "AMD Optimized",
+            "AMD Optimized",
             GpuApplyMethod.Manual,
             new("Controla o nível de tesselação (detalhe geométrico) pedido pelo jogo.",
                 "O modo AMD Optimized evita níveis exagerados sem mexer na aparência normal.",
@@ -262,7 +258,7 @@ public static class GpuCatalog
             null),
         new("amd-hyprrx", GpuVendor.Amd, "HYPR-RX", AmdPath,
             ["Off", "On", "HYPR-RX Eco"],
-            "Off", "Off",
+            "Off",
             GpuApplyMethod.Manual,
             new("Atalho que liga vários recursos de uma vez: AMD Fluid Motion Frames (AFMF), Radeon Super Resolution, Radeon Anti-Lag e Radeon Boost; o modo Eco também liga o Radeon Chill.",
                 "Mais FPS exibido e menor latência sem configurar item por item.",
@@ -431,12 +427,10 @@ public static class GpuCatalog
     }
 
     /// <summary>Orientação de limite para um jogo, sem aplicar nada.</summary>
-    public static string GameCapAdvice(GpuGameProfile game, GpuOptimizationMode mode, VrrAnswer vrr, int? refreshRateHz)
+    public static string GameCapAdvice(GpuGameProfile game, VrrAnswer vrr, int? refreshRateHz)
     {
         if (vrr == VrrAnswer.Available && refreshRateHz is { } hz and > 10)
             return $"Com VRR: {game.CapSetting} em torno de {hz - 3} FPS, ou deixe o Reflex limitar automaticamente (NVIDIA).";
-        return mode == GpuOptimizationMode.CompetitiveStable
-            ? $"{game.CapSetting}: teste um limite que o PC mantenha quase sempre (perto do seu 1% low) e compare o frametime com e sem limite."
-            : $"{game.CapSetting}: sem limite ou um limite alto; limite só se melhorar a estabilidade nos seus testes.";
+        return $"{game.CapSetting}: sem limite ou um limite alto; limite só se melhorar a estabilidade nos seus testes.";
     }
 }

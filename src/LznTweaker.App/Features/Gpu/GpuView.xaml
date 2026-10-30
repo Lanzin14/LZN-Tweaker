@@ -43,14 +43,10 @@
                             <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" />
                             <TextBlock Text="{Binding ManualPath}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0" />
                         </StackPanel>
-                        <!-- Valor recomendado (ou escolhido, no modo Personalizado) -->
-                        <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,14,0" MaxWidth="240"
-                                Visibility="{Binding IsCustomMode, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" ToolTip="Valor recomendado para o modo selecionado">
+                        <!-- Valor recomendado -->
+                        <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,14,0" MaxWidth="240" ToolTip="{Binding RecommendedValue}">
                             <TextBlock Text="{Binding RecommendedValue}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextTrimming="CharacterEllipsis" />
                         </Border>
-                        <ComboBox Grid.Column="1" Style="{StaticResource MinimalComboBoxStyle}" MinWidth="200" Height="30" Margin="0,0,14,0"
-                                  ItemsSource="{Binding Options}" SelectedItem="{Binding CustomValue}" AutomationProperties.Name="{Binding Name}"
-                                  Visibility="{Binding IsCustomMode, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" ToolTip="Valor que você quer usar" />
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                             <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding StateBrush}" Margin="0,0,6,0" />
                             <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" MaxWidth="170" />
@@ -137,85 +133,65 @@
                 </StackPanel>
             </Grid>
 
-            <!-- A. Visão geral -->
-            <Border Style="{StaticResource Lzn.Panel}" Padding="18,16">
+            <!-- Placa detectada: modelo e estado; detalhes técnicos em "Saiba mais" (começa recolhido) -->
+            <Border Style="{StaticResource Lzn.Panel}" Padding="18,12">
                 <StackPanel>
-                    <controls:AdaptiveGridPanel MinItemWidth="170" MaxColumns="5" Spacing="18">
-                        <StackPanel><TextBlock Text="Fabricante" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding VendorText}" Style="{StaticResource FieldValue}" FontWeight="SemiBold" /></StackPanel>
-                        <StackPanel><TextBlock Text="Modelo" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding ModelText}" Style="{StaticResource FieldValue}" /></StackPanel>
-                        <StackPanel><TextBlock Text="Driver" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding DriverText}" Style="{StaticResource FieldValue}" /></StackPanel>
-                        <StackPanel>
-                            <TextBlock Text="Detecção" Style="{StaticResource FieldLabel}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="34" Height="34" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0">
+                            <TextBlock Text="&#xE7F4;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Text="{Binding ModelText}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center" ToolTip="{Binding ModelText}" />
+                        <Border Grid.Column="2" Style="{StaticResource Lzn.Badge}" Margin="12,0,10,0" VerticalAlignment="Center" ToolTip="Estado da detecção da placa de vídeo">
                             <StackPanel Orientation="Horizontal">
-                                <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{Binding DetectionBrush}" Margin="0,0,8,0" />
-                                <TextBlock Text="{Binding DetectionText}" Style="{StaticResource FieldValue}" />
+                                <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="7" Height="7" Fill="{Binding DetectionBrush}" Margin="0,0,7,0" />
+                                <TextBlock Text="{Binding DetectionText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding DetectionBrush}" VerticalAlignment="Center" />
                             </StackPanel>
-                        </StackPanel>
-                        <StackPanel><TextBlock Text="Perfil selecionado" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding ModeText}" Style="{StaticResource FieldValue}" /></StackPanel>
-                    </controls:AdaptiveGridPanel>
-                    <TextBlock Text="{Binding DetectionDetail}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,10,0,0"
-                               Visibility="{Binding DetectionDetail, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
-                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                        <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.Info}" VerticalAlignment="Top" Margin="0,1,8,0" />
-                        <TextBlock Text="{Binding AutomationNote}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" MaxWidth="900" HorizontalAlignment="Left" />
+                        </Border>
+                        <Button Grid.Column="3" Style="{StaticResource Lzn.GhostButton}" Command="{Binding ToggleOverviewCommand}" VerticalAlignment="Center"
+                                AutomationProperties.Name="Saiba mais sobre a placa de vídeo">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Saiba mais" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentText}" />
+                                <TextBlock FontSize="10" Foreground="{StaticResource Lzn.AccentText}" Margin="7,1,0,0" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
+                                            <Setter Property="Text" Value="&#xE70D;" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsOverviewExpanded}" Value="True">
+                                                    <Setter Property="Text" Value="&#xE70E;" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <StackPanel Margin="0,14,0,2" Visibility="{Binding IsOverviewExpanded, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                        <Border Height="1" Background="{StaticResource Lzn.StrokeSubtle}" Margin="0,0,0,14" />
+                        <controls:AdaptiveGridPanel MinItemWidth="190" MaxColumns="4" Spacing="16">
+                            <StackPanel><TextBlock Text="Fabricante" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding VendorText}" Style="{StaticResource FieldValue}" /></StackPanel>
+                            <StackPanel><TextBlock Text="Driver instalado" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding DriverPackageText}" Style="{StaticResource FieldValue}" /></StackPanel>
+                            <StackPanel><TextBlock Text="Versão do driver" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding DriverVersionText}" Style="{StaticResource FieldValue}" /></StackPanel>
+                            <StackPanel><TextBlock Text="Data do driver" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding DriverDateText}" Style="{StaticResource FieldValue}" /></StackPanel>
+                            <StackPanel><TextBlock Text="Memória dedicada" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding MemoryText}" Style="{StaticResource FieldValue}" /></StackPanel>
+                            <StackPanel><TextBlock Text="Taxa de atualização" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding RefreshRateText}" Style="{StaticResource FieldValue}" /></StackPanel>
+                        </controls:AdaptiveGridPanel>
+                        <TextBlock Text="{Binding DetectionDetail}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,12,0,0"
+                                   Visibility="{Binding DetectionDetail, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                        <TextBlock Text="{Binding AutomationNote}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,12,0,0" MaxWidth="900" HorizontalAlignment="Left" />
                     </StackPanel>
                 </StackPanel>
             </Border>
 
-            <!-- B. Modo de otimização -->
-            <TextBlock Text="Modo de otimização" Style="{StaticResource Lzn.Text.Subtitle}" Margin="0,24,0,4" />
-            <TextBlock Text="Define os valores recomendados no restante da página. Escolher um modo não altera nada no sistema." Style="{StaticResource Lzn.Text.Caption}" Margin="0,0,0,12" />
-            <ItemsControl ItemsSource="{Binding Modes}" Focusable="False">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate><controls:AdaptiveGridPanel MinItemWidth="260" MaxColumns="3" Spacing="12" /></ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:GpuModeOptionViewModel}">
-                        <Border Padding="16,14" CornerRadius="{StaticResource Lzn.Radius.Lg}" BorderThickness="1">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-                                    <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeSubtle}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <DockPanel>
-                                <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,10,0" />
-                                        <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" MaxWidth="230" />
-                                    </StackPanel>
-                                    <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{StaticResource Lzn.Accent}" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                             Visibility="{Binding IsSelected, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
-                                </Grid>
-                                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Margin="0,12,0,0" Padding="12,6"
-                                        Command="{Binding DataContext.SelectModeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource Lzn.ToolbarButton}">
-                                            <Setter Property="Content" Value="Selecionar perfil" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                    <Setter Property="Content" Value="Perfil selecionado" />
-                                                    <Setter Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                                <TextBlock Text="{Binding Description}" Style="{StaticResource GuideText}" />
-                            </DockPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <!-- C. Abas -->
-            <ItemsControl ItemsSource="{Binding Tabs}" Margin="0,24,0,0" Focusable="False">
+            <!-- Abas -->
+            <ItemsControl ItemsSource="{Binding Tabs}" Margin="0,18,0,0" Focusable="False">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
@@ -308,11 +284,6 @@
                             <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,8,6">
                                 <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}">
                                     <Run Text="GPU: " /><Run Text="{Binding DataContext.VendorText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}" />
-                                </TextBlock>
-                            </Border>
-                            <Border Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,8,6">
-                                <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}">
-                                    <Run Text="Perfil: " /><Run Text="{Binding RecommendedProfile, Mode=OneWay}" />
                                 </TextBlock>
                             </Border>
                             <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,8,6">

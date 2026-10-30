@@ -43,44 +43,19 @@ public static class GpuStateText
 
 }
 
-public sealed partial class GpuModeOptionViewModel(GpuOptimizationMode mode, string title, string description, string glyph) : ObservableObject
-{
-    public GpuOptimizationMode Mode { get; } = mode;
-    public string Title { get; } = title;
-    public string Description { get; } = description;
-    public string Glyph { get; } = glyph;
-
-    [ObservableProperty]
-    private bool _isSelected;
-}
-
 /// <summary>Uma configuração do driver (Painel de Controle NVIDIA ou AMD Software: Adrenalin Edition).</summary>
 public sealed partial class DriverSettingViewModel : ObservableObject
 {
-    private readonly Action<DriverSettingViewModel> _customChanged;
-
-    public DriverSettingViewModel(GpuDriverSetting setting, Action<DriverSettingViewModel> customChanged)
-    {
-        Setting = setting;
-        _customChanged = customChanged;
-    }
+    public DriverSettingViewModel(GpuDriverSetting setting) => Setting = setting;
 
     public GpuDriverSetting Setting { get; }
+    public string RecommendedValue => Setting.RecommendedValue;
     public string Name => Setting.Name;
     public string ManualPath => Setting.ManualPath;
     public IReadOnlyList<string> Options => Setting.Options;
     public GpuSettingGuide Guide => Setting.Guide;
     public string? Caution => Setting.Caution;
     public string MethodText => GpuStateText.MethodText(Setting.Method);
-
-    [ObservableProperty]
-    private string _recommendedValue = "";
-
-    [ObservableProperty]
-    private bool _isCustomMode;
-
-    [ObservableProperty]
-    private string? _customValue;
 
     [ObservableProperty]
     private string _stateText = "";
@@ -98,8 +73,6 @@ public sealed partial class DriverSettingViewModel : ObservableObject
     {
         (StateText, StateBrush) = GpuStateText.For(state);
     }
-
-    partial void OnCustomValueChanged(string? value) => _customChanged(this);
 }
 
 public sealed record GameSettingRow(string Name, string Value, string? Note, bool KeepsQualityForVisibility);
@@ -140,9 +113,6 @@ public sealed partial class GpuGameViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isSelected;
-
-    [ObservableProperty]
-    private string _recommendedProfile = "";
 
     [ObservableProperty]
     private string _fpsCapAdvice = "";

@@ -35,7 +35,7 @@ public static class CategoryGuides
 
     public static CategoryGuide Gpu { get; } = new(
         "Central de configuração da placa de vídeo NVIDIA ou AMD para jogos competitivos.",
-        "Ver as recomendações do driver por modo, os perfis gráficos de CS2, VALORANT, Overwatch 2 e Deadlock, e orientações de monitor e latência.",
+        "Ver as recomendações do driver, os perfis gráficos de CS2, VALORANT, Overwatch 2 e Deadlock, e orientações de monitor e latência.",
         "Configurar o driver e os jogos com critério, sabendo o efeito de cada opção.",
         "São recomendações: você aplica no driver ou no menu do jogo. O app ainda não altera essas configurações sozinho.");
 

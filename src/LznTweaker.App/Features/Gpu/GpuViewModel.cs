@@ -10,7 +10,7 @@ using LznTweaker.Infrastructure;
 namespace LznTweaker.Features.Gpu;
 
 /// <summary>
-/// Central de configuração de GPU. Detecta a placa e o monitor, recomenda valores por modo e por jogo e guarda as
+/// Central de configuração de GPU. Detecta a placa e o monitor, recomenda valores por configuração e por jogo e guarda as
 /// escolhas e resultados do usuário. Não altera driver, registro nem arquivos de jogo: cada ajuste traz o caminho
 /// para ser feito manualmente, porque as interfaces documentadas (NVAPI e AMD ADLX) ainda não estão integradas.
 /// </summary>
@@ -36,15 +36,6 @@ public sealed partial class GpuViewModel : ObservableObject
         _notifications = notifications;
         _preferences = store.Load();
 
-        Modes =
-        [
-            new(GpuOptimizationMode.CompetitiveLatency, "Competitivo — FPS e baixa latência",
-                "FPS alto e resposta rápida: Reflex ou Anti-Lag do próprio jogo, gráficos LOW e sem limitadores dinâmicos.", ""),
-            new(GpuOptimizationMode.CompetitiveStable, "Competitivo — FPS estável",
-                "Frametimes e 1% lows consistentes: limite de FPS quando seus testes mostrarem benefício, menos oscilação.", ""),
-            new(GpuOptimizationMode.Custom, "Personalizado",
-                "Você escolhe o valor de cada opção; a página mostra o que muda e o que não pôde ser detectado.", "")
-        ];
         Tabs =
         [
             new("nvidia", "NVIDIA GeForce", ""),
@@ -62,16 +53,12 @@ public sealed partial class GpuViewModel : ObservableObject
                 }
             };
 
-        NvidiaSettings = new(GpuCatalog.DriverSettings.Where(s => s.Vendor == GpuVendor.Nvidia).Select(s => new DriverSettingViewModel(s, OnCustomValueChanged)));
-        AmdSettings = new(GpuCatalog.DriverSettings.Where(s => s.Vendor == GpuVendor.Amd).Select(s => new DriverSettingViewModel(s, OnCustomValueChanged)));
-        foreach (var item in NvidiaSettings.Concat(AmdSettings))
-            item.CustomValue = _preferences.CustomValues.GetValueOrDefault(item.Setting.Id);
+        NvidiaSettings = new(GpuCatalog.DriverSettings.Where(s => s.Vendor == GpuVendor.Nvidia).Select(s => new DriverSettingViewModel(s)));
+        AmdSettings = new(GpuCatalog.DriverSettings.Where(s => s.Vendor == GpuVendor.Amd).Select(s => new DriverSettingViewModel(s)));
         Scenarios = GpuCatalog.Scenarios;
         Tabs[0].IsSelected = true;
-        ApplyMode(_preferences.Mode, save: false);
     }
 
-    public IReadOnlyList<GpuModeOptionViewModel> Modes { get; }
     public IReadOnlyList<CardTabViewModel> Tabs { get; }
     public ObservableCollection<DriverSettingViewModel> NvidiaSettings { get; }
     public ObservableCollection<DriverSettingViewModel> AmdSettings { get; }
@@ -82,11 +69,15 @@ public sealed partial class GpuViewModel : ObservableObject
     // ─── Visão geral ───
     [ObservableProperty] private string _vendorText = "Não verificado";
     [ObservableProperty] private string _modelText = "Não verificado";
-    [ObservableProperty] private string _driverText = "Não verificado";
+    [ObservableProperty] private string _driverPackageText = "Não verificado";
+    [ObservableProperty] private string _driverVersionText = "Não verificado";
+    [ObservableProperty] private string _driverDateText = "Não verificado";
+    [ObservableProperty] private string _memoryText = "Não verificado";
+    /// <summary>Painel "Saiba mais" da identificação da placa; começa recolhido.</summary>
+    [ObservableProperty] private bool _isOverviewExpanded;
     [ObservableProperty] private string _detectionText = "Não verificado";
     [ObservableProperty] private Brush _detectionBrush = Gray;
     [ObservableProperty] private string _detectionDetail = "";
-    [ObservableProperty] private string _modeText = "";
     [ObservableProperty] private bool _isDetecting;
     [ObservableProperty] private string _selectedTabKey = "nvidia";
     [ObservableProperty] private string _selectedTabDescription = "";
@@ -154,11 +145,7 @@ public sealed partial class GpuViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void SelectMode(GpuModeOptionViewModel? option)
-    {
-        if (option is not null)
-            ApplyMode(option.Mode, save: true);
-    }
+    private void ToggleOverview() => IsOverviewExpanded = !IsOverviewExpanded;
 
     [RelayCommand]
     private void SelectGame(GpuGameViewModel? game)
@@ -190,42 +177,6 @@ public sealed partial class GpuViewModel : ObservableObject
         UpdateMonitor();
     }
 
-    private void ApplyMode(GpuOptimizationMode mode, bool save)
-    {
-        if (save && mode != _preferences.Mode)
-        {
-            _preferences = _preferences with { Mode = mode };
-            Save();
-        }
-        foreach (var option in Modes)
-            option.IsSelected = option.Mode == mode;
-        ModeText = Modes.First(option => option.Mode == mode).Title;
-        foreach (var item in NvidiaSettings.Concat(AmdSettings))
-        {
-            item.IsCustomMode = mode == GpuOptimizationMode.Custom;
-            item.RecommendedValue = mode switch
-            {
-                GpuOptimizationMode.CompetitiveStable => item.Setting.StableValue,
-                GpuOptimizationMode.Custom => item.CustomValue ?? item.Setting.LatencyValue,
-                _ => item.Setting.LatencyValue
-            };
-        }
-        foreach (var game in Games)
-            game.RecommendedProfile = ModeText;
-        UpdateMonitor();
-    }
-
-    private void OnCustomValueChanged(DriverSettingViewModel item)
-    {
-        if (item.CustomValue is null)
-            _preferences.CustomValues.Remove(item.Setting.Id);
-        else
-            _preferences.CustomValues[item.Setting.Id] = item.CustomValue;
-        if (_preferences.Mode == GpuOptimizationMode.Custom)
-            item.RecommendedValue = item.CustomValue ?? item.Setting.LatencyValue;
-        Save();
-    }
-
     private void UpdateOverview()
     {
         var primary = _result.Primary;
@@ -234,11 +185,12 @@ public sealed partial class GpuViewModel : ObservableObject
             case GpuDetectionStatus.Available when primary is not null:
                 VendorText = GpuStateText.VendorName(primary.Vendor);
                 ModelText = primary.Name;
-                DriverText = primary.VendorSoftwareVersion is { } vendorVersion
-                    ? $"{(primary.Vendor == GpuVendor.Amd ? "Adrenalin" : "GeForce")} {vendorVersion} · Windows {primary.DriverVersion}"
-                    : primary.DriverVersion is { } version ? $"Windows {version}" : "Indisponível";
-                if (primary.DriverDate is { } date)
-                    DriverText += $" · {date:dd/MM/yyyy}";
+                DriverPackageText = primary.VendorSoftwareVersion is { } vendorVersion
+                    ? $"{(primary.Vendor == GpuVendor.Amd ? "AMD Software: Adrenalin Edition" : "NVIDIA GeForce")} {vendorVersion}"
+                    : "Não identificado (só a versão do Windows está disponível)";
+                DriverVersionText = primary.DriverVersion is { } version ? $"{version} (numeração do Windows)" : "Indisponível";
+                DriverDateText = primary.DriverDate is { } date ? $"{date:dd/MM/yyyy}" : "Indisponível";
+                MemoryText = primary.DedicatedMemoryBytes is { } bytes and > 0 ? $"{bytes / (1024.0 * 1024 * 1024):0.#} GB" : "Indisponível";
                 DetectionText = "Disponível";
                 DetectionBrush = Green;
                 DetectionDetail = _result.Adapters.Count > 1
@@ -246,7 +198,7 @@ public sealed partial class GpuViewModel : ObservableObject
                     : "";
                 break;
             default:
-                VendorText = ModelText = DriverText = "Indisponível";
+                VendorText = ModelText = DriverPackageText = DriverVersionText = DriverDateText = MemoryText = "Indisponível";
                 DetectionText = _result.Status == GpuDetectionStatus.NotChecked ? "Não verificado" : "Indisponível";
                 DetectionBrush = Amber;
                 DetectionDetail = _result.Error ?? "";
@@ -257,10 +209,7 @@ public sealed partial class GpuViewModel : ObservableObject
         NvidiaBanner = Banner(GpuVendor.Nvidia, vendor);
         AmdBanner = Banner(GpuVendor.Amd, vendor);
         foreach (var game in Games)
-        {
             game.SetVendor(vendor);
-            game.RecommendedProfile = ModeText;
-        }
 
         // Abre a aba do fabricante detectado; a do outro continua disponível para consulta.
         var tabKey = vendor == GpuVendor.Amd ? "amd" : "nvidia";
@@ -300,7 +249,7 @@ public sealed partial class GpuViewModel : ObservableObject
         VrrNotAnswered = _preferences.Vrr == VrrAnswer.NotAnswered;
         CapAdvice = GpuCatalog.CapAdvice(_preferences.Vrr, hz);
         foreach (var game in Games)
-            game.FpsCapAdvice = GpuCatalog.GameCapAdvice(game.Profile, _preferences.Mode, _preferences.Vrr, hz);
+            game.FpsCapAdvice = GpuCatalog.GameCapAdvice(game.Profile, _preferences.Vrr, hz);
     }
 
     private void Save()

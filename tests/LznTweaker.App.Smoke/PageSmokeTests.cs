@@ -78,6 +78,7 @@ public sealed class PageSmokeTests
 
         errors.AddRange(CheckProgramsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
+        errors.AddRange(CheckGpuPage(provider, shell, window, bindingErrors, output));
 
         window.Close();
         PresentationTraceSources.DataBindingSource.Listeners.Remove(bindingErrors);
@@ -148,6 +149,33 @@ public sealed class PageSmokeTests
         general.CloseDetailsCommand.Execute(null);
         general.SelectTabCommand.Execute(general.Tabs[0]);
         errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"discord: {message}"));
+        return errors;
+    }
+
+    /// <summary>Placa de Vídeo: "Saiba mais" começa recolhido e abre; as quatro abas renderizam sem erro de binding.</summary>
+    private static IEnumerable<string> CheckGpuPage(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var gpu = provider.GetRequiredService<LznTweaker.Features.Gpu.GpuViewModel>();
+        shell.Navigate(ShellPages.Gpu);
+        Pump(TimeSpan.FromSeconds(1));
+        if (gpu.IsOverviewExpanded)
+            errors.Add("gpu: o painel Saiba mais deveria começar recolhido");
+        var before = bindingErrors.Messages.Count;
+        gpu.ToggleOverviewCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(400));
+        Save(window, Path.Combine(output, "gpu-expanded.png"));
+        foreach (var tab in gpu.Tabs)
+        {
+            tab.IsSelected = true;
+            Pump(TimeSpan.FromMilliseconds(400));
+            if (gpu.SelectedTabKey != tab.Key)
+                errors.Add($"gpu: aba {tab.Title} não ficou ativa");
+            Save(window, Path.Combine(output, $"gpu-{tab.Key}.png"));
+        }
+        gpu.ToggleOverviewCommand.Execute(null);
+        gpu.Tabs[0].IsSelected = true;
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"gpu: {message}"));
         return errors;
     }
 
