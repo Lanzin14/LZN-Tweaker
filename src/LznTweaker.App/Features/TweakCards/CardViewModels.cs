@@ -31,6 +31,8 @@ public abstract partial class CardViewModel(string id, string tabKey, string gly
     public string Description { get; } = description;
     public RiskLevel Risk { get; } = risk;
     public virtual bool IsRecommended => false;
+    /// <summary>Grupo do card dentro da aba (ex.: Privacidade); nulo quando a aba não divide os cards.</summary>
+    public CardCategoryInfo? Category { get; init; }
 
     public string RiskText => Risk switch { RiskLevel.Low => "Baixo risco", RiskLevel.Warning => "Atenção", _ => "Alto risco" };
     public string RiskGlyph => Risk switch { RiskLevel.Low => "", RiskLevel.Warning => "", _ => "" };
@@ -268,6 +270,15 @@ public sealed class GuideCardViewModel(ManualSettingGuide guide, string tabKey)
     public override bool IsPending => false;
     public override bool IsVerifiable => false;
     public override string SearchText => $"{Title} {Description} {PathText} Discord";
+}
+
+/// <summary>Cabeçalho de um grupo de cards. Uma instância por categoria: o agrupamento da lista compara por referência.</summary>
+public sealed class CardCategoryInfo(string title, string glyph, string description, int order)
+{
+    public string Title { get; } = title;
+    public string Glyph { get; } = glyph;
+    public string Description { get; } = description;
+    public int Order { get; } = order;
 }
 
 public sealed partial class CardTabViewModel(string key, string title, string glyph, string description = "", string? highlight = null) : ObservableObject

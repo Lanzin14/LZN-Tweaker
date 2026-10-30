@@ -17,6 +17,31 @@
             </Border>
         </DataTemplate>
 
+        <!-- Categoria do card (ex.: Privacidade), útil quando a busca mistura grupos; some quando a aba não tem categorias -->
+        <DataTemplate x:Key="CategoryChip" DataType="{x:Type local:CardViewModel}">
+            <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="Categoria"
+                    Visibility="{Binding Category, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Category.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding Category.Title, FallbackValue=''}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <!-- Cabeçalho de grupo: ícone, nome, quantidade visível e descrição da categoria -->
+        <DataTemplate x:Key="GroupHeader">
+            <StackPanel Margin="2,4,0,10" Visibility="{Binding Name, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.AccentHover}" Margin="0,0,9,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Name.Title, FallbackValue=''}" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
+                    <Border Style="{StaticResource Lzn.Badge}" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ItemCount}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                    </Border>
+                </StackPanel>
+                <TextBlock Text="{Binding Name.Description, FallbackValue=''}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="23,3,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+        </DataTemplate>
+
         <Style x:Key="InfoButton" TargetType="Button">
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
@@ -80,6 +105,7 @@
                         <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap"
                                    TextTrimming="CharacterEllipsis" MaxHeight="36" LineHeight="18" Margin="0,10,0,0" />
                         <WrapPanel Margin="0,6,0,0">
+                            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CategoryChip}" Margin="0,0,8,0" />
                             <Border Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,8,0"
                                     Visibility="{Binding IsRecommended, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                                 <TextBlock Text="Recomendado" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
@@ -128,6 +154,7 @@
                                    TextTrimming="CharacterEllipsis" MaxHeight="36" LineHeight="18" Margin="0,10,0,0" />
                         <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,8,0,0" TextWrapping="Wrap"
                                    Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CategoryChip}" Margin="0,6,0,0" HorizontalAlignment="Left" />
                     </StackPanel>
                 </DockPanel>
             </Border>
@@ -385,6 +412,15 @@
                                 <controls:AdaptiveGridPanel MinItemWidth="280" MaxColumns="3" Spacing="12" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
+                        <ItemsControl.GroupStyle>
+                            <GroupStyle HeaderTemplate="{StaticResource GroupHeader}">
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="GroupItem">
+                                        <Setter Property="Margin" Value="0,0,0,22" />
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </ItemsControl.GroupStyle>
                     </ItemsControl>
                 </ScrollViewer>
 

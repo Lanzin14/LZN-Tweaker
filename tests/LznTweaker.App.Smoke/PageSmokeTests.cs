@@ -135,6 +135,25 @@ public sealed class PageSmokeTests
         shell.Navigate(ShellPages.General);
         Pump(TimeSpan.FromMilliseconds(500));
         var before = bindingErrors.Messages.Count;
+
+        // Ajustes do Windows: uma aba só, com todos os cards das antigas abas agrupados por categoria.
+        if (string.Join(",", general.Tabs.Select(tab => tab.Key)) != "windows,discord")
+            errors.Add("geral: abas esperadas 'windows' e 'discord', encontradas " + string.Join(",", general.Tabs.Select(tab => tab.Key)));
+        general.SelectTabCommand.Execute(general.Tabs[0]);
+        Pump(TimeSpan.FromMilliseconds(300));
+        var categorized = general.Cards.Where(card => card.Category is not null).ToList();
+        if (general.VisibleCount != categorized.Count || categorized.Select(card => card.Category).Distinct().Count() != 5)
+            errors.Add($"geral: mostra {general.VisibleCount} de {categorized.Count} cards em {categorized.Select(card => card.Category).Distinct().Count()} categorias, esperado 5");
+        if (general.CardsView.Groups?.Count != 5)
+            errors.Add($"geral: {general.CardsView.Groups?.Count ?? 0} grupos na lista, esperado 5");
+        general.RiskFilter = "Alto risco";
+        Pump(TimeSpan.FromMilliseconds(200));
+        if (general.VisibleCount != categorized.Count(card => card.RiskText == "Alto risco"))
+            errors.Add("geral: filtro de risco não corresponde aos cards");
+        general.ClearFiltersCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(300));
+        Save(window, Path.Combine(output, "general-all.png"));
+
         general.SelectTabCommand.Execute(general.Tabs.Single(tab => tab.Key == "discord"));
         Pump(TimeSpan.FromMilliseconds(500));
         var visible = general.CardsView.Cast<LznTweaker.Features.TweakCards.CardViewModel>().ToList();

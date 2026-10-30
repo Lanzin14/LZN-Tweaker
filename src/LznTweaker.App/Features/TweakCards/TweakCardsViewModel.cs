@@ -39,19 +39,13 @@ public partial class TweakCardsViewModel : ObservableObject
         _services = services;
         Title = page.Title;
         Guide = page.Guide;
-        var recommended = TweakPresetCatalog.GetSelection(TweakPreset.Standard);
         foreach (var tab in page.Tabs)
         {
             Tabs.Add(new CardTabViewModel(tab.Key, tab.Title, tab.Glyph, tab.Description, tab.Highlight));
-            foreach (var id in tab.TweakIds)
-            {
-                var definition = TweakCatalog.GetById(id);
-                var card = new TweakCardViewModel(definition, tab.Key, TweakCardPages.GlyphFor(id, tab.Glyph), recommended.Contains(id));
-                card.PendingChanged += _ => OnPendingChanged();
-                Cards.Add(card);
-            }
-            foreach (var action in tab.Actions)
-                Cards.Add(new QuickActionCardViewModel(action, tab.Key));
+            AddCards(tab.Key, tab.Glyph, tab.TweakIds, tab.Actions, category: null);
+            foreach (var (category, order) in (tab.Categories ?? []).Select((category, order) => (category, order)))
+                AddCards(tab.Key, category.Glyph, category.TweakIds, category.Actions,
+                    new CardCategoryInfo(category.Title, category.Glyph, category.Description, order));
             foreach (var guide in tab.Guides ?? [])
                 Cards.Add(new GuideCardViewModel(guide, tab.Key));
         }
@@ -70,6 +64,23 @@ public partial class TweakCardsViewModel : ObservableObject
         CardsView = CollectionViewSource.GetDefaultView(Cards);
         CardsView.Filter = item => item is CardViewModel card && Matches(card);
         ((ListCollectionView)CardsView).CustomSort = new CardComparer(this);
+        // Abas com categorias mostram um cabeçalho por grupo; cards sem categoria ficam num grupo sem cabeçalho.
+        if (Cards.Any(card => card.Category is not null))
+            CardsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(CardViewModel.Category)));
+    }
+
+    private void AddCards(string tabKey, string glyph, IReadOnlyList<string> tweakIds, IReadOnlyList<QuickActionDefinition> actions, CardCategoryInfo? category)
+    {
+        var recommended = TweakPresetCatalog.GetSelection(TweakPreset.Standard);
+        foreach (var id in tweakIds)
+        {
+            var definition = TweakCatalog.GetById(id);
+            var card = new TweakCardViewModel(definition, tabKey, TweakCardPages.GlyphFor(id, glyph), recommended.Contains(id)) { Category = category };
+            card.PendingChanged += _ => OnPendingChanged();
+            Cards.Add(card);
+        }
+        foreach (var action in actions)
+            Cards.Add(new QuickActionCardViewModel(action, tabKey) { Category = category });
     }
 
     public string Title { get; }
@@ -385,6 +396,10 @@ public partial class TweakCardsViewModel : ObservableObject
         {
             if (x is not CardViewModel a || y is not CardViewModel b)
                 return 0;
+            // Grupos na ordem do catálogo; a ordenação escolhida vale dentro de cada grupo.
+            var group = (a.Category?.Order ?? int.MaxValue).CompareTo(b.Category?.Order ?? int.MaxValue);
+            if (group != 0)
+                return group;
             if (owner.SortMode == "Alfabética")
                 return string.Compare(a.Title, b.Title, StringComparison.CurrentCultureIgnoreCase);
             // Guias manuais seguem a ordem do catálogo (um passo a passo pensado em sequência).
