@@ -262,10 +262,10 @@
         </Setter>
     </Style>
 
-    <!-- Ação principal da página (ex.: Revisar e aplicar): violeta sólido, sem brilho. -->
+    <!-- Ação principal da página (ex.: Revisar e aplicar): roxo sólido com texto escuro; o hover clareia para Lavender. -->
     <Style x:Key="Lzn.PrimaryButton" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource Lzn.TextOnAccent}" />
-        <Setter Property="Background" Value="{StaticResource Lzn.AccentStrong}" />
+        <Setter Property="Background" Value="{StaticResource Lzn.Accent}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Padding" Value="16,9" />
         <Setter Property="Cursor" Value="Hand" />
@@ -278,10 +278,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.Accent}" />
+                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentHover}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentPressed}" />
+                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentStrong}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceActive}" />

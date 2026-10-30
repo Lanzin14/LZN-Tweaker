@@ -23,7 +23,7 @@ public partial class MainWindow : Window
         var handle = new WindowInteropHelper(this).Handle;
         var enabled = 1;
         _ = DwmSetWindowAttribute(handle, DwmUseImmersiveDarkMode, ref enabled, sizeof(int));
-        var captionColor = 0x000C0909; // COLORREF (0x00BBGGRR) de #09090C
+        var captionColor = 0x00161111; // COLORREF (0x00BBGGRR) de #111116, o fundo Obsidian
         _ = DwmSetWindowAttribute(handle, DwmCaptionColor, ref captionColor, sizeof(int));
     }
 
