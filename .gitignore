@@ -11,3 +11,8 @@ graphify-out/
 
 # Pontos de recuperação manuais
 *.zip
+
+# Ferramentas de agentes de IA (skills de terceiros e configurações locais)
+.claude/
+.agents/
+skills-lock.json
