@@ -102,11 +102,11 @@
                         </Grid.ColumnDefinitions>
                         <!-- Ícone: arte local do jogo, logotipo do Windows, monograma ou glifo -->
                         <Grid Width="36" Height="36" VerticalAlignment="Center">
-                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="{Binding Icon}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" />
-                                </Border.Background>
-                            </Border>
+                            <!-- Cantos arredondados por recorte: um ImageBrush ficaria fora da árvore visual e geraria erro de binding. -->
+                            <Image Source="{Binding Icon}" Width="36" Height="36" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"
+                                   Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <Image.Clip><RectangleGeometry Rect="0,0,36,36" RadiusX="8" RadiusY="8" /></Image.Clip>
+                            </Image>
                             <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
                                     Visibility="{Binding ShowsWindowsLogo, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                                 <Path Data="{StaticResource WindowsLogo}" Fill="{StaticResource Lzn.Info}" Width="16" Height="16" Stretch="Uniform" />

@@ -8,7 +8,7 @@ namespace LznTweaker.Infrastructure;
 public static class WindowsEnvironment
 {
     public static string AppVersion { get; } =
-        "v" + (Assembly.GetEntryAssembly()?.GetName().Version is { } version ? $"{version.Major}.{version.Minor}.{version.Build}" : "1.0.0");
+        "v" + (typeof(WindowsEnvironment).Assembly.GetName().Version is { } version ? $"{version.Major}.{version.Minor}.{version.Build}" : "1.0.0");
 
     public static string UserName { get; } = Environment.UserName;
 

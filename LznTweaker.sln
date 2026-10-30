@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LznTweaker.Core.Tests", "tests\LznTweaker.Core.Tests\LznTweaker.Core.Tests.csproj", "{073CD9AF-907E-48C4-9816-3B78A88C9501}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LznTweaker.App.Smoke", "tests\LznTweaker.App.Smoke\LznTweaker.App.Smoke.csproj", "{D176DCB5-BD75-4C92-87C0-9B8787371E11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,18 @@ Global
 		{073CD9AF-907E-48C4-9816-3B78A88C9501}.Release|x64.Build.0 = Release|Any CPU
 		{073CD9AF-907E-48C4-9816-3B78A88C9501}.Release|x86.ActiveCfg = Release|Any CPU
 		{073CD9AF-907E-48C4-9816-3B78A88C9501}.Release|x86.Build.0 = Release|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Debug|x64.Build.0 = Debug|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Debug|x86.Build.0 = Debug|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Release|x64.ActiveCfg = Release|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Release|x64.Build.0 = Release|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Release|x86.ActiveCfg = Release|Any CPU
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,5 +81,6 @@ Global
 		{E17D8E44-BC1D-471D-9399-624C3BF26DD5} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{73FC6A95-99AC-4151-B8DB-1C767D406BC8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{073CD9AF-907E-48C4-9816-3B78A88C9501} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{D176DCB5-BD75-4C92-87C0-9B8787371E11} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal
