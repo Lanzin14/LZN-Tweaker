@@ -133,6 +133,54 @@
             </Border>
         </DataTemplate>
 
+        <!-- Estado recomendado de uma configuração manual -->
+        <DataTemplate x:Key="RecommendationBadge" DataType="{x:Type local:GuideCardViewModel}">
+            <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Left" ToolTip="{Binding RiskTooltip}" ToolTipService.InitialShowDelay="150">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding RecommendationGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="10" Foreground="{Binding RecommendationBrush}" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding RecommendationText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{Binding RecommendationBrush}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <!-- Card de configuração manual (hoje, só os guias do Discord: o ícone é o símbolo oficial) -->
+        <DataTemplate DataType="{x:Type local:GuideCardViewModel}">
+            <Border Style="{StaticResource Lzn.Card}" MinHeight="148">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.DiscordSoft}" Margin="0,0,12,0">
+                            <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{StaticResource Lzn.Discord}" Stretch="Uniform" Width="18" Height="14" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RecommendationBadge}" VerticalAlignment="Center" />
+                        <Button Grid.Column="1" Style="{StaticResource Lzn.ToolbarButton}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Padding="12,6"
+                                ToolTip="Passo a passo dentro do Discord"
+                                Command="{Binding DataContext.OpenDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8FD;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,7,0" />
+                                <TextBlock Text="Como configurar" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" Margin="0,10,0,0" />
+                        <TextBlock Text="Caminho" Style="{StaticResource Lzn.Text.Overline}" Margin="0,10,0,4" />
+                        <TextBlock Text="{Binding PathText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+
         <!-- Detalhes de ajuste -->
         <DataTemplate x:Key="TweakDetails" DataType="{x:Type local:TweakCardViewModel}">
             <StackPanel>
@@ -174,7 +222,39 @@
             </StackPanel>
         </DataTemplate>
 
-        <local:DetailsTemplateSelector x:Key="DetailsSelector" Tweak="{StaticResource TweakDetails}" Action="{StaticResource ActionDetails}" />
+        <DataTemplate x:Key="GuideDetails" DataType="{x:Type local:GuideCardViewModel}">
+            <StackPanel>
+                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RecommendationBadge}" />
+                    <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="11" Margin="12,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock Text="Benefício" Style="{StaticResource Lzn.Text.Overline}" Margin="0,18,0,6" />
+                <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" />
+                <TextBlock Text="Caminho no Discord" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
+                <TextBlock Text="{Binding PathText}" FontSize="12" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" />
+                <TextBlock Text="Como configurar" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
+                <ItemsControl ItemsSource="{Binding NumberedSteps}" Focusable="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Style="{StaticResource Lzn.Text.Body}" Margin="0,0,0,8" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Border Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,10" Margin="0,6,0,0"
+                        Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                    <StackPanel>
+                        <TextBlock Text="Pode variar conforme a versão" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource Lzn.RiskWarn}" />
+                        <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="O LZN Tweaker não abre nem altera o Discord. Se uma opção não estiver no lugar indicado, o Discord pode ter mudado o menu na sua versão."
+                           FontSize="11" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
+                <TextBlock Text="{Binding Guide.SourceUrl, StringFormat=Referência: {0}}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,10,0,0" />
+            </StackPanel>
+        </DataTemplate>
+
+        <local:DetailsTemplateSelector x:Key="DetailsSelector" Tweak="{StaticResource TweakDetails}" Action="{StaticResource ActionDetails}" Guide="{StaticResource GuideDetails}" />
     </UserControl.Resources>
 
     <Grid>
@@ -224,6 +304,23 @@
             </ItemsControl>
             <TextBlock Text="{Binding SelectedTabDescription}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="4,8,0,0"
                        Visibility="{Binding SelectedTabDescription, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+            <!-- Aviso em destaque da aba (hoje, só a aba Discord) -->
+            <Border Margin="0,12,0,0" Background="{StaticResource Lzn.DiscordSoft}" BorderBrush="{StaticResource Lzn.DiscordStroke}" BorderThickness="1"
+                    CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16,12"
+                    Visibility="{Binding SelectedTabHighlight, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{StaticResource Lzn.Discord}" Stretch="Uniform" Width="30" Height="23" Margin="0,0,14,0" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding SelectedTabHighlight}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="Bold" Foreground="{StaticResource Lzn.Text}" />
+                        <TextBlock Text="Nada é alterado automaticamente. Os nomes seguem a versão atual do Discord em português e podem mudar entre versões; cada card avisa o que pode variar."
+                                   Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                    </StackPanel>
+                </Grid>
+            </Border>
             </StackPanel>
 
             <!-- Pesquisa, filtros e ordenação -->

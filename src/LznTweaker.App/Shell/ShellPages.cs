@@ -32,7 +32,7 @@ public static class ShellPages
         new(Home, "Home", "", "Geral", typeof(HomeView)),
         new(Backups, "Backups", "", "Geral", typeof(BackupsView)),
         new(Fixes, "Fixes", "", "Geral", typeof(FixesPageView)),
-        new(General, "General", "", "Principal", typeof(GeneralPageView)),
+        new(General, "Geral", "", "Principal", typeof(GeneralPageView)),
         new(Hardware, "Hardware", "", "Principal", typeof(HardwareView)),
         new(Gpu, "Placa de Vídeo", "", "Principal", typeof(GpuView)),
         new(Debloat, "Debloat", "", "Principal", typeof(AppDebloatView)),

@@ -42,7 +42,7 @@ public partial class TweakCardsViewModel : ObservableObject
         var recommended = TweakPresetCatalog.GetSelection(TweakPreset.Standard);
         foreach (var tab in page.Tabs)
         {
-            Tabs.Add(new CardTabViewModel(tab.Key, tab.Title, tab.Glyph, tab.Description));
+            Tabs.Add(new CardTabViewModel(tab.Key, tab.Title, tab.Glyph, tab.Description, tab.Highlight));
             foreach (var id in tab.TweakIds)
             {
                 var definition = TweakCatalog.GetById(id);
@@ -52,6 +52,8 @@ public partial class TweakCardsViewModel : ObservableObject
             }
             foreach (var action in tab.Actions)
                 Cards.Add(new QuickActionCardViewModel(action, tab.Key));
+            foreach (var guide in tab.Guides ?? [])
+                Cards.Add(new GuideCardViewModel(guide, tab.Key));
         }
         foreach (var tab in Tabs)
             tab.PropertyChanged += (sender, e) =>
@@ -59,6 +61,7 @@ public partial class TweakCardsViewModel : ObservableObject
                 if (e.PropertyName == nameof(CardTabViewModel.IsSelected) && sender is CardTabViewModel { IsSelected: true } selected)
                 {
                     SelectedTabDescription = selected.Description;
+                    SelectedTabHighlight = selected.Highlight;
                     RefreshView();
                 }
             };
@@ -74,6 +77,9 @@ public partial class TweakCardsViewModel : ObservableObject
 
     [ObservableProperty]
     private string _selectedTabDescription = "";
+
+    [ObservableProperty]
+    private string? _selectedTabHighlight;
     public ObservableCollection<CardTabViewModel> Tabs { get; } = [];
     public ObservableCollection<CardViewModel> Cards { get; } = [];
     public ICollectionView CardsView { get; }
@@ -381,6 +387,9 @@ public partial class TweakCardsViewModel : ObservableObject
                 return 0;
             if (owner.SortMode == "Alfabética")
                 return string.Compare(a.Title, b.Title, StringComparison.CurrentCultureIgnoreCase);
+            // Guias manuais seguem a ordem do catálogo (um passo a passo pensado em sequência).
+            if (a is GuideCardViewModel && b is GuideCardViewModel)
+                return owner.Cards.IndexOf(a).CompareTo(owner.Cards.IndexOf(b));
             var order = b.IsPending.CompareTo(a.IsPending);
             if (order == 0) order = b.IsRecommended.CompareTo(a.IsRecommended);
             if (order == 0) order = (a is QuickActionCardViewModel).CompareTo(b is QuickActionCardViewModel);

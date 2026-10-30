@@ -1,5 +1,6 @@
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LznTweaker.Core.Guides;
 using LznTweaker.Core.Maintenance;
 using LznTweaker.Core.Tweaks;
 
@@ -232,13 +233,52 @@ public sealed partial class QuickActionCardViewModel(QuickActionDefinition defin
     public override bool IsVerifiable => false;
 }
 
-public sealed partial class CardTabViewModel(string key, string title, string glyph, string description = "") : ObservableObject
+/// <summary>
+/// Configuração manual em outro aplicativo (ex.: Discord): caminho, estado recomendado e passo a passo. O app não lê
+/// nem altera nada; o estado é sempre "Requer configuração manual".
+/// </summary>
+public sealed class GuideCardViewModel(ManualSettingGuide guide, string tabKey)
+    : CardViewModel(guide.Id, tabKey, string.Empty, guide.Title, guide.Benefit, RiskLevel.Low)
+{
+    public ManualSettingGuide Guide { get; } = guide;
+    public string PathText => string.Join("  ›  ", Guide.Path);
+    public IReadOnlyList<string> NumberedSteps { get; } = guide.Steps.Select((step, index) => $"{index + 1}. {step}").ToArray();
+    public string? Note => Guide.Note;
+
+    public string RecommendationText => Guide.Recommendation switch
+    {
+        GuideRecommendation.Disable => "Recomendado: Desativar",
+        GuideRecommendation.Enable => "Recomendado: Ativar",
+        _ => "Recomendado: Verificar"
+    };
+
+    public string RecommendationGlyph => Guide.Recommendation switch
+    {
+        GuideRecommendation.Disable => "",
+        GuideRecommendation.Enable => "",
+        _ => ""
+    };
+
+    public Brush RecommendationBrush => Guide.Recommendation == GuideRecommendation.Check ? CardBrushes.Warning : CardBrushes.Low;
+
+    public override string RiskTooltip => "Configuração feita por você dentro do aplicativo; o LZN Tweaker não altera nada.";
+    public override string StateText => "Requer configuração manual";
+    public override Brush StateBrush => CardBrushes.Muted;
+    public override bool IsActive => false;
+    public override bool IsPending => false;
+    public override bool IsVerifiable => false;
+    public override string SearchText => $"{Title} {Description} {PathText} Discord";
+}
+
+public sealed partial class CardTabViewModel(string key, string title, string glyph, string description = "", string? highlight = null) : ObservableObject
 {
     public string Key { get; } = key;
     public string Title { get; } = title;
     public string Glyph { get; } = glyph;
     /// <summary>Frase curta sobre o conteúdo da aba; vazia quando a página já explica.</summary>
     public string Description { get; } = description;
+    /// <summary>Aviso em destaque acima dos cards (ex.: "IMPORTANTE SE VOCÊ USA DISCORD.").</summary>
+    public string? Highlight { get; } = highlight;
 
     [ObservableProperty]
     private bool _isSelected;

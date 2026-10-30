@@ -77,6 +77,7 @@ public sealed class PageSmokeTests
         }
 
         errors.AddRange(CheckProgramsPage(provider, shell, window, bindingErrors, output));
+        errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
 
         window.Close();
         PresentationTraceSources.DataBindingSource.Listeners.Remove(bindingErrors);
@@ -122,6 +123,31 @@ public sealed class PageSmokeTests
         errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"programas (expandido): {message}"));
         foreach (var card in programs.Programs)
             card.IsExpanded = false;
+        return errors;
+    }
+
+    /// <summary>Geral › Discord: só cards de guia, aviso em destaque e o passo a passo abre sem erro de binding.</summary>
+    private static IEnumerable<string> CheckDiscordTab(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var general = provider.GetRequiredService<LznTweaker.Features.TweakCards.GeneralPageViewModel>();
+        shell.Navigate(ShellPages.General);
+        Pump(TimeSpan.FromMilliseconds(500));
+        var before = bindingErrors.Messages.Count;
+        general.SelectTabCommand.Execute(general.Tabs.Single(tab => tab.Key == "discord"));
+        Pump(TimeSpan.FromMilliseconds(500));
+        var visible = general.CardsView.Cast<LznTweaker.Features.TweakCards.CardViewModel>().ToList();
+        if (visible.Count == 0 || !visible.All(card => card is LznTweaker.Features.TweakCards.GuideCardViewModel))
+            errors.Add($"discord: a aba mostra {visible.Count} card(s), esperado só guias");
+        if (general.SelectedTabHighlight != "IMPORTANTE SE VOCÊ USA DISCORD.")
+            errors.Add("discord: aviso em destaque ausente");
+        Save(window, Path.Combine(output, "general-discord.png"));
+        general.OpenDetailsCommand.Execute(visible.FirstOrDefault());
+        Pump(TimeSpan.FromMilliseconds(500));
+        Save(window, Path.Combine(output, "general-discord-details.png"));
+        general.CloseDetailsCommand.Execute(null);
+        general.SelectTabCommand.Execute(general.Tabs[0]);
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"discord: {message}"));
         return errors;
     }
 

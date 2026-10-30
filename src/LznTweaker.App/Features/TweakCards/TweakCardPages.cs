@@ -1,3 +1,4 @@
+using LznTweaker.Core.Guides;
 using LznTweaker.Core.Maintenance;
 using LznTweaker.Core.Tweaks;
 using LznTweaker.Shell;
@@ -5,7 +6,10 @@ using LznTweaker.Shell;
 namespace LznTweaker.Features.TweakCards;
 
 /// <param name="Description">Frase curta exibida sob as abas quando esta aba está ativa.</param>
-public sealed record CardTab(string Key, string Title, string Glyph, IReadOnlyList<string> TweakIds, IReadOnlyList<QuickActionDefinition> Actions, string Description = "");
+/// <param name="Guides">Configurações manuais de outros aplicativos (o app só mostra o passo a passo).</param>
+/// <param name="Highlight">Aviso em destaque exibido acima dos cards quando esta aba está ativa.</param>
+public sealed record CardTab(string Key, string Title, string Glyph, IReadOnlyList<string> TweakIds, IReadOnlyList<QuickActionDefinition> Actions, string Description = "",
+    IReadOnlyList<ManualSettingGuide>? Guides = null, string? Highlight = null);
 
 public sealed record TweakCardsPage(string Title, CategoryGuide Guide, IReadOnlyList<CardTab> Tabs);
 
@@ -43,7 +47,7 @@ public static class TweakCardPages
 
     public static string GlyphFor(string tweakId, string fallback) => Glyphs.GetValueOrDefault(tweakId, fallback);
 
-    public static TweakCardsPage General { get; } = new("General", CategoryGuides.General,
+    public static TweakCardsPage General { get; } = new("Geral", CategoryGuides.General,
     [
         new("core", "Core", "",
             [TweakCatalog.EnableGameModeId, TweakCatalog.DisableGameDvrId, TweakCatalog.DisableFullscreenOptId,
@@ -78,7 +82,11 @@ public static class TweakCardPages
             [new("power-options", "", "Opções de Energia do Windows",
                 "Abre o painel do Windows para conferir o plano de energia ativo e a Inicialização Rápida.",
                 RiskLevel.Low, "Abrir", Tool: SystemTool.OpenPowerOptions)],
-            Description: "Como o PC usa energia: o plano de energia define o ritmo do processador; a hibernação reserva espaço em disco.")
+            Description: "Como o PC usa energia: o plano de energia define o ritmo do processador; a hibernação reserva espaço em disco."),
+        new("discord", "Discord", "", [], [],
+            Description: "Ajustes feitos por você dentro do aplicativo do Discord. O LZN Tweaker não altera o Discord: cada card mostra o caminho e o passo a passo.",
+            Guides: DiscordGuides.All,
+            Highlight: "IMPORTANTE SE VOCÊ USA DISCORD.")
     ]);
 
     public static TweakCardsPage Network { get; } = new("Network", CategoryGuides.Network,

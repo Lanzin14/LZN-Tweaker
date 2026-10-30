@@ -26,11 +26,13 @@ public sealed class DetailsTemplateSelector : DataTemplateSelector
 {
     public DataTemplate? Tweak { get; set; }
     public DataTemplate? Action { get; set; }
+    public DataTemplate? Guide { get; set; }
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container) => item switch
     {
         TweakCardViewModel => Tweak,
         QuickActionCardViewModel => Action,
+        GuideCardViewModel => Guide,
         _ => null
     };
 }
