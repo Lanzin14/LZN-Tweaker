@@ -128,7 +128,7 @@
                               Height="34" MinWidth="170" Margin="0,0,10,0" />
 
                     <!-- Quick Gaming Optimization Button -->
-                    <Button Grid.Column="2" Style="{StaticResource SecondaryButtonStyle}" Click="DisableLaunchers_Click" Margin="0,0,10,0" Padding="12,8">
+                    <Button Grid.Column="2" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding DisableLaunchersCommand}" Margin="0,0,10,0" Padding="12,8">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE945;" Style="{StaticResource Lzn.Icon}" Foreground="{StaticResource Lzn.RiskWarn}" FontSize="12" Margin="0,0,6,0" />
                             <TextBlock Text="Desativar Launchers de Jogos" />
@@ -136,7 +136,7 @@
                     </Button>
 
                     <!-- Refresh Button -->
-                    <Button Grid.Column="3" Style="{StaticResource SecondaryButtonStyle}" Click="Refresh_Click" Padding="12,8">
+                    <Button Grid.Column="3" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding RefreshCommand}" Padding="12,8">
                         <TextBlock Text="↻ Atualizar" />
                     </Button>
                 </Grid>

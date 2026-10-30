@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using LznTweaker.Core.Startup;
 
+using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Infrastructure;
 
 namespace LznTweaker.ViewModels;
@@ -92,9 +93,14 @@ public sealed class StartupViewModel : INotifyPropertyChanged
     private bool _isBusy;
     private string _statusMessage = "Carregando programas de inicialização…";
 
-    public StartupViewModel(StartupManagerService service)
+    private readonly IUserDialogs _dialogs;
+
+    public StartupViewModel(StartupManagerService service, IUserDialogs dialogs)
     {
         _service = service;
+        _dialogs = dialogs;
+        RefreshCommand = new AsyncRelayCommand(() => RefreshAsync());
+        DisableLaunchersCommand = new RelayCommand(DisableLaunchersWithConfirmation);
         FilteredView = CollectionViewSource.GetDefaultView(_allItems);
         FilteredView.Filter = FilterPredicate;
 
@@ -103,6 +109,27 @@ public sealed class StartupViewModel : INotifyPropertyChanged
     }
 
     public ICollectionView FilteredView { get; }
+    public IAsyncRelayCommand RefreshCommand { get; }
+    public IRelayCommand DisableLaunchersCommand { get; }
+
+    /// <summary>Chamado quando a página aparece: lê os programas só na primeira vez.</summary>
+    public async Task OnShownAsync()
+    {
+        if (TotalCount == 0)
+            await RefreshAsync();
+    }
+
+    private void DisableLaunchersWithConfirmation()
+    {
+        if (_dialogs.Confirm(
+                "Isso desativa a abertura automática de launchers e apps de chat (como Steam, Epic Games, Discord e Riot).\n\n" +
+                "• Os jogos continuam funcionando quando você abre o launcher manualmente.\n" +
+                "• O Windows tende a ficar pronto mais rápido e com menos programas usando memória em segundo plano.\n" +
+                "• Cada item pode ser reativado depois nesta mesma página.\n\n" +
+                "Deseja desativar esses itens da inicialização?",
+                "Desativar launchers na inicialização"))
+            DisableAllLaunchers();
+    }
     public IReadOnlyList<string> CategoryFilters { get; }
 
     public string SearchText

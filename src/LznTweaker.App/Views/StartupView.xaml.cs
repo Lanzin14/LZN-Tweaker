@@ -1,46 +1,15 @@
-using System.Windows;
 using System.Windows.Controls;
 using LznTweaker.ViewModels;
 
 namespace LznTweaker.Views;
 
+/// <summary>Programas da inicialização. Leitura, confirmação e alterações ficam no <see cref="StartupViewModel"/>.</summary>
 public partial class StartupView : UserControl
 {
-    private readonly StartupViewModel _viewModel;
-
     public StartupView(StartupViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = viewModel;
-        DataContext = _viewModel;
-
-        Loaded += async (_, _) =>
-        {
-            if (_viewModel.TotalCount == 0)
-            {
-                await _viewModel.RefreshAsync();
-            }
-        };
-    }
-
-    private async void Refresh_Click(object sender, RoutedEventArgs e) =>
-        await _viewModel.RefreshAsync();
-
-    private void DisableLaunchers_Click(object sender, RoutedEventArgs e)
-    {
-        var result = MessageBox.Show(
-            "Isso desativará a inicialização automática de clientes e launchers (como Steam, Epic Games, Discord, Riot, etc.).\n\n" +
-            "• Os jogos continuarão funcionando normalmente quando você os abrir manualmente.\n" +
-            "• A inicialização do Windows ficará mais rápida e consumirá menos memória RAM de fundo.\n\n" +
-            "Deseja desativar esses itens da inicialização?",
-            "Otimizar Inicialização para Jogos",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question,
-            MessageBoxResult.Yes);
-
-        if (result == MessageBoxResult.Yes)
-        {
-            _viewModel.DisableAllLaunchers();
-        }
+        DataContext = viewModel;
+        Loaded += async (_, _) => await viewModel.OnShownAsync();
     }
 }

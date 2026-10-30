@@ -91,13 +91,13 @@
 
                     <!-- Action Buttons -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Click="Scan_Click" IsEnabled="{Binding CanScan}" Margin="0,0,10,0" Padding="14,10">
+                        <Button Style="{StaticResource SecondaryButtonStyle}" Command="{Binding ScanCommand}" IsEnabled="{Binding CanScan}" Margin="0,0,10,0" Padding="14,10">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,6,0" />
                                 <TextBlock Text="Iniciar Varredura" />
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource PrimaryButtonStyle}" Click="Clean_Click" IsEnabled="{Binding CanClean}" Padding="18,10">
+                        <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding CleanCommand}" IsEnabled="{Binding CanClean}" Padding="18,10">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE945;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,6,0" />
                                 <TextBlock Text="Limpar Selecionados" />
@@ -122,8 +122,8 @@
             <Grid Margin="0,0,0,12">
                 <TextBlock Text="ÁREAS DE VARREDURA" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Marcar Todos" Click="SelectAll_Click" Padding="10,5" Margin="0,0,6,0" FontSize="11" />
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Desmarcar Todos" Click="SelectNone_Click" Padding="10,5" FontSize="11" />
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Marcar Todos" Command="{Binding SelectAllCommand}" Padding="10,5" Margin="0,0,6,0" FontSize="11" />
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Desmarcar Todos" Command="{Binding SelectNoneCommand}" Padding="10,5" FontSize="11" />
                 </StackPanel>
             </Grid>
 

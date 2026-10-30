@@ -2,7 +2,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Cleanup;
+using LznTweaker.Infrastructure;
 
 namespace LznTweaker.ViewModels;
 
@@ -90,9 +92,16 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
     private long _totalFoundBytes;
     private int _totalFoundFiles;
 
-    public CleanupViewModel(SystemCleanupService cleanupService)
+    private readonly IUserDialogs _dialogs;
+
+    public CleanupViewModel(SystemCleanupService cleanupService, IUserDialogs dialogs)
     {
         _cleanupService = cleanupService;
+        _dialogs = dialogs;
+        ScanCommand = new AsyncRelayCommand(() => ScanAllAsync());
+        CleanCommand = new AsyncRelayCommand(CleanWithConfirmationAsync);
+        SelectAllCommand = new RelayCommand(() => SelectAll(true));
+        SelectNoneCommand = new RelayCommand(() => SelectAll(false));
         Categories = new ObservableCollection<CleanupCategoryItemViewModel>(
             SystemCleanupService.GetSupportedCategories().Select(c => new CleanupCategoryItemViewModel(c)));
 
@@ -101,6 +110,31 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
     }
 
     public ObservableCollection<CleanupCategoryItemViewModel> Categories { get; }
+    public IAsyncRelayCommand ScanCommand { get; }
+    public IAsyncRelayCommand CleanCommand { get; }
+    public IRelayCommand SelectAllCommand { get; }
+    public IRelayCommand SelectNoneCommand { get; }
+
+    /// <summary>Chamado quando a página aparece: varre só na primeira vez (somente leitura).</summary>
+    public async Task OnShownAsync()
+    {
+        if (Categories.All(category => category.ScanResult is null))
+            await ScanAllAsync();
+    }
+
+    private async Task CleanWithConfirmationAsync()
+    {
+        if (!CanClean)
+            return;
+        if (_dialogs.Confirm(
+                $"Deseja prosseguir com a remoção de {SelectedSizeText}?\n\n" +
+                "• Arquivos temporários e caches serão apagados definitivamente.\n" +
+                "• Arquivos em uso por programas abertos são ignorados e mantidos.\n" +
+                "• A Lixeira será esvaziada, se estiver selecionada.\n\n" +
+                "Deseja continuar?",
+                "Confirmar limpeza"))
+            await CleanSelectedAsync();
+    }
 
     public bool IsBusy
     {
