@@ -4,6 +4,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LznTweaker.Core.Cleanup;
 using LznTweaker.Core.Debloat;
 using LznTweaker.Core.GameOptimization;
 using LznTweaker.Core.GameTuning;
@@ -201,6 +202,7 @@ public sealed partial class BackupsViewModel : ObservableObject
         _ when tweakId.StartsWith(AppxDebloatService.OperationPrefix, StringComparison.Ordinal) => "Debloat",
         _ when tweakId.StartsWith(SteamFolderBackupService.OperationPrefix, StringComparison.Ordinal) => "Jogos · Steam",
         _ when tweakId.StartsWith(SystemToolsService.OperationPrefix, StringComparison.Ordinal) => "Ferramentas",
+        _ when tweakId.StartsWith(SystemCleanupService.OperationPrefix, StringComparison.Ordinal) => "Limpeza",
         GameTuningService.DeadlockOperationId => "Jogos · Deadlock",
         ShaderCacheService.OperationId => "Jogos · Windows",
         _ => "Ajustes"

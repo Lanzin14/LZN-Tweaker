@@ -1,3 +1,4 @@
+using LznTweaker.Core.Tweaks;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -69,12 +70,22 @@ public sealed record CleanupExecutionSummary(
 
 public sealed class SystemCleanupService
 {
+    /// <summary>Prefixo do registro de cada limpeza no histórico (página Backups, área "Limpeza").</summary>
+    public const string OperationPrefix = "cleanup:";
+
     // Pasta de cada categoria; os testes trocam por pastas temporárias.
     private readonly Func<CleanupCategoryType, string?> _folders;
+    private readonly TweakOperationHistory? _history;
 
     public SystemCleanupService() : this(GetFolderPath) { }
 
-    internal SystemCleanupService(Func<CleanupCategoryType, string?> folders) => _folders = folders;
+    public SystemCleanupService(TweakOperationHistory history) : this(GetFolderPath, history) { }
+
+    internal SystemCleanupService(Func<CleanupCategoryType, string?> folders, TweakOperationHistory? history = null)
+    {
+        _folders = folders;
+        _history = history;
+    }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     private struct SHQUERYRBINFO
@@ -203,7 +214,8 @@ public sealed class SystemCleanupService
         IProgress<CleanupExecutionProgress>? progress = null,
         CancellationToken cancellationToken = default)
     {
-        return await Task.Run(() =>
+        var startedAt = DateTimeOffset.Now;
+        var summary = await Task.Run(() =>
         {
             int processed = 0;
             int deleted = 0;
@@ -283,6 +295,38 @@ public sealed class SystemCleanupService
 
             return new CleanupExecutionSummary(processed, deleted, skipped, bytesFreed, errors);
         }, cancellationToken);
+
+        await RecordAsync(filesToClean, emptyRecycleBin, summary, startedAt);
+        return summary;
+    }
+
+    /// <summary>
+    /// Registra a limpeza no histórico para ela aparecer em Backups. Não há valor anterior para restaurar:
+    /// os arquivos são apagados de vez, e o registro diz isso. Falha ao gravar o histórico não desfaz nada.
+    /// </summary>
+    private async Task RecordAsync(IReadOnlyList<CleanupFileItem> files, bool emptyRecycleBin, CleanupExecutionSummary summary, DateTimeOffset startedAt)
+    {
+        if (_history is null)
+            return;
+        var names = GetSupportedCategories()
+            .Where(info => files.Any(file => file.Category == info.Type) || (emptyRecycleBin && info.Type == CleanupCategoryType.RecycleBin))
+            .Select(info => info.Title)
+            .ToArray();
+        var message = $"{summary.TotalDeleted:N0} arquivo(s) apagado(s), {summary.TotalSkipped:N0} ignorado(s) (em uso, protegidos ou fora da pasta), " +
+                      $"{CleanupFileItem.FormatBytes(summary.TotalBytesFreed)} liberados." +
+                      (summary.Errors.Count == 0 ? "" : $" Erros: {string.Join("; ", summary.Errors.Take(3))}");
+        try
+        {
+            await _history.AppendAsync(new TweakOperationResult(Guid.NewGuid(), OperationPrefix + "run", startedAt,
+                $"{files.Count(file => file.Category != CleanupCategoryType.RecycleBin):N0} arquivo(s) selecionado(s)",
+                "Limpeza: " + (names.Length == 0 ? "nenhuma categoria" : string.Join(", ", names)),
+                summary.Errors.Count == 0 ? "Sucesso verificado" : "Concluído com erros",
+                message, false, null, "Sem desfazer: os arquivos foram apagados definitivamente."));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
+        {
+            Diagnostics.AppLog.Warn("Limpeza concluída, mas o histórico não foi gravado", ex);
+        }
     }
 
     private bool IsInsideCategoryFolder(CleanupFileItem item)

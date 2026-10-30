@@ -77,6 +77,24 @@ public sealed class CleanupTests : IDisposable
     }
 
     [Fact]
+    public async Task Each_cleanup_is_recorded_in_the_history_without_undo()
+    {
+        var history = new TweakOperationHistory(Path.Combine(_root, "history.json"));
+        var service = new SystemCleanupService(category => category == CleanupCategoryType.UserTemp ? _temp : null, history);
+        CreateFile(_temp, "a.tmp", TimeSpan.FromHours(1), 25);
+        var scan = await service.ScanCategoryAsync(CleanupCategoryType.UserTemp);
+
+        await service.CleanFilesAsync(scan.Files, emptyRecycleBin: false);
+
+        var entry = Assert.Single(await history.ReadAsync());
+        Assert.StartsWith(SystemCleanupService.OperationPrefix, entry.TweakId);
+        Assert.Contains("Temporários do Usuário", entry.RequestedState);
+        Assert.Equal("Sucesso verificado", entry.Outcome);
+        Assert.Contains("1 arquivo(s) apagado(s)", entry.Message);
+        Assert.Null(entry.RollbackData);
+    }
+
+    [Fact]
     public async Task Clean_refuses_files_outside_the_category_folder()
     {
         var outside = CreateFile(_outside, "importante.txt", TimeSpan.FromDays(1));
