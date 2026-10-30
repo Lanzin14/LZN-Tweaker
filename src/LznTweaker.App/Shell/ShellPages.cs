@@ -10,7 +10,10 @@ using LznTweaker.Views;
 
 namespace LznTweaker.Shell;
 
-/// <summary>Itens da sidebar, na ordem e nas seções exibidas. Ícones: Segoe Fluent Icons / MDL2 Assets.</summary>
+/// <summary>
+/// Itens da sidebar, na ordem e nas seções exibidas (a ordem da lista define a ordem das seções). Backups e Fixes
+/// ficam em Segurança, longe do item Geral. Ícones: Segoe Fluent Icons / MDL2 Assets.
+/// </summary>
 public static class ShellPages
 {
     public const string Home = "home";
@@ -29,18 +32,18 @@ public static class ShellPages
 
     public static IReadOnlyList<NavItem> All { get; } =
     [
-        new(Home, "Home", "", "Geral", typeof(HomeView)),
-        new(Backups, "Backups", "", "Geral", typeof(BackupsView)),
-        new(Fixes, "Fixes", "", "Geral", typeof(FixesPageView)),
-        new(General, "Geral", "", "Principal", typeof(GeneralPageView)),
-        new(Hardware, "Hardware", "", "Principal", typeof(HardwareView)),
-        new(Gpu, "Placa de Vídeo", "", "Principal", typeof(GpuView)),
-        new(Debloat, "Debloat", "", "Principal", typeof(AppDebloatView)),
-        new(Network, "Network", "", "Principal", typeof(NetworkPageView)),
-        new(Advanced, "Advanced", "", "Principal", typeof(TweaksView)),
+        new(Home, "Home", "", "Início", typeof(HomeView)),
+        new(General, "Geral", "", "Otimização", typeof(GeneralPageView)),
+        new(Hardware, "Hardware", "", "Otimização", typeof(HardwareView)),
+        new(Gpu, "Placa de Vídeo", "", "Otimização", typeof(GpuView)),
+        new(Debloat, "Debloat", "", "Otimização", typeof(AppDebloatView)),
+        new(Network, "Network", "", "Otimização", typeof(NetworkPageView)),
+        new(Advanced, "Advanced", "", "Otimização", typeof(TweaksView)),
         new(Games, "Jogos", "", "Jogos e manutenção", typeof(GameLibraryView)),
         new(Cleanup, "Limpeza", "", "Jogos e manutenção", typeof(CleanupView)),
         new(Startup, "Inicialização", "", "Jogos e manutenção", typeof(StartupView)),
-        new(Programs, "Programas", "", "Jogos e manutenção", typeof(ProgramsView))
+        new(Programs, "Programas", "", "Jogos e manutenção", typeof(ProgramsView)),
+        new(Backups, "Backups", "", "Segurança", typeof(BackupsView)),
+        new(Fixes, "Fixes", "", "Segurança", typeof(FixesPageView))
     ];
 }

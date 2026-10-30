@@ -81,6 +81,25 @@ public sealed partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private object _currentView;
 
+    /// <summary>Sidebar só com ícones; o nome de cada página aparece na dica ao passar o mouse.</summary>
+    [ObservableProperty]
+    private bool _isSidebarCollapsed;
+
+    public string SidebarToggleText => IsSidebarCollapsed ? "Expandir menu" : "Recolher menu";
+    public string SidebarToggleGlyph => IsSidebarCollapsed ? "" : "";
+    public string FooterSummary => $"{StatusText} · {UserName} · {PrivilegeText} · {WindowsVersion}";
+
+    partial void OnIsSidebarCollapsedChanged(bool value)
+    {
+        OnPropertyChanged(nameof(SidebarToggleText));
+        OnPropertyChanged(nameof(SidebarToggleGlyph));
+    }
+
+    partial void OnStatusTextChanged(string value) => OnPropertyChanged(nameof(FooterSummary));
+
+    [RelayCommand]
+    private void ToggleSidebar() => IsSidebarCollapsed = !IsSidebarCollapsed;
+
     partial void OnSelectedItemChanged(NavItem value)
     {
         if (value is not null)

@@ -79,6 +79,7 @@ public sealed class PageSmokeTests
         errors.AddRange(CheckProgramsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGpuPage(provider, shell, window, bindingErrors, output));
+        errors.AddRange(CheckSidebar(shell, window, bindingErrors, output));
 
         window.Close();
         PresentationTraceSources.DataBindingSource.Listeners.Remove(bindingErrors);
@@ -195,6 +196,30 @@ public sealed class PageSmokeTests
         gpu.ToggleOverviewCommand.Execute(null);
         gpu.Tabs[0].IsSelected = true;
         errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"gpu: {message}"));
+        return errors;
+    }
+
+    /// <summary>Sidebar: as seções seguem a ordem nova; recolhida, fica estreita e continua navegando sem erro de binding.</summary>
+    private static IEnumerable<string> CheckSidebar(ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var sections = string.Join(",", shell.NavItems.Select(item => item.Section).Distinct());
+        if (sections != "Início,Otimização,Jogos e manutenção,Segurança")
+            errors.Add("sidebar: seções fora da ordem esperada: " + sections);
+        var before = bindingErrors.Messages.Count;
+        var sidebar = (FrameworkElement)((System.Windows.Controls.Panel)window.Content).Children[0];
+        var expandedWidth = sidebar.ActualWidth;
+        shell.ToggleSidebarCommand.Execute(null);
+        shell.Navigate(ShellPages.General);
+        Pump(TimeSpan.FromMilliseconds(500));
+        if (!shell.IsSidebarCollapsed || sidebar.ActualWidth >= expandedWidth / 2)
+            errors.Add($"sidebar: recolhida com {sidebar.ActualWidth} px (expandida: {expandedWidth} px)");
+        Save(window, Path.Combine(output, "sidebar-collapsed.png"));
+        shell.ToggleSidebarCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(300));
+        if (shell.IsSidebarCollapsed || sidebar.ActualWidth != expandedWidth)
+            errors.Add("sidebar: não voltou a expandir");
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"sidebar: {message}"));
         return errors;
     }
 
