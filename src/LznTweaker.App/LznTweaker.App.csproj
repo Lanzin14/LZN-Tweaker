@@ -24,6 +24,8 @@
   <ItemGroup>
     <Resource Include="app.ico" />
     <Resource Include="Assets\Brand\lzn-logo-mark.png" />
+    <!-- Logotipos oficiais dos programas recomendados (fontes em Assets\Programs\FONTES.md). -->
+    <Resource Include="Assets\Programs\*.png" />
     <None Include="Assets\Brand\source\**" />
   </ItemGroup>
 

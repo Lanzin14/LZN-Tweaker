@@ -4,6 +4,7 @@ using LznTweaker.Features.GameProfiles;
 using LznTweaker.Features.Gpu;
 using LznTweaker.Features.Hardware;
 using LznTweaker.Features.Home;
+using LznTweaker.Features.Programs;
 using LznTweaker.Features.TweakCards;
 using LznTweaker.Views;
 
@@ -24,6 +25,7 @@ public static class ShellPages
     public const string Games = "games";
     public const string Cleanup = "cleanup";
     public const string Startup = "startup";
+    public const string Programs = "programs";
 
     public static IReadOnlyList<NavItem> All { get; } =
     [
@@ -38,6 +40,7 @@ public static class ShellPages
         new(Advanced, "Advanced", "", "Principal", typeof(TweaksView)),
         new(Games, "Jogos", "", "Jogos e manutenção", typeof(GameLibraryView)),
         new(Cleanup, "Limpeza", "", "Jogos e manutenção", typeof(CleanupView)),
-        new(Startup, "Inicialização", "", "Jogos e manutenção", typeof(StartupView))
+        new(Startup, "Inicialização", "", "Jogos e manutenção", typeof(StartupView)),
+        new(Programs, "Programas", "", "Jogos e manutenção", typeof(ProgramsView))
     ];
 }

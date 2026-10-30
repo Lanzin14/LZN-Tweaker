@@ -16,6 +16,7 @@ using LznTweaker.Features.GameProfiles;
 using LznTweaker.Features.Gpu;
 using LznTweaker.Features.Hardware;
 using LznTweaker.Features.Home;
+using LznTweaker.Features.Programs;
 using LznTweaker.Features.TweakCards;
 using LznTweaker.Infrastructure;
 using LznTweaker.Shell;
@@ -91,6 +92,8 @@ public static class ServiceRegistration
         services.AddSingleton<GameLibraryView>();
         services.AddSingleton<AppDebloatViewModel>();
         services.AddSingleton<AppDebloatView>();
+        services.AddSingleton<ProgramsViewModel>();
+        services.AddSingleton<ProgramsView>();
 
         // Janela principal
         services.AddSingleton<ShellViewModel>();

@@ -76,9 +76,52 @@ public sealed class PageSmokeTests
             errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"{item.Key}: {message}"));
         }
 
+        errors.AddRange(CheckProgramsPage(provider, shell, window, bindingErrors, output));
+
         window.Close();
         PresentationTraceSources.DataBindingSource.Listeners.Remove(bindingErrors);
         app.Shutdown();
+        return errors;
+    }
+
+    /// <summary>Programas: filtros e busca precisam mudar a lista; o card expandido precisa renderizar sem erro de binding.</summary>
+    private static IEnumerable<string> CheckProgramsPage(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var programs = provider.GetRequiredService<LznTweaker.Features.Programs.ProgramsViewModel>();
+        shell.Navigate(ShellPages.Programs);
+        Pump(TimeSpan.FromMilliseconds(500));
+        var total = programs.VisibleCount;
+        if (total != programs.Programs.Count)
+            errors.Add($"programas: 'Todos' mostra {total} de {programs.Programs.Count}");
+
+        foreach (var filter in programs.Filters.Skip(1))
+        {
+            filter.IsSelected = true;
+            Pump(TimeSpan.FromMilliseconds(150));
+            var expected = programs.Programs.Count(card => card.Program.Tags.Contains(filter.Tag!.Value));
+            if (programs.VisibleCount != expected || expected == 0)
+                errors.Add($"programas: filtro {filter.Title} mostra {programs.VisibleCount}, esperado {expected}");
+        }
+        programs.Filters[0].IsSelected = true;
+        programs.SearchText = "lasso";
+        Pump(TimeSpan.FromMilliseconds(150));
+        if (programs.VisibleCount != 1)
+            errors.Add($"programas: busca 'lasso' mostra {programs.VisibleCount}, esperado 1");
+        programs.SearchText = "nenhum-programa";
+        Pump(TimeSpan.FromMilliseconds(150));
+        if (programs.VisibleCount != 0)
+            errors.Add("programas: busca sem resultado deveria mostrar 0");
+        programs.ClearFiltersCommand.Execute(null);
+
+        var before = bindingErrors.Messages.Count;
+        foreach (var card in programs.Programs)
+            card.IsExpanded = true;
+        Pump(TimeSpan.FromSeconds(1));
+        Save(window, Path.Combine(output, "programs-expanded.png"));
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"programas (expandido): {message}"));
+        foreach (var card in programs.Programs)
+            card.IsExpanded = false;
         return errors;
     }
 

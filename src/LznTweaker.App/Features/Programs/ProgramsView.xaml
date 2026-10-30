@@ -1,0 +1,239 @@
+<UserControl x:Class="LznTweaker.Features.Programs.ProgramsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:LznTweaker.Features.Programs"
+             xmlns:controls="clr-namespace:LznTweaker.Controls"
+             xmlns:shell="clr-namespace:LznTweaker.Shell"
+             xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
+             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+    <UserControl.Resources>
+        <Style x:Key="Label" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Text.Overline}">
+            <Setter Property="Margin" Value="0,12,0,4" />
+        </Style>
+        <Style x:Key="Small" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Text.Body}">
+            <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
+            <Setter Property="LineHeight" Value="18" />
+        </Style>
+
+        <!-- Lista com marcador, reutilizada em funcionalidades, passos e alertas. -->
+        <DataTemplate x:Key="Bullet">
+            <Grid Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Ellipse Width="4" Height="4" Fill="{StaticResource Lzn.AccentHover}" VerticalAlignment="Top" Margin="0,7,0,0" HorizontalAlignment="Left" />
+                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Small}" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type local:ProgramCardViewModel}">
+            <Border Style="{StaticResource Lzn.Panel}" Margin="0,0,0,12" Padding="18,16">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Logotipo oficial ou monograma -->
+                        <Grid Width="44" Height="44" VerticalAlignment="Top">
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}" />
+                            <Image Source="{Binding Icon}" Width="32" Height="32" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"
+                                   Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" AutomationProperties.Name="{Binding Name}" />
+                            <TextBlock Text="{Binding Monogram}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
+                        </Grid>
+                        <StackPanel Grid.Column="1" Margin="14,0,12,0">
+                            <WrapPanel>
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource Lzn.Text.Subtitle}" Margin="0,0,10,2" VerticalAlignment="Center" />
+                                <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,6,2" ToolTip="{Binding SafetyTooltip}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding SafetyBrush}" Margin="0,0,6,0" />
+                                        <TextBlock Text="{Binding SafetyText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding SafetyBrush}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,6,2">
+                                    <TextBlock Text="{Binding LicenseText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                                </Border>
+                            </WrapPanel>
+                            <TextBlock Text="{Binding Developer}" Style="{StaticResource Lzn.Text.Caption}" />
+                            <TextBlock Text="{Binding Summary}" Style="{StaticResource Lzn.Text.Body}" Margin="0,8,0,0" />
+                            <TextBlock Style="{StaticResource Small}" Margin="0,6,0,0">
+                                <Run Text="Finalidade: " Foreground="{StaticResource Lzn.Text}" FontWeight="SemiBold" /><Run Text="{Binding Purpose, Mode=OneWay}" />
+                            </TextBlock>
+                            <ItemsControl ItemsSource="{Binding TagTexts}" Margin="0,10,0,0" Focusable="False">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,6,4">
+                                            <TextBlock Text="{Binding}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                            <Button Style="{StaticResource Lzn.ToolbarButton}" HorizontalAlignment="Stretch"
+                                    Command="{Binding DataContext.OpenSiteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"
+                                    ToolTip="{Binding OfficialHost, StringFormat=Abre {0} no navegador. Nada é baixado pelo LZN Tweaker.}"
+                                    AutomationProperties.Name="{Binding Name, StringFormat=Site oficial do {0}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Site oficial" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
+                                    <TextBlock Text="&#xE8A7;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="8,0,0,0" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Text="{Binding OfficialHost}" Style="{StaticResource Lzn.Text.Caption}" HorizontalAlignment="Center" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Funcionalidades em lista compacta de duas colunas -->
+                    <TextBlock Text="Principais funcionalidades" Style="{StaticResource Label}" Margin="58,14,0,4" />
+                    <ItemsControl ItemsSource="{Binding Features}" ItemTemplate="{StaticResource Bullet}" Margin="58,0,0,0" Focusable="False">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><controls:AdaptiveGridPanel MinItemWidth="240" MaxColumns="3" Spacing="2" /></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+
+                    <!-- Configurações recomendadas (expansível) -->
+                    <Button Style="{StaticResource Lzn.GhostButton}" HorizontalAlignment="Left" Margin="52,10,0,0" Padding="6,4"
+                            Command="{Binding DataContext.ToggleDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Configurações recomendadas" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
+                            <TextBlock FontSize="10" Foreground="{StaticResource Lzn.AccentHover}" Margin="6,1,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
+                                        <Setter Property="Text" Value="&#xE70D;" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsExpanded}" Value="True"><Setter Property="Text" Value="&#xE70E;" /></DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Border Margin="58,8,0,0" Padding="16,6,16,14" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceSunken}"
+                            Visibility="{Binding IsExpanded, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                        <StackPanel>
+                            <!-- Valores de referência com nível de evidência -->
+                            <StackPanel Visibility="{Binding HasSettings, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <TextBlock Text="Valores de referência" Style="{StaticResource Label}" />
+                                <ItemsControl ItemsSource="{Binding Settings}" Focusable="False" Grid.IsSharedSizeScope="True">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type local:ProgramSettingRow}">
+                                            <Grid Margin="0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="SetName" MinWidth="200" />
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="SetValue" MinWidth="140" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Margin="0,0,14,0" TextWrapping="Wrap" MaxWidth="260" />
+                                                <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,14,0">
+                                                    <TextBlock Text="{Binding Value}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
+                                                </Border>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="{Binding EvidenceText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding EvidenceBrush}" />
+                                                    <TextBlock Text="{Binding Note}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0"
+                                                               Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Visibility="{Binding HasSteps, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <TextBlock Text="Como usar" Style="{StaticResource Label}" />
+                                <ItemsControl ItemsSource="{Binding Steps}" ItemTemplate="{StaticResource Bullet}" Focusable="False" />
+                            </StackPanel>
+
+                            <controls:AdaptiveGridPanel MinItemWidth="260" MaxColumns="2" Spacing="18">
+                                <StackPanel>
+                                    <TextBlock Text="Benefícios possíveis" Style="{StaticResource Label}" />
+                                    <TextBlock Text="{Binding Benefits}" Style="{StaticResource Small}" />
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="Limitações" Style="{StaticResource Label}" />
+                                    <TextBlock Text="{Binding Limitations}" Style="{StaticResource Small}" />
+                                </StackPanel>
+                            </controls:AdaptiveGridPanel>
+
+                            <TextBlock Text="Cuidados" Style="{StaticResource Label}" Foreground="{StaticResource Lzn.RiskWarn}" />
+                            <ItemsControl ItemsSource="{Binding Cautions}" ItemTemplate="{StaticResource Bullet}" Focusable="False" />
+
+                            <TextBlock Text="Integração futura no LZN Tweaker" Style="{StaticResource Label}" />
+                            <TextBlock Text="{Binding FutureIntegration}" Style="{StaticResource Lzn.Text.Caption}" />
+
+                            <TextBlock Text="Fontes e referências" Style="{StaticResource Label}" />
+                            <ItemsControl ItemsSource="{Binding Sources}" Focusable="False">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type local:ProgramSourceRow}">
+                                        <Button Style="{StaticResource Lzn.GhostButton}" HorizontalAlignment="Left" Padding="4,3" ToolTip="{Binding Url}"
+                                                Command="{Binding DataContext.OpenSourceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                            <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap">
+                                                <Run Text="&#xE8A7;" FontFamily="{StaticResource Lzn.IconFont}" Foreground="{StaticResource Lzn.AccentHover}" /><Run Text="  " /><Run Text="{Binding Title, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" /><Run Text=" · " Foreground="{StaticResource Lzn.TextMuted}" /><Run Text="{Binding KindText, Mode=OneWay}" Foreground="{StaticResource Lzn.TextMuted}" />
+                                            </TextBlock>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,22,28,28">
+            <TextBlock Text="Programas" Style="{StaticResource Lzn.Text.Title}" />
+            <controls:CategoryInfo Guide="{x:Static shell:CategoryGuides.Programs}" Margin="0,6,0,0" />
+
+            <!-- Recomendação, não obrigação -->
+            <Border Style="{StaticResource Lzn.Panel}" Margin="0,16,0,0" Padding="18,14">
+                <StackPanel>
+                    <TextBlock Text="RECOMENDADOS PELO LZN TWEAKER" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.AccentHover}" />
+                    <TextBlock Style="{StaticResource Lzn.Text.Body}" Margin="0,6,0,0"
+                               Text="Selecionamos ferramentas que podem complementar sua experiência de otimização e diagnóstico do Windows. Todos os programas são opcionais. Você tem total liberdade para conhecer, baixar e utilizar somente aqueles que considerar necessários." />
+                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="0,8,0,0"
+                               Text="O LZN Tweaker não baixa, instala nem executa estes programas, e nenhum módulo do app depende deles. As recomendações não garantem mais FPS nem menos latência: meça antes e depois." />
+                </StackPanel>
+            </Border>
+
+            <!-- Filtros e pesquisa -->
+            <ItemsControl ItemsSource="{Binding Filters}" Margin="0,18,0,10" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:ProgramFilterOption}">
+                        <RadioButton Style="{StaticResource Lzn.Tab}" GroupName="ProgramFilters" IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                        </RadioButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Grid Margin="0,0,0,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MaxWidth="340" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox Style="{StaticResource Lzn.SearchBox}" Height="36" Tag="Pesquisar programa por nome…" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         AutomationProperties.Name="Pesquisar programa" />
+                <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.Text.Caption}"
+                           Text="{Binding VisibleCount, StringFormat={}{0} programa(s)}" />
+            </Grid>
+
+            <ItemsControl ItemsSource="{Binding ProgramsView}" Focusable="False" />
+
+            <StackPanel HorizontalAlignment="Center" Margin="0,30,0,0" Visibility="{Binding VisibleCount, Converter={x:Static infra:VisibilityConverter.WhenZero}}">
+                <TextBlock Text="Nenhum programa corresponde à busca ou ao filtro." Style="{StaticResource Lzn.Text.Body}" />
+                <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Limpar busca e filtro" HorizontalAlignment="Center" Margin="0,10,0,0" Command="{Binding ClearFiltersCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

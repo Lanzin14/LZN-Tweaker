@@ -69,6 +69,12 @@ public static class CategoryGuides
         "Liberar espaço em disco, útil principalmente quando o disco do sistema está quase cheio.",
         "A limpeza não tem desfazer. Apagar caches de shaders pode causar travadas na primeira partida, enquanto o jogo os recria, e esvaziar a Lixeira é definitivo.");
 
+    public static CategoryGuide Programs { get; } = new(
+        "Ferramentas externas reconhecidas pela comunidade de otimização, com explicação e configurações de referência.",
+        "Conhecer cada programa, ver para que serve, filtrar por área (CPU, RAM, latência, benchmark), abrir o site oficial e ler como a comunidade costuma configurá-lo.",
+        "Escolher com critério quais ferramentas usar e configurá-las sabendo o que cada valor faz.",
+        "Todos são opcionais e de terceiros. O LZN Tweaker não baixa, instala nem executa nada; valores de referência não são universais e precisam ser testados no seu PC.");
+
     public static CategoryGuide Startup { get; } = new(
         "Os programas que abrem sozinhos quando o Windows inicia.",
         "Ver o impacto estimado de cada programa, desativar ou reativar a abertura automática e desativar os launchers de jogos de uma vez.",
