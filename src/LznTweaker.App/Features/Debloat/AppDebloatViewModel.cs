@@ -109,6 +109,10 @@ public sealed partial class AppDebloatViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand), nameof(RemoveSelectedCommand), nameof(RestoreCommand))]
     private bool _isBusy;
 
+    /// <summary>Falha de leitura em linguagem simples, mostrada no Banner da página (nulo quando está tudo certo).</summary>
+    [ObservableProperty]
+    private ProblemInfo? _problem;
+
     [ObservableProperty]
     private string _statusText = "Carregando aplicativos instalados…";
 
@@ -147,6 +151,7 @@ public sealed partial class AppDebloatViewModel : ObservableObject
         IsBusy = true;
         try
         {
+            Problem = null;
             StatusText = "Consultando os pacotes Appx do Windows…";
             var inventory = await _service.GetInventoryAsync();
             Installed.Clear();
@@ -161,7 +166,8 @@ public sealed partial class AppDebloatViewModel : ObservableObject
         }
         catch (Exception ex) when (ex is InvalidOperationException or System.IO.IOException or System.Text.Json.JsonException)
         {
-            StatusText = ex.Message;
+            Problem = ProblemInfo.FromException(ex, "Não foi possível listar os aplicativos");
+            StatusText = string.Empty;
         }
         finally
         {

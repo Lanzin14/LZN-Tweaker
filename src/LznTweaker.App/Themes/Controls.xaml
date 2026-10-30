@@ -7,6 +7,7 @@
     <!-- Um dicionário carregado por Source não enxerga os irmãos: as cores e a escala vêm daqui. -->
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Tokens.xaml" />
+        <ResourceDictionary Source="Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!-- ═══ Texto ═══ -->
@@ -76,6 +77,119 @@
                         </StackPanel>
                         <ContentPresenter Grid.Column="1" VerticalAlignment="Top" Margin="24,0,0,0" />
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══ Estados: aviso, vazio e carregando ═══ -->
+    <!-- Aviso de página: cor e ícone pelo tipo; o texto técnico fica recolhido em "Detalhes técnicos". -->
+    <Style TargetType="controls:Banner">
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:Banner">
+                    <Border x:Name="Box" CornerRadius="{StaticResource Lzn.Radius.Lg}" BorderThickness="1" Padding="14,12"
+                            Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="Glyph" Text="{StaticResource Lzn.Glyph.Warning}" Style="{StaticResource Lzn.Icon}" FontSize="16"
+                                       Foreground="{StaticResource Lzn.RiskWarn}" VerticalAlignment="Top" Margin="0,1,12,0" />
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding Problem.Title, RelativeSource={RelativeSource TemplatedParent}}" FontSize="{StaticResource Lzn.FontSize.Body}"
+                                           FontWeight="SemiBold" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Problem.Message, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource Lzn.Text.Caption}"
+                                           Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                <ToggleButton x:Name="DetailsToggle" HorizontalAlignment="Left" Margin="0,6,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
+                                              AutomationProperties.Name="Mostrar detalhes técnicos"
+                                              Visibility="{Binding Problem.Details, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <StackPanel Orientation="Horizontal" Background="Transparent">
+                                                <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" />
+                                                <TextBlock x:Name="Chevron" Text="{StaticResource Lzn.Glyph.ChevronDown}" Style="{StaticResource Lzn.Icon}" FontSize="9"
+                                                           Foreground="{StaticResource Lzn.AccentHover}" Margin="5,1,0,0" />
+                                            </StackPanel>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Chevron" Property="Text" Value="{StaticResource Lzn.Glyph.ChevronUp}" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <TextBox Text="{Binding Problem.Details, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"
+                                         FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}"
+                                         Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8" Margin="0,6,0,0"
+                                         AutomationProperties.Name="Detalhes técnicos"
+                                         Visibility="{Binding IsChecked, ElementName=DetailsToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+                            </StackPanel>
+                            <ContentPresenter Grid.Column="2" VerticalAlignment="Center" Margin="16,0,0,0" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Problem.Kind, RelativeSource={RelativeSource Self}}" Value="Error">
+                            <Setter TargetName="Box" Property="Background" Value="{StaticResource Lzn.DangerSoft}" />
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource Lzn.DangerStroke}" />
+                            <Setter TargetName="Glyph" Property="Text" Value="{StaticResource Lzn.Glyph.Error}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.RiskHigh}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Problem.Kind, RelativeSource={RelativeSource Self}}" Value="Info">
+                            <Setter TargetName="Box" Property="Background" Value="{StaticResource Lzn.Surface}" />
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+                            <Setter TargetName="Glyph" Property="Text" Value="{StaticResource Lzn.Glyph.Info}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Problem" Value="{x:Null}">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Vazio: explica por que não há nada e, se houver, oferece a ação. -->
+    <Style TargetType="controls:EmptyState">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="24" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:EmptyState">
+                    <StackPanel MaxWidth="320">
+                        <TextBlock Text="{TemplateBinding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="28" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
+                        <TextBlock Text="{TemplateBinding Message}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}"
+                                   TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0" />
+                        <ContentPresenter HorizontalAlignment="Center" Margin="0,12,0,0" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Carregando: barra fina indeterminada e o que está sendo lido. -->
+    <Style TargetType="controls:LoadingState">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="0,40,0,0" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:LoadingState">
+                    <StackPanel Width="260">
+                        <ProgressBar IsIndeterminate="True" Height="3" />
+                        <TextBlock Text="{TemplateBinding Message}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}"
+                                   TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0" />
+                    </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -86,6 +86,10 @@ public sealed partial class BackupsViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(RestoreSelectedCommand), nameof(RefreshCommand))]
     private bool _isBusy;
 
+    /// <summary>Falha de leitura em linguagem simples, mostrada no Banner da página (nulo quando está tudo certo).</summary>
+    [ObservableProperty]
+    private ProblemInfo? _problem;
+
     [ObservableProperty]
     private string _summary = "Carregando o histórico…";
 
@@ -99,6 +103,7 @@ public sealed partial class BackupsViewModel : ObservableObject
     public async Task RefreshAsync()
     {
         IsBusy = true;
+        Problem = null;
         try
         {
             var entries = await _history.ReadAsync();
@@ -107,14 +112,21 @@ public sealed partial class BackupsViewModel : ObservableObject
             foreach (var entry in entries.Reverse())
             {
                 var isUndoCandidate = undo.TryGetValue(entry.TweakId, out var candidate) && candidate.OperationId == entry.OperationId;
-                Entries.Add(new HistoryEntryViewModel(entry, AreaOf(entry.TweakId), RestorePageOf(entry), isUndoCandidate));
+                var row = new HistoryEntryViewModel(entry, AreaOf(entry.TweakId), RestorePageOf(entry), isUndoCandidate);
+                row.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(HistoryEntryViewModel.IsSelected))
+                        RestoreSelectedCommand.NotifyCanExecuteChanged();
+                };
+                Entries.Add(row);
             }
             Summary = $"{entries.Count} operação(ões) registradas · {undo.Count} ajuste(s) com valor anterior guardado · " +
                       $"{entries.Count(entry => entry.Outcome is not ("Sucesso verificado" or "Reversão verificada" or "Executado sem verificação" or "Nada a alterar" or "Ponto recente reutilizado"))} com falha ou bloqueio";
         }
         catch (Exception ex) when (ex is System.IO.IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
         {
-            Summary = $"O histórico não pôde ser lido: {ex.Message}";
+            Problem = ProblemInfo.FromException(ex, "O histórico não pôde ser lido");
+            Summary = string.Empty;
         }
         finally
         {
@@ -123,7 +135,7 @@ public sealed partial class BackupsViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanWork))]
+    [RelayCommand(CanExecute = nameof(CanRestoreSelected))]
     private async Task RestoreSelectedAsync()
     {
         var selected = Entries.Where(entry => entry.IsSelected && entry.CanRestoreHere).ToArray();
@@ -175,6 +187,9 @@ public sealed partial class BackupsViewModel : ObservableObject
     }
 
     private bool CanWork() => !IsBusy;
+
+    /// <summary>Só há o que restaurar em lote quando algum item com valor anterior registrado está marcado.</summary>
+    private bool CanRestoreSelected() => !IsBusy && Entries.Any(entry => entry.IsSelected && entry.CanRestoreHere);
 
     private void RefreshView()
     {

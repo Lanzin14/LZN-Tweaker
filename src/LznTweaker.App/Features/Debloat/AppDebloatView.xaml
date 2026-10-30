@@ -4,6 +4,7 @@
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.Debloat"
+             xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
              Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
@@ -107,6 +108,9 @@
 
         <!-- Status e aviso de conta -->
         <StackPanel Grid.Row="1" Margin="0,0,0,12">
+            <controls:Banner Problem="{Binding Problem}">
+                <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Tentar de novo" Command="{Binding RefreshCommand}" />
+            </controls:Banner>
             <Border Background="{StaticResource Lzn.DangerSoft}" BorderBrush="{StaticResource Lzn.DangerStroke}" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,8"
                     Visibility="{Binding AccountWarning, Converter={x:Static local:NotNullToVisibilityConverter.Instance}}">
                 <TextBlock Text="{Binding AccountWarning}" Foreground="{StaticResource Lzn.RiskHigh}" FontSize="12" TextWrapping="Wrap" />
@@ -139,6 +143,9 @@
                                      Foreground="{StaticResource TextPrimaryBrush}" CaretBrush="{StaticResource TextPrimaryBrush}" FontSize="12" />
                         </Grid>
                     </Border>
+                    <Grid>
+                    <controls:EmptyState Glyph="{StaticResource Lzn.Glyph.Search}" Message="Nenhum app listado. A lista aparece aqui depois da leitura dos aplicativos instalados."
+                                         Visibility="{Binding Installed.Count, Converter={x:Static infra:VisibilityConverter.WhenZero}}" />
                     <ListBox x:Name="InstalledList" Style="{StaticResource AppListStyle}" ItemsSource="{Binding InstalledView}"
                              ItemTemplate="{StaticResource AppRowTemplate}">
                         <ListBox.GroupStyle>
@@ -151,17 +158,18 @@
                             </GroupStyle>
                         </ListBox.GroupStyle>
                     </ListBox>
+                    </Grid>
                 </DockPanel>
             </Border>
 
             <!-- Meio: setas de transferência -->
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0">
-                <Button Style="{StaticResource TransferButtonStyle}" Content="→" ToolTip="Mover selecionados para remoção"
+                <Button Style="{StaticResource TransferButtonStyle}" Content="→" ToolTip="Mover selecionados para remoção" AutomationProperties.Name="Mover selecionados para remoção"
                         Command="{Binding AddToQueueCommand}" CommandParameter="{Binding SelectedItems, ElementName=InstalledList}" />
-                <Button Style="{StaticResource TransferButtonStyle}" Content="⇉" ToolTip="Mover todos os patrocinados" Command="{Binding AddAllSponsoredCommand}" />
-                <Button Style="{StaticResource TransferButtonStyle}" Content="←" ToolTip="Devolver selecionados à lista de instalados"
+                <Button Style="{StaticResource TransferButtonStyle}" Content="⇉" ToolTip="Mover todos os patrocinados" AutomationProperties.Name="Mover todos os patrocinados" Command="{Binding AddAllSponsoredCommand}" />
+                <Button Style="{StaticResource TransferButtonStyle}" Content="←" ToolTip="Devolver selecionados à lista de instalados" AutomationProperties.Name="Devolver selecionados à lista de instalados"
                         Command="{Binding RemoveFromQueueCommand}" CommandParameter="{Binding SelectedItems, ElementName=QueueList}" />
-                <Button Style="{StaticResource TransferButtonStyle}" Content="⇇" ToolTip="Esvaziar a lista de remoção" Command="{Binding ClearQueueCommand}" />
+                <Button Style="{StaticResource TransferButtonStyle}" Content="⇇" ToolTip="Esvaziar a lista de remoção" AutomationProperties.Name="Esvaziar a lista de remoção" Command="{Binding ClearQueueCommand}" />
             </StackPanel>
 
             <!-- Direita: fila de remoção -->

@@ -97,6 +97,10 @@ public sealed partial class GameLibraryViewModel : ObservableObject
 
     public ObservableCollection<LibrarySection> Sections { get; }
 
+    /// <summary>Falha de leitura em linguagem simples, mostrada no Banner da página (nulo quando está tudo certo).</summary>
+    [ObservableProperty]
+    private ProblemInfo? _problem;
+
     [ObservableProperty]
     private LibrarySection _selectedSection;
 
@@ -118,6 +122,7 @@ public sealed partial class GameLibraryViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanRefresh))]
     private async Task RefreshAsync()
     {
+        Problem = null;
         IsBusy = true;
         try
         {
@@ -155,7 +160,8 @@ public sealed partial class GameLibraryViewModel : ObservableObject
         }
         catch (Exception ex) when (ex is InvalidOperationException or System.IO.IOException or System.Text.Json.JsonException)
         {
-            StatusText = $"Diagnóstico incompleto: {ex.Message}";
+            Problem = ProblemInfo.FromException(ex, "O diagnóstico não foi concluído");
+            StatusText = "Diagnóstico incompleto: as ações continuam disponíveis, mas alguns pontos de atenção não foram verificados.";
         }
         finally
         {

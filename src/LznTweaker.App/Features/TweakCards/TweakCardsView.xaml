@@ -594,8 +594,7 @@
                 </Grid>
 
                 <!-- Estados de carregamento, vazio e falha -->
-                <TextBlock Text="Lendo o estado atual dos ajustes…" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
-                           Visibility="{Binding IsLoading, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+                <controls:LoadingState Message="Lendo o estado atual dos ajustes…" Visibility="{Binding IsLoading, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                             Visibility="{Binding VisibleCount, Converter={x:Static infra:VisibilityConverter.WhenZero}}">
                     <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="28" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
@@ -603,10 +602,9 @@
                     <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Limpar busca e filtros" FontSize="12" HorizontalAlignment="Center" Margin="0,12,0,0"
                             Command="{Binding ClearFiltersCommand}" />
                 </StackPanel>
-                <Border VerticalAlignment="Top" Background="{StaticResource Lzn.DangerSoft}" BorderBrush="{StaticResource Lzn.DangerStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="12"
-                        Visibility="{Binding LoadError, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
-                    <TextBlock Text="{Binding LoadError}" Foreground="{StaticResource Lzn.RiskHigh}" TextWrapping="Wrap" />
-                </Border>
+                <controls:Banner Problem="{Binding LoadError}" VerticalAlignment="Top">
+                    <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Tentar de novo" Command="{Binding RefreshCommand}" />
+                </controls:Banner>
             </Grid>
 
             <!-- Barra de alterações pendentes -->

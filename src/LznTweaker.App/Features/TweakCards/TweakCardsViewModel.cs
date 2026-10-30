@@ -121,8 +121,9 @@ public partial class TweakCardsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoading = true;
 
+    /// <summary>Falha ao ler o estado, em linguagem simples (Banner); nulo quando a leitura deu certo.</summary>
     [ObservableProperty]
-    private string? _loadError;
+    private ProblemInfo? _loadError;
 
     [ObservableProperty]
     private string _statusText = "Lendo o estado atual dos ajustes…";
@@ -195,7 +196,7 @@ public partial class TweakCardsViewModel : ObservableObject
         }
         catch (Exception ex) when (ex is System.IO.IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
         {
-            LoadError = $"Não foi possível ler o estado: {ex.Message}";
+            LoadError = ProblemInfo.FromException(ex, "Não foi possível ler o estado dos ajustes");
         }
         finally
         {

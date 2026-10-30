@@ -126,6 +126,8 @@
     <Thickness x:Key="Lzn.Padding.Page">28,22,28,16</Thickness>
 
     <FontFamily x:Key="Lzn.Font">Segoe UI Variable Text, Segoe UI</FontFamily>
+    <!-- Valores técnicos (chaves de registro, comandos, caminhos). -->
+    <FontFamily x:Key="Lzn.MonoFont">Cascadia Mono, Consolas</FontFamily>
     <!-- Segoe Fluent Icons no Windows 11; Segoe MDL2 Assets no Windows 10. -->
     <FontFamily x:Key="Lzn.IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
 
