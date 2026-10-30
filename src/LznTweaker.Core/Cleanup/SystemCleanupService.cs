@@ -69,6 +69,13 @@ public sealed record CleanupExecutionSummary(
 
 public sealed class SystemCleanupService
 {
+    // Pasta de cada categoria; os testes trocam por pastas temporárias.
+    private readonly Func<CleanupCategoryType, string?> _folders;
+
+    public SystemCleanupService() : this(GetFolderPath) { }
+
+    internal SystemCleanupService(Func<CleanupCategoryType, string?> folders) => _folders = folders;
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     private struct SHQUERYRBINFO
     {
@@ -124,7 +131,7 @@ public sealed class SystemCleanupService
         if (category == CleanupCategoryType.RecycleBin)
             return QueryRecycleBin();
 
-        var targetFolder = GetFolderPath(category);
+        var targetFolder = _folders(category);
         if (string.IsNullOrWhiteSpace(targetFolder) || !Directory.Exists(targetFolder))
             return new CleanupScanResult(category, [], 0, "Diretório não encontrado ou inacessível.");
 
@@ -212,7 +219,13 @@ public sealed class SystemCleanupService
 
                 try
                 {
-                    if (File.Exists(item.FullPath))
+                    // Defesa: só apaga arquivos que estão dentro da pasta da própria categoria.
+                    if (!IsInsideCategoryFolder(item))
+                    {
+                        skipped++;
+                        errors.Add($"{item.DisplayName}: fora da pasta da categoria; não foi apagado.");
+                    }
+                    else if (File.Exists(item.FullPath))
                     {
                         // Teste de lock: verifica se o arquivo está sendo usado por outro processo
                         using (var stream = File.Open(item.FullPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
@@ -270,6 +283,15 @@ public sealed class SystemCleanupService
 
             return new CleanupExecutionSummary(processed, deleted, skipped, bytesFreed, errors);
         }, cancellationToken);
+    }
+
+    private bool IsInsideCategoryFolder(CleanupFileItem item)
+    {
+        var folder = _folders(item.Category);
+        if (string.IsNullOrWhiteSpace(folder))
+            return false;
+        var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder)) + Path.DirectorySeparatorChar;
+        return Path.GetFullPath(item.FullPath).StartsWith(root, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string? GetFolderPath(CleanupCategoryType category) => category switch
