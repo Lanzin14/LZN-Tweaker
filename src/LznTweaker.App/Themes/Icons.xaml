@@ -1,0 +1,26 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- Glifos com nome (Segoe Fluent Icons; Segoe MDL2 Assets no Windows 10): o mesmo conceito usa sempre o mesmo ícone.
+         Uso: Text="{StaticResource Lzn.Glyph.Refresh}" com Style="{StaticResource Lzn.Icon}". Tamanhos: 12, 14, 16, 20, 28. -->
+    <sys:String x:Key="Lzn.Glyph.Refresh">&#xE72C;</sys:String> <!-- Atualizar, verificar estado -->
+    <sys:String x:Key="Lzn.Glyph.Search">&#xE721;</sys:String> <!-- Busca -->
+    <sys:String x:Key="Lzn.Glyph.Filter">&#xE71C;</sys:String> <!-- Filtros -->
+    <sys:String x:Key="Lzn.Glyph.Sort">&#xE8CB;</sys:String> <!-- Ordenar -->
+    <sys:String x:Key="Lzn.Glyph.Info">&#xE946;</sys:String> <!-- Detalhes -->
+    <sys:String x:Key="Lzn.Glyph.Close">&#xE711;</sys:String> <!-- Fechar -->
+    <sys:String x:Key="Lzn.Glyph.Check">&#xE73E;</sys:String> <!-- Confirmar, aplicado -->
+    <sys:String x:Key="Lzn.Glyph.Warning">&#xE7BA;</sys:String> <!-- Atenção -->
+    <sys:String x:Key="Lzn.Glyph.Error">&#xE783;</sys:String> <!-- Erro -->
+    <sys:String x:Key="Lzn.Glyph.ChevronDown">&#xE70D;</sys:String> <!-- Expandir -->
+    <sys:String x:Key="Lzn.Glyph.ChevronUp">&#xE70E;</sys:String> <!-- Recolher -->
+    <sys:String x:Key="Lzn.Glyph.ChevronLeft">&#xE76B;</sys:String> <!-- Voltar, recolher menu -->
+    <sys:String x:Key="Lzn.Glyph.ChevronRight">&#xE76C;</sys:String> <!-- Avançar, expandir menu -->
+    <sys:String x:Key="Lzn.Glyph.OpenExternal">&#xE8A7;</sys:String> <!-- Abrir site -->
+    <sys:String x:Key="Lzn.Glyph.Restore">&#xE777;</sys:String> <!-- Restaurar -->
+    <sys:String x:Key="Lzn.Glyph.Delete">&#xE74D;</sys:String> <!-- Remover -->
+    <sys:String x:Key="Lzn.Glyph.Add">&#xE710;</sys:String> <!-- Adicionar -->
+    <sys:String x:Key="Lzn.Glyph.Settings">&#xE713;</sys:String> <!-- Ajustes -->
+    <sys:String x:Key="Lzn.Glyph.Shield">&#xEA18;</sys:String> <!-- Segurança -->
+    <sys:String x:Key="Lzn.Glyph.Select">&#xE8A9;</sys:String> <!-- Selecione um item -->
+</ResourceDictionary>

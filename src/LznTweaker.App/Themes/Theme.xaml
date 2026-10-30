@@ -9,13 +9,18 @@
         nada brilha em repouso; todo controle interativo mostra foco de teclado visível.
 
         Arquivos (a ordem importa: cada um usa os anteriores):
-          Tokens.xaml    camadas 1 e 2, escala, fontes e foco
+          Tokens.xaml    camadas 1 e 2, escala (tipografia, espaçamento, raios), fontes e foco
+          Icons.xaml     glifos com nome (Lzn.Glyph.*)
           Controls.xaml  estilos com chave (Lzn.*)
+          Legacy.xaml    nomes antigos das telas ainda não migradas (sai na Fase 6)
           Implicit.xaml  estilos aplicados a todos os controles do tipo
+        Plano completo: docs/REDESIGN-OBSIDIAN.md
     -->
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Tokens.xaml" />
+        <ResourceDictionary Source="Icons.xaml" />
         <ResourceDictionary Source="Controls.xaml" />
+        <ResourceDictionary Source="Legacy.xaml" />
         <ResourceDictionary Source="Implicit.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

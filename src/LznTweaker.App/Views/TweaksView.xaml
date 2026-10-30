@@ -43,7 +43,7 @@
                     <ToolTip Background="Transparent" BorderThickness="0" Padding="0">
                         <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="10" Padding="14" MaxWidth="390">
                             <Border.Effect>
-                                <DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="3" Opacity="0.75" />
+                                <DropShadowEffect Color="{StaticResource Lzn.Color.Shadow}" BlurRadius="18" ShadowDepth="3" Opacity="0.75" />
                             </Border.Effect>
                             <StackPanel>
                                 <Grid Margin="0,0,0,6">

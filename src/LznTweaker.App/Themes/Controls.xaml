@@ -293,8 +293,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- Nome antigo do botão principal, mantido para as Views existentes. -->
-    <Style x:Key="Lzn.GlowButton" TargetType="Button" BasedOn="{StaticResource Lzn.PrimaryButton}" />
 
     <!-- Ação discreta sem contorno (fechar, links de rodapé). -->
     <Style x:Key="Lzn.GhostButton" TargetType="Button" BasedOn="{StaticResource Lzn.ToolbarButton}">
@@ -309,16 +307,6 @@
         <Setter Property="Background" Value="{StaticResource Lzn.DangerSoft}" />
         <Setter Property="BorderBrush" Value="{StaticResource Lzn.DangerStroke}" />
         <Setter Property="Foreground" Value="{StaticResource Lzn.RiskHigh}" />
-    </Style>
-
-    <!-- Estilos legados das telas antigas, agora sobre os mesmos tokens. -->
-    <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource Lzn.ToolbarButton}">
-        <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
-        <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
-    </Style>
-    <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource Lzn.PrimaryButton}">
-        <Setter Property="Padding" Value="12,8" />
-        <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
     </Style>
 
     <!-- ═══ Entrada ═══ -->
