@@ -17,8 +17,8 @@
             <Grid Margin="0,12,0,0">
                 <TextBlock Text="{Binding SelectionSummary}" Foreground="{StaticResource AccentTextBrush}" FontSize="12" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Selecionar todos" Click="SelectAll_Click" Margin="0,0,8,0" Padding="10,6" />
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Desmarcar todos" Click="SelectNone_Click" Padding="10,6" />
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Selecionar todos" Command="{Binding SelectAllCommand}" Margin="0,0,8,0" Padding="10,6" />
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Desmarcar todos" Command="{Binding SelectNoneCommand}" Padding="10,6" />
                 </StackPanel>
             </Grid>
         </StackPanel>
@@ -72,7 +72,8 @@
                        Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,260,0" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Style="{StaticResource SecondaryButtonStyle}" Content="Cancelar" IsCancel="True" Margin="0,0,8,0" MinWidth="100" />
-                <Button Style="{StaticResource PrimaryButtonStyle}" Content="Usar seleção" IsDefault="True" Click="Accept_Click" MinWidth="130" />
+                <Button Style="{StaticResource PrimaryButtonStyle}" Content="Usar seleção" IsDefault="True" Command="{Binding AcceptCommand}"
+                        ToolTip="Marque ao menos um arquivo para usar a seleção." ToolTipService.ShowOnDisabled="True" MinWidth="130" />
             </StackPanel>
         </Grid>
     </Grid>

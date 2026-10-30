@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Tweaks;
 
 namespace LznTweaker.Views;
@@ -37,28 +38,28 @@ public partial class TempCleanupPreviewWindow : Window, INotifyPropertyChanged
         Items = new ObservableCollection<TempCleanupPreviewItem>(files.Select(file => new TempCleanupPreviewItem(file)));
         foreach (var item in Items)
             item.PropertyChanged += Item_PropertyChanged;
+        SelectAllCommand = new RelayCommand(() => SetAll(true));
+        SelectNoneCommand = new RelayCommand(() => SetAll(false));
+        AcceptCommand = new RelayCommand(() => DialogResult = true, () => Items.Any(item => item.IsSelected));
         DataContext = this;
         UpdateSummary();
     }
+
+    public IRelayCommand SelectAllCommand { get; }
+    public IRelayCommand SelectNoneCommand { get; }
+    /// <summary>Usar a seleção: só habilita com ao menos um arquivo marcado.</summary>
+    public IRelayCommand AcceptCommand { get; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<TempCleanupPreviewItem> Items { get; }
     public IReadOnlyList<TempCleanupFile> SelectedFiles => Items.Where(item => item.IsSelected).Select(item => item.File).ToArray();
     public string SelectionSummary { get; private set; } = "";
 
-    private void SelectAll_Click(object sender, RoutedEventArgs e)
+    private void SetAll(bool selected)
     {
         foreach (var item in Items)
-            item.IsSelected = true;
+            item.IsSelected = selected;
     }
-
-    private void SelectNone_Click(object sender, RoutedEventArgs e)
-    {
-        foreach (var item in Items)
-            item.IsSelected = false;
-    }
-
-    private void Accept_Click(object sender, RoutedEventArgs e) => DialogResult = true;
 
     private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -72,6 +73,7 @@ public partial class TempCleanupPreviewWindow : Window, INotifyPropertyChanged
         var size = selected.Sum(file => file.Length);
         SelectionSummary = $"{selected.Length:N0} de {Items.Count:N0} arquivo(s) · {FormatBytes(size)} selecionados";
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectionSummary)));
+        AcceptCommand?.NotifyCanExecuteChanged();
     }
 
     private static string FormatBytes(long bytes) => bytes >= 1_073_741_824
