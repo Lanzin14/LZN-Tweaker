@@ -23,7 +23,9 @@ projetos de teste antes do commit e o grafo atualizado (`.\tools\graph\graph.ps1
 2. Prefira `RegistryChanges` / `HklmRegistryChanges` / `ServiceChanges`: o motor grava o valor anterior, verifica e
    desfaz sozinho. Script (`InvokeScript`) só quando não houver alternativa, sempre com `VerifyScript`
    e, se possível, `UndoScript`.
-3. Coloque o Id em uma aba de `Features/TweakCards/TweakCardPages.cs` (e um ícone em `Glyphs`).
+3. Coloque o Id em uma aba de `Features/TweakCards/TweakCardPages.cs` (e um ícone em `Glyphs`). Páginas com
+   `ListLayout: true` (hoje, Geral) mostram lista compacta com o detalhe fixo à direita; as demais, a grade de cards.
+   O interruptor da lista só marca o ajuste como pendente: aplicar continua sendo pelo lote.
 4. Testes: `CatalogAndRollbackTests` valida o catálogo; ajustes de registro podem ser testados no
    `BatchEngineTests` com a chave isolada do HKCU.
 5. Nunca aplique nada fora do lote: o lote cria o ponto de restauração obrigatório e registra no histórico.

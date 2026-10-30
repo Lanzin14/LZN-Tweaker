@@ -15,7 +15,8 @@ public sealed record CardTab(string Key, string Title, string Glyph, IReadOnlyLi
 /// <summary>Grupo de cards dentro de uma aba: os ajustes aparecem juntos, sob um cabeçalho com nome, ícone e descrição.</summary>
 public sealed record CardCategory(string Key, string Title, string Glyph, IReadOnlyList<string> TweakIds, IReadOnlyList<QuickActionDefinition> Actions, string Description = "");
 
-public sealed record TweakCardsPage(string Title, CategoryGuide Guide, IReadOnlyList<CardTab> Tabs);
+/// <param name="ListLayout">Lista compacta com o detalhe do item selecionado fixo à direita, em vez da grade de cards.</param>
+public sealed record TweakCardsPage(string Title, CategoryGuide Guide, IReadOnlyList<CardTab> Tabs, bool ListLayout = false);
 
 /// <summary>
 /// Organização das páginas de cards. Cada id aparece em uma única aba. O ponto de restauração (automático em todo lote)
@@ -96,7 +97,7 @@ public static class TweakCardPages
             Description: "Ajustes feitos por você dentro do aplicativo do Discord. O LZN Tweaker não altera o Discord: cada card mostra o caminho e o passo a passo.",
             Guides: DiscordGuides.All,
             Highlight: "IMPORTANTE SE VOCÊ USA DISCORD.")
-    ]);
+    ], ListLayout: true);
 
     public static TweakCardsPage Network { get; } = new("Network", CategoryGuides.Network,
     [

@@ -79,6 +79,7 @@ public sealed class PageSmokeTests
         errors.AddRange(CheckProgramsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGpuPage(provider, shell, window, bindingErrors, output));
+        errors.AddRange(CheckGeneralList(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckSidebar(shell, window, bindingErrors, output));
 
         window.Close();
@@ -196,6 +197,47 @@ public sealed class PageSmokeTests
         gpu.ToggleOverviewCommand.Execute(null);
         gpu.Tabs[0].IsSelected = true;
         errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"gpu: {message}"));
+        return errors;
+    }
+
+    /// <summary>Geral: lista com detalhe fixo na janela larga; na estreita, o detalhe abre por cima. Nada é aplicado.</summary>
+    private static IEnumerable<string> CheckGeneralList(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var general = provider.GetRequiredService<LznTweaker.Features.TweakCards.GeneralPageViewModel>();
+        shell.Navigate(ShellPages.General);
+        general.SelectTabCommand.Execute(general.Tabs[0]);
+        Pump(TimeSpan.FromMilliseconds(500));
+        var before = bindingErrors.Messages.Count;
+        if (!general.UsesListLayout || !general.IsDetailDocked)
+            errors.Add($"geral: lista {general.UsesListLayout}, detalhe fixo {general.IsDetailDocked} na janela de {window.Width} px");
+        if (general.SelectedCard is null || general.IsDetailOverlayOpen)
+            errors.Add("geral: com o detalhe fixo, um item deveria estar selecionado e o painel sobreposto fechado");
+        var visible = general.CardsView.Cast<LznTweaker.Features.TweakCards.CardViewModel>().ToList();
+        general.SelectedCard = visible.OfType<LznTweaker.Features.TweakCards.QuickActionCardViewModel>().FirstOrDefault() ?? visible.Last();
+        Pump(TimeSpan.FromMilliseconds(300));
+        general.SelectedCard = visible[Math.Min(2, visible.Count - 1)];
+        Pump(TimeSpan.FromMilliseconds(400));
+        Save(window, Path.Combine(output, "general-list.png"));
+
+        general.SearchText = "nenhum-ajuste";
+        Pump(TimeSpan.FromMilliseconds(200));
+        if (general.SelectedCard is not null && general.VisibleCount == 0)
+            errors.Add("geral: a busca sem resultado deveria limpar a seleção do detalhe fixo");
+        general.ClearFiltersCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(200));
+        if (general.SelectedCard is null)
+            errors.Add("geral: ao limpar a busca, o detalhe fixo deveria voltar a mostrar um item");
+
+        window.Width = 1000;
+        Pump(TimeSpan.FromMilliseconds(500));
+        if (general.IsDetailDocked || !general.IsDetailOverlayOpen)
+            errors.Add("geral: em janela estreita, o detalhe deveria abrir por cima da lista");
+        Save(window, Path.Combine(output, "general-narrow.png"));
+        general.CloseDetailsCommand.Execute(null);
+        window.Width = 1400;
+        Pump(TimeSpan.FromMilliseconds(500));
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"geral (lista): {message}"));
         return errors;
     }
 

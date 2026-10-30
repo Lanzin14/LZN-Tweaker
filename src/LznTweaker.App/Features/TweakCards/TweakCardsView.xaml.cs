@@ -15,7 +15,12 @@ public partial class TweakCardsView : UserControl
         Loaded += async (_, _) => await viewModel.InitializeAsync();
         // Esc fecha o painel de detalhes.
         InputBindings.Add(new KeyBinding(viewModel.CloseDetailsCommand, Key.Escape, ModifierKeys.None));
+        // Lista + detalhe fixo só quando cabem os dois; mais estreito, o detalhe abre por cima da lista.
+        SizeChanged += (_, e) => viewModel.IsDetailDocked = viewModel.UsesListLayout && e.NewSize.Width >= DockedDetailMinWidth;
     }
+
+    /// <summary>Largura mínima da página para a lista (360 px) e o detalhe (420 px) ficarem lado a lado, com margens.</summary>
+    public const double DockedDetailMinWidth = 960;
 }
 
 public sealed class GeneralPageView(GeneralPageViewModel viewModel) : TweakCardsView(viewModel);

@@ -281,6 +281,36 @@
             </StackPanel>
         </DataTemplate>
 
+        <!-- Linha da lista compacta: hover em grafite, selecionada em roxo suave com marcador à esquerda -->
+        <Style x:Key="CardRow" TargetType="ListBoxItem">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+            <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Grid Margin="0,1">
+                            <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,9" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
+                                <ContentPresenter />
+                            </Border>
+                            <Border x:Name="Indicator" Width="3" Height="20" CornerRadius="2" HorizontalAlignment="Left" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
+                                <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                                <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <local:DetailsTemplateSelector x:Key="DetailsSelector" Tweak="{StaticResource TweakDetails}" Action="{StaticResource ActionDetails}" Guide="{StaticResource GuideDetails}" />
     </UserControl.Resources>
 
@@ -405,7 +435,8 @@
 
             <!-- Grade de cards -->
             <Grid Grid.Row="3">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,6,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,6,0"
+                              Visibility="{Binding UsesListLayout, Converter={x:Static infra:VisibilityConverter.WhenFalse}}">
                     <ItemsControl ItemsSource="{Binding CardsView}" Margin="0,0,0,18" KeyboardNavigation.TabNavigation="Continue">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -423,6 +454,152 @@
                         </ItemsControl.GroupStyle>
                     </ItemsControl>
                 </ScrollViewer>
+
+                <!-- Lista compacta + detalhe fixo (página Geral). Selecionar uma linha mostra o detalhe; o interruptor só marca
+                     a alteração como pendente, que continua passando por "Revisar e aplicar" (com ponto de restauração). -->
+                <Grid Visibility="{Binding UsesListLayout, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="360" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ListBox x:Name="CardList" ItemsSource="{Binding CardsView}" SelectedItem="{Binding SelectedCard}" Background="Transparent" BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" Padding="0,0,6,18" ItemContainerStyle="{StaticResource CardRow}"
+                             AutomationProperties.Name="Ajustes" KeyboardNavigation.TabNavigation="Once">
+                        <ListBox.GroupStyle>
+                            <GroupStyle HeaderTemplate="{StaticResource GroupHeader}">
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="GroupItem">
+                                        <Setter Property="Margin" Value="0,0,0,16" />
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </ListBox.GroupStyle>
+                        <ListBox.Resources>
+                            <!-- Linha de ajuste: ícone, nome, descrição curta, estado e interruptor (ou fila, para ações pontuais) -->
+                            <DataTemplate DataType="{x:Type local:TweakCardViewModel}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="12,0" VerticalAlignment="Center">
+                                        <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding StateBrush}" Margin="0,0,6,0" />
+                                        <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <CheckBox Grid.Column="3" Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding IsOn}" IsEnabled="{Binding IsSwitchEnabled}" VerticalAlignment="Center"
+                                              ToolTip="{Binding SwitchTooltip}" ToolTipService.ShowOnDisabled="True"
+                                              Visibility="{Binding IsToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                                              AutomationProperties.Name="{Binding Title}" />
+                                    <Button Grid.Column="3" Style="{StaticResource Lzn.ToolbarButton}" Content="{Binding ActionButtonText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Padding="10,5"
+                                            Visibility="{Binding IsAction, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                                            ToolTip="Ação pontual: entra na fila e é executada ao revisar e aplicar."
+                                            Command="{Binding DataContext.ToggleQueueCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type local:QuickActionCardViewModel}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Style="{StaticResource Lzn.ToolbarButton}" Content="{Binding ButtonText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Padding="10,5" Margin="12,0,0,0"
+                                            IsEnabled="{Binding IsRunning, Converter={x:Static local:InverseBooleanConverter.Instance}}"
+                                            Command="{Binding DataContext.RunQuickActionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type local:GuideCardViewModel}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.DiscordSoft}" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{StaticResource Lzn.Discord}" Stretch="Uniform" Width="16" Height="12" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding PathText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                    <ContentPresenter Grid.Column="2" Content="{Binding}" ContentTemplate="{StaticResource RecommendationBadge}" Margin="12,0,0,0" VerticalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.Resources>
+                    </ListBox>
+
+                    <!-- Detalhe fixo -->
+                    <Border Grid.Column="1" Width="420" Margin="16,0,0,16" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="1"
+                            CornerRadius="{StaticResource Lzn.Radius.Lg}"
+                            Visibility="{Binding IsDetailDocked, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                        <Grid>
+                            <DockPanel Margin="22,20,22,18" Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                                <!-- Ação do item selecionado, no rodapé do detalhe -->
+                                <ContentControl DockPanel.Dock="Bottom" Content="{Binding SelectedCard}" Focusable="False" Margin="0,14,0,0">
+                                    <ContentControl.Resources>
+                                        <DataTemplate DataType="{x:Type local:TweakCardViewModel}">
+                                            <Border BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                        <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{Binding StateBrush}" Margin="0,0,8,0" />
+                                                        <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" VerticalAlignment="Center" />
+                                                    </StackPanel>
+                                                    <CheckBox Grid.Column="1" Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding IsOn}" IsEnabled="{Binding IsSwitchEnabled}"
+                                                              ToolTip="{Binding SwitchTooltip}" ToolTipService.ShowOnDisabled="True"
+                                                              Visibility="{Binding IsToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                                                              AutomationProperties.Name="{Binding Title}" />
+                                                    <Button Grid.Column="1" Style="{StaticResource Lzn.ToolbarButton}" Content="{Binding ActionButtonText}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Padding="12,6"
+                                                            Visibility="{Binding IsAction, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                                                            ToolTip="Ação pontual: entra na fila e é executada ao revisar e aplicar."
+                                                            Command="{Binding DataContext.ToggleQueueCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:QuickActionCardViewModel}">
+                                            <Border BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0">
+                                                <Button Style="{StaticResource Lzn.PrimaryButton}" Content="{Binding ButtonText}" HorizontalAlignment="Left"
+                                                        IsEnabled="{Binding IsRunning, Converter={x:Static local:InverseBooleanConverter.Instance}}"
+                                                        Command="{Binding DataContext.RunQuickActionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                                            </Border>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:GuideCardViewModel}">
+                                            <TextBlock Text="Configuração manual: siga os passos acima dentro do Discord." Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" />
+                                        </DataTemplate>
+                                    </ContentControl.Resources>
+                                </ContentControl>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ContentControl Content="{Binding SelectedCard}" ContentTemplateSelector="{StaticResource DetailsSelector}" Focusable="False" />
+                                </ScrollViewer>
+                            </DockPanel>
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24"
+                                        Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNull}}">
+                                <TextBlock Text="&#xE8A9;" Style="{StaticResource Lzn.Icon}" FontSize="26" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
+                                <TextBlock Text="Selecione um item da lista para ver o que ele faz, os efeitos e como desfazer." Style="{StaticResource Lzn.Text.Caption}"
+                                           TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
 
                 <!-- Estados de carregamento, vazio e falha -->
                 <TextBlock Text="Lendo o estado atual dos ajustes…" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
@@ -462,7 +639,7 @@
         </Grid>
 
         <!-- Painel de detalhes -->
-        <Grid Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+        <Grid Visibility="{Binding IsDetailOverlayOpen, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
             <Border Background="{StaticResource Lzn.Overlay}">
                 <Border.InputBindings>
                     <MouseBinding MouseAction="LeftClick" Command="{Binding CloseDetailsCommand}" />

@@ -39,6 +39,7 @@ public partial class TweakCardsViewModel : ObservableObject
         _services = services;
         Title = page.Title;
         Guide = page.Guide;
+        UsesListLayout = page.ListLayout;
         foreach (var tab in page.Tabs)
         {
             Tabs.Add(new CardTabViewModel(tab.Key, tab.Title, tab.Glyph, tab.Description, tab.Highlight));
@@ -85,6 +86,8 @@ public partial class TweakCardsViewModel : ObservableObject
 
     public string Title { get; }
     public CategoryGuide Guide { get; }
+    /// <summary>Lista compacta com detalhe fixo (hoje, só a página Geral); as demais páginas usam a grade de cards.</summary>
+    public bool UsesListLayout { get; }
 
     [ObservableProperty]
     private string _selectedTabDescription = "";
@@ -125,7 +128,18 @@ public partial class TweakCardsViewModel : ObservableObject
     private string _statusText = "Lendo o estado atual dos ajustes…";
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDetailOverlayOpen))]
     private CardViewModel? _selectedCard;
+
+    /// <summary>
+    /// Detalhe fixo ao lado da lista: a view liga quando a página usa lista e há largura para os dois. Em janela
+    /// estreita (ou nas páginas em grade) o detalhe abre por cima, como painel lateral.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDetailOverlayOpen))]
+    private bool _isDetailDocked;
+
+    public bool IsDetailOverlayOpen => SelectedCard is not null && !IsDetailDocked;
 
     [ObservableProperty]
     private int _visibleCount;
@@ -148,6 +162,7 @@ public partial class TweakCardsViewModel : ObservableObject
     partial void OnRiskFilterChanged(string value) { RefreshView(); OnPropertyChanged(nameof(HasFilters)); }
     partial void OnStateFilterChanged(string value) { RefreshView(); OnPropertyChanged(nameof(HasFilters)); }
     partial void OnSortModeChanged(string value) => RefreshView();
+    partial void OnIsDetailDockedChanged(bool value) => EnsureDockedSelection();
 
     public async Task InitializeAsync()
     {
@@ -334,6 +349,16 @@ public partial class TweakCardsViewModel : ObservableObject
     {
         CardsView?.Refresh();
         VisibleCount = Cards.Count(card => Matches(card));
+        EnsureDockedSelection();
+    }
+
+    /// <summary>Com o detalhe fixo, sempre há um item selecionado entre os visíveis (o primeiro, se o atual saiu da lista).</summary>
+    private void EnsureDockedSelection()
+    {
+        if (!IsDetailDocked || CardsView is null)
+            return;
+        if (SelectedCard is null || !Matches(SelectedCard))
+            SelectedCard = CardsView.Cast<CardViewModel>().FirstOrDefault();
     }
 
     private bool Matches(CardViewModel card)
