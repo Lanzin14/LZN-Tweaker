@@ -1,0 +1,6 @@
+# Arquivos fora do grafo de conhecimento do LznTweaker (sintaxe do .gitignore).
+# Skills de agentes de terceiros (obra/superpowers, ver skills-lock.json): não descrevem o projeto
+# e formavam uma comunidade própria de ~33 nós sem relação com o código.
+.agents/
+# Ferramentas de verificação do próprio grafo: não fazem parte da arquitetura do app.
+tools/graph/

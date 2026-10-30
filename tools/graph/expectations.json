@@ -1,0 +1,18 @@
+{
+  "source_extensions": [".cs", ".xaml", ".ps1", ".csproj", ".sln", ".md", ".txt"],
+  "known_empty_files": [
+    "src/LznTweaker.Core/Execution/Scripts/AppxInventory.ps1",
+    "src/LznTweaker.Core/Execution/Scripts/EnableSystemProtection.ps1"
+  ],
+  "sensitive_paths": [
+    "src/LznTweaker.Core/Execution/",
+    "src/LznTweaker.Core/Tweaks/",
+    "src/LznTweaker.Core/Changes/",
+    "src/LznTweaker.Core/Debloat/",
+    "src/LznTweaker.Core/GameTuning/",
+    "src/LznTweaker.Core/GameOptimization/",
+    "src/LznTweaker.Core/Maintenance/",
+    "src/LznTweaker.Core/Cleanup/",
+    "src/LznTweaker.Core/Startup/"
+  ]
+}

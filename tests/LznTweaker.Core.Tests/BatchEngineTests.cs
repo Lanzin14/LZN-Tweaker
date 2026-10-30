@@ -7,7 +7,8 @@ namespace LznTweaker.Core.Tests;
 /// <summary>Executa o script PowerShell real do motor contra uma chave isolada do HKCU.</summary>
 public sealed class BatchEngineTests
 {
-    private static string? Text(JsonNode? node, string property) => (string?)node?[property];
+    // GetValue em vez do cast (string?): o parser do graphify falha no cast e perde o arquivo inteiro.
+    private static string? Text(JsonNode? node, string property) => node?[property]?.GetValue<string>();
 
     [NonElevatedFact]
     public void Tracked_applies_dword_existing_string_and_new_value_with_verification()
