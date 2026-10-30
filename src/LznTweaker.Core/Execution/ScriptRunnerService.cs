@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using LznTweaker.Core.Diagnostics;
 
 namespace LznTweaker.Core.Execution;
 
@@ -43,6 +44,23 @@ public sealed class ScriptRunnerService(ElevatedWorkspace workspace, bool allowE
         ScriptRunRequest request,
         Action<string>? onProgress = null,
         CancellationToken cancellationToken = default)
+    {
+        var result = await RunCoreAsync(request, onProgress, cancellationToken);
+        // Execuções que não terminaram normalmente, ou terminaram com erro do PowerShell, ficam no log para diagnóstico.
+        if (result.Status != ScriptRunStatus.Completed || result.ErrorOutput is not null || result.ResultJson is null)
+            AppLog.Warn($"Script '{request.Name}': {result.Status}, código {result.ExitCode?.ToString() ?? "-"}. {result.Message}" +
+                        (result.ErrorOutput is null ? "" : $" Erro: {Truncate(result.ErrorOutput, 2000)}"));
+        else
+            AppLog.Info($"Script '{request.Name}': concluído.");
+        return result;
+    }
+
+    private static string Truncate(string text, int max) => text.Length <= max ? text : text[..max] + "…";
+
+    private async Task<ScriptRunResult> RunCoreAsync(
+        ScriptRunRequest request,
+        Action<string>? onProgress,
+        CancellationToken cancellationToken)
     {
         ScriptRunDirectory run;
         try
