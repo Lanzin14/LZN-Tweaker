@@ -5,217 +5,180 @@
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.Debloat"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <!-- Selo da categoria (cor de estado: patrocinado = seguro, sistema = atenção) -->
+        <DataTemplate x:Key="CategoryBadge" DataType="{x:Type local:AppxItemViewModel}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding BadgeBrush}" Margin="0,0,6,0" />
+                <TextBlock Text="{Binding BadgeText}" Foreground="{Binding BadgeBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+            </StackPanel>
+        </DataTemplate>
 
-        <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource StrokeBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="Padding" Value="14" />
-        </Style>
-
-        <!-- Lista com aparência Windows 11: itens arredondados, seleção em destaque, rolagem interna. -->
-        <Style x:Key="AppListStyle" TargetType="ListBox">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="SelectionMode" Value="Extended" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="True" />
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Margin" Value="0,1" />
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border x:Name="Row" Background="Transparent" CornerRadius="7" Padding="10,7" BorderThickness="1" BorderBrush="Transparent">
-                                        <ContentPresenter />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                                        </Trigger>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource AccentSoftBrush}" />
-                                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource AccentStrokeBrush}" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="TransferButtonStyle" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
-            <Setter Property="Width" Value="44" />
-            <Setter Property="Height" Value="38" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="Margin" Value="0,0,0,8" />
-        </Style>
-
-        <!-- Linha de app com selo de categoria e InfoTip. -->
-        <DataTemplate x:Key="AppRowTemplate" DataType="{x:Type local:AppxItemViewModel}">
+        <!-- Linha: caixa para marcar a remoção, nome, pacote e categoria -->
+        <DataTemplate x:Key="AppRow" DataType="{x:Type local:AppxItemViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel>
-                    <TextBlock Text="{Binding FriendlyName}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
-                    <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsQueued}" VerticalAlignment="Center" Margin="0,0,12,0"
+                          ToolTip="Marcar para remover" AutomationProperties.Name="{Binding Title, StringFormat=Marcar {0} para remover}" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding FriendlyName}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding Name}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                               TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
                 </StackPanel>
-                <TextBlock Grid.Column="1" Text="{Binding BadgeText}" Foreground="{Binding BadgeBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold"
-                           VerticalAlignment="Center" Margin="8,0,8,0" />
-                <Border Grid.Column="2" Width="18" Height="18" CornerRadius="9" Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1"
-                        VerticalAlignment="Center" Cursor="Help" ToolTipService.InitialShowDelay="120" ToolTipService.ShowDuration="30000">
-                    <Border.ToolTip>
-                        <ToolTip Background="Transparent" BorderThickness="0" Padding="0">
-                            <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="10" Padding="12" MaxWidth="380">
-                                <TextBlock Text="{Binding InfoTip}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
-                            </Border>
-                        </ToolTip>
-                    </Border.ToolTip>
-                    <TextBlock Text="{Binding IsSystem, Converter={x:Static local:InfoGlyphConverter.Instance}}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold"
-                               Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Border>
+                <ContentPresenter Grid.Column="2" Content="{Binding}" ContentTemplate="{StaticResource CategoryBadge}" Margin="14,0,0,0" />
             </Grid>
+        </DataTemplate>
+
+        <!-- Detalhe: se é seguro remover, pacote, versão e observações -->
+        <DataTemplate x:Key="AppDetail" DataType="{x:Type local:AppxItemViewModel}">
+            <StackPanel>
+                <TextBlock Text="{Binding FriendlyName}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
+                <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Left" Margin="0,8,0,0">
+                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CategoryBadge}" />
+                </Border>
+
+                <TextBlock Text="É seguro remover?" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBlock Text="{Binding SafetyText}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" />
+
+                <StackPanel Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                    <TextBlock Text="Observação" Style="{StaticResource Lzn.DetailLabel}" />
+                    <TextBlock Text="{Binding Note}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" />
+                </StackPanel>
+
+                <TextBlock Text="Como voltar" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBlock Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap"
+                           Text="Em &quot;Removidos pelo LZN Tweaker&quot;, abaixo: o app é re-registrado quando os arquivos ainda existem; se não existirem, a volta é pela Microsoft Store." />
+                <TextBlock Text="{Binding ProvisionedText}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,6,0,0"
+                           Visibility="{Binding ProvisionedText, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+
+                <TextBlock Text="Pacote" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBox Text="{Binding Name, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
+                         Foreground="{StaticResource Lzn.TextSecondary}" Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
+                         AutomationProperties.Name="Nome do pacote" />
+                <TextBlock Text="{Binding Version, StringFormat=Versão {0}}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,6,0,0" />
+
+                <Border BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,18,0,0">
+                    <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsQueued}">
+                        <TextBlock Text="Marcar para remover" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.Text}" />
+                    </CheckBox>
+                </Border>
+            </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid Margin="28,22,32,24">
+    <Grid Margin="28,22,28,16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MinHeight="300" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="240" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Cabeçalho -->
-        <controls:PageHeader Title="Remover apps" Guide="{x:Static shell:CategoryGuides.Debloat}" Margin="0,0,0,14">
+        <controls:PageHeader Title="Remover apps" Guide="{x:Static shell:CategoryGuides.Debloat}" Status="{Binding StatusText}">
             <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}">
                 <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Atualizar" FontSize="12" /></StackPanel>
             </Button>
         </controls:PageHeader>
 
-        <!-- Status e aviso de conta -->
-        <StackPanel Grid.Row="1" Margin="0,0,0,12">
+        <StackPanel Grid.Row="1">
             <controls:Banner Problem="{Binding Problem}">
                 <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Tentar de novo" Command="{Binding RefreshCommand}" />
             </controls:Banner>
-            <Border Background="{StaticResource Lzn.DangerSoft}" BorderBrush="{StaticResource Lzn.DangerStroke}" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,8"
-                    Visibility="{Binding AccountWarning, Converter={x:Static local:NotNullToVisibilityConverter.Instance}}">
-                <TextBlock Text="{Binding AccountWarning}" Foreground="{StaticResource Lzn.RiskHigh}" FontSize="12" TextWrapping="Wrap" />
-            </Border>
-            <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap" />
+            <controls:Banner Problem="{Binding AccountProblem}" />
         </StackPanel>
 
-        <!-- Painel de transferência -->
-        <Grid Grid.Row="2">
+        <!-- Busca e seleção rápida -->
+        <Grid Grid.Row="2" Margin="0,0,0,14">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MaxWidth="320" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <TextBox Style="{StaticResource Lzn.SearchBox}" Height="36" Tag="Buscar app…" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Buscar app" />
+            <Button Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding AddAllSponsoredCommand}"
+                    ToolTip="Marca todos os apps patrocinados e pré-instalados da lista curada. Nada é removido até você confirmar.">
+                <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Check}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Marcar patrocinados" FontSize="12" /></StackPanel>
+            </Button>
+            <Button Grid.Column="2" Margin="8,0,0,0" Style="{StaticResource Lzn.GhostButton}" Content="Desmarcar todos" Command="{Binding ClearQueueCommand}" Padding="10,6" />
+            <CheckBox Grid.Column="3" Margin="12,0,0,0" Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding ShowOnlyQueued}" VerticalAlignment="Center">
+                <TextBlock Text="Mostrar só os marcados" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" />
+            </CheckBox>
+            <TextBlock Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.Text.Caption}"
+                       Text="{Binding Installed.Count, StringFormat={}{0} apps}" />
+        </Grid>
 
-            <!-- Esquerda: instalados, agrupados por categoria -->
-            <Border Style="{StaticResource CardStyle}">
-                <DockPanel>
-                    <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
-                        <TextBlock Text="Aplicativos instalados" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
-                        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}"
-                                   Text="{Binding Installed.Count, StringFormat={}{0} apps}" />
-                    </Grid>
-                    <Border DockPanel.Dock="Top" Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1"
-                            CornerRadius="8" Padding="10,6" Margin="0,0,0,10">
-                        <Grid>
-                            <TextBlock Text="Buscar app…" Foreground="{StaticResource TextMutedBrush}" FontSize="12" IsHitTestVisible="False"
-                                       Visibility="{Binding SearchText, Converter={x:Static local:EmptyToVisibilityConverter.Instance}}" />
-                            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0"
-                                     Foreground="{StaticResource TextPrimaryBrush}" CaretBrush="{StaticResource TextPrimaryBrush}" FontSize="12" />
-                        </Grid>
-                    </Border>
-                    <Grid>
-                    <controls:EmptyState Glyph="{StaticResource Lzn.Glyph.Search}" Message="Nenhum app listado. A lista aparece aqui depois da leitura dos aplicativos instalados."
-                                         Visibility="{Binding Installed.Count, Converter={x:Static infra:VisibilityConverter.WhenZero}}" />
-                    <ListBox x:Name="InstalledList" Style="{StaticResource AppListStyle}" ItemsSource="{Binding InstalledView}"
-                             ItemTemplate="{StaticResource AppRowTemplate}">
+        <controls:MasterDetailLayout Grid.Row="3" Selected="{Binding SelectedApp}" DetailTemplate="{StaticResource AppDetail}" CloseCommand="{Binding ClearSelectionCommand}"
+                                     Placeholder="Selecione um app para ver se é seguro remover e como voltar.">
+            <controls:MasterDetailLayout.Master>
+                <Grid>
+                    <ListBox x:Name="AppList" Style="{StaticResource Lzn.List}" ItemsSource="{Binding InstalledView}" SelectedItem="{Binding SelectedApp}"
+                             ItemTemplate="{StaticResource AppRow}" AutomationProperties.Name="Aplicativos instalados"
+                             VirtualizingPanel.IsVirtualizingWhenGrouping="True">
                         <ListBox.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.HeaderTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="4,10,0,4" />
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource Lzn.Text.Subtitle}" Margin="4,12,0,6" />
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
                             </GroupStyle>
                         </ListBox.GroupStyle>
                     </ListBox>
-                    </Grid>
-                </DockPanel>
-            </Border>
+                    <controls:EmptyState Glyph="{StaticResource Lzn.Glyph.Search}" Message="Nenhum app nesta lista. Se a leitura falhou, use Tentar de novo; se há filtro ou busca, limpe-os."
+                                         Visibility="{Binding HasItems, ElementName=AppList, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
+                </Grid>
+            </controls:MasterDetailLayout.Master>
+        </controls:MasterDetailLayout>
 
-            <!-- Meio: setas de transferência -->
-            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0">
-                <Button Style="{StaticResource TransferButtonStyle}" Content="→" ToolTip="Mover selecionados para remoção" AutomationProperties.Name="Mover selecionados para remoção"
-                        Command="{Binding AddToQueueCommand}" CommandParameter="{Binding SelectedItems, ElementName=InstalledList}" />
-                <Button Style="{StaticResource TransferButtonStyle}" Content="⇉" ToolTip="Mover todos os patrocinados" AutomationProperties.Name="Mover todos os patrocinados" Command="{Binding AddAllSponsoredCommand}" />
-                <Button Style="{StaticResource TransferButtonStyle}" Content="←" ToolTip="Devolver selecionados à lista de instalados" AutomationProperties.Name="Devolver selecionados à lista de instalados"
-                        Command="{Binding RemoveFromQueueCommand}" CommandParameter="{Binding SelectedItems, ElementName=QueueList}" />
-                <Button Style="{StaticResource TransferButtonStyle}" Content="⇇" ToolTip="Esvaziar a lista de remoção" AutomationProperties.Name="Esvaziar a lista de remoção" Command="{Binding ClearQueueCommand}" />
-            </StackPanel>
+        <!-- Lote: escopo, resumo e ação destrutiva -->
+        <Border Grid.Row="4" Style="{StaticResource Lzn.Panel}" Padding="16,12" Margin="0,4,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding QueueSummary}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding RemoveForAllUsers}" Margin="0,8,0,0">
+                        <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Foreground="{StaticResource Lzn.TextSecondary}">
+                            Remover para todos os usuários <Run Text="(apaga os arquivos: a volta só é possível pela Microsoft Store)" Foreground="{StaticResource Lzn.RiskWarn}" />
+                        </TextBlock>
+                    </CheckBox>
+                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,6,0,0"
+                               Text="Um ponto de restauração é criado antes de cada lote (obrigatório). Ele protege o restante do sistema, mas não reinstala apps da Store." />
+                </StackPanel>
+                <Button Grid.Column="1" Style="{StaticResource Lzn.DangerButton}" Command="{Binding RemoveSelectedCommand}" VerticalAlignment="Center" Margin="16,0,0,0" Padding="16,9"
+                        ToolTip="Marque ao menos um app. Pede confirmação e cria o ponto de restauração antes." ToolTipService.ShowOnDisabled="True">
+                    <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Delete}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Remover marcados" /></StackPanel>
+                </Button>
+            </Grid>
+        </Border>
 
-            <!-- Direita: fila de remoção -->
-            <Border Grid.Column="2" Style="{StaticResource CardStyle}" BorderBrush="{StaticResource AccentStrokeBrush}">
-                <DockPanel>
-                    <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
-                        <TextBlock Text="Selecionados para remoção" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
-                        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}"
-                                   Text="{Binding Queue.Count, StringFormat={}{0} apps}" />
-                    </Grid>
-                    <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
-                        <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding RemoveForAllUsers}" Foreground="{StaticResource TextSecondaryBrush}">
-                            <TextBlock FontSize="12" TextWrapping="Wrap">
-                                Remover para todos os usuários <Run Text="(apaga os arquivos: a volta só é possível pela Microsoft Store)" Foreground="{StaticResource WarningBrush}" />
-                            </TextBlock>
-                        </CheckBox>
-                        <TextBlock Text="{Binding QueueSummary}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <ListBox x:Name="QueueList" Style="{StaticResource AppListStyle}" ItemsSource="{Binding Queue}" ItemTemplate="{StaticResource AppRowTemplate}" />
-                </DockPanel>
-            </Border>
-        </Grid>
-
-        <!-- Ação principal -->
-        <Grid Grid.Row="3" Margin="0,14,0,14">
-            <TextBlock Text="Um ponto de restauração é criado antes de cada lote (obrigatório). Ele protege o restante do sistema, mas não reinstala apps da Store."
-                       Foreground="{StaticResource TextMutedBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,260,0" />
-            <Button HorizontalAlignment="Right" Style="{StaticResource PrimaryButtonStyle}" Content="Remover selecionados"
-                    Command="{Binding RemoveSelectedCommand}" Padding="18,10" />
-        </Grid>
-
-        <!-- Removidos pelo LznTweaker (lidos do histórico) -->
-        <Border Grid.Row="4" Style="{StaticResource CardStyle}" Background="{StaticResource Lzn.Surface}">
+        <!-- Removidos pelo LZN Tweaker (lidos do histórico) -->
+        <Border Grid.Row="5" Style="{StaticResource Lzn.Panel}" Padding="16,12">
             <DockPanel>
                 <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                     <StackPanel>
-                        <TextBlock Text="Removidos pelo LznTweaker" FontWeight="SemiBold" FontSize="13" />
-                        <TextBlock Text="Lidos do histórico. Marque os que deseja restaurar."
-                                   Foreground="{StaticResource TextMutedBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,3,0,0" />
+                        <TextBlock Text="Removidos pelo LZN Tweaker" Style="{StaticResource Lzn.Text.Subtitle}" />
+                        <TextBlock Text="Lidos do histórico. Marque os que deseja restaurar." Style="{StaticResource Lzn.Text.Caption}" Margin="0,3,0,0" />
                     </StackPanel>
-                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource SecondaryButtonStyle}"
-                            Content="Restaurar apps removidos" Command="{Binding RestoreCommand}" Padding="14,8" />
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RestoreCommand}"
+                            ToolTip="Nenhum app removido pelo LZN Tweaker está pendente." ToolTipService.ShowOnDisabled="True">
+                        <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE7A7;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Restaurar apps removidos" FontSize="12" /></StackPanel>
+                    </Button>
                 </Grid>
-                <TextBlock DockPanel.Dock="Top" Text="Nenhum app removido pelo LznTweaker está pendente." FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}"
-                           Visibility="{Binding Removed.Count, Converter={x:Static local:ZeroToVisibilityConverter.Instance}}" />
-                <ItemsControl ItemsSource="{Binding Removed}" MaxHeight="160">
+                <TextBlock DockPanel.Dock="Top" Text="Nenhum app removido pelo LZN Tweaker está pendente." Style="{StaticResource Lzn.Text.Caption}"
+                           Visibility="{Binding Removed.Count, Converter={x:Static infra:VisibilityConverter.WhenZero}}" />
+                <ItemsControl ItemsSource="{Binding Removed}" MaxHeight="140" Focusable="False">
                     <ItemsControl.Template>
                         <ControlTemplate TargetType="ItemsControl">
                             <ScrollViewer VerticalScrollBarVisibility="Auto"><ItemsPresenter /></ScrollViewer>
@@ -225,8 +188,8 @@
                         <DataTemplate DataType="{x:Type local:RemovedAppxItemViewModel}">
                             <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected}" Margin="0,3">
                                 <StackPanel Margin="2,0,0,0">
-                                    <TextBlock Text="{Binding FriendlyName}" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" />
-                                    <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Text="{Binding FriendlyName}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.Text}" />
+                                    <TextBlock Text="{Binding Details}" Style="{StaticResource Lzn.Text.Caption}" />
                                 </StackPanel>
                             </CheckBox>
                         </DataTemplate>

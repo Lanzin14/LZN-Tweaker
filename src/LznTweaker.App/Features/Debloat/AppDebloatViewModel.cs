@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -10,8 +9,12 @@ using LznTweaker.Infrastructure;
 
 namespace LznTweaker.Features.Debloat;
 
-public sealed class AppxItemViewModel(AppxPackageInfo package)
+public sealed partial class AppxItemViewModel(AppxPackageInfo package) : ObservableObject
 {
+    /// <summary>Marcado para remoção (entra na fila do lote); o lote em si continua exigindo ponto de restauração e confirmação.</summary>
+    [ObservableProperty]
+    private bool _isQueued;
+
     private static SolidColorBrush Green => ThemeBrushes.Success;
     private static SolidColorBrush Amber => ThemeBrushes.Warning;
     private static SolidColorBrush Purple => ThemeBrushes.AccentText;
@@ -43,6 +46,22 @@ public sealed class AppxItemViewModel(AppxPackageInfo package)
         AppxCategory.System => Amber,
         _ => Purple
     };
+
+    public string Title => Package.FriendlyName;
+    public string Version => Package.Version;
+
+    /// <summary>Se é seguro remover, em linguagem simples (mostrado no detalhe).</summary>
+    public string SafetyText => Package.Category switch
+    {
+        AppxCategory.Sponsored => "App promocional ou pré-instalado da lista curada. Seguro para remover.",
+        AppxCategory.System => "App da Microsoft que faz parte da experiência do Windows. A remoção pode afetar funções do Windows ou de outros apps que dependem dele.",
+        _ => "App que não está na lista curada; provavelmente foi instalado por você. Remova só se tiver certeza."
+    };
+
+    public string? Note => Package.Note;
+    public string? ProvisionedText => Package.IsProvisioned == true
+        ? "Está provisionado para novas contas: os arquivos tendem a continuar no disco, então a restauração local costuma funcionar."
+        : null;
 
     public string InfoTip =>
         $"{Package.FriendlyName}\nPacote: {Package.Name} · versão {Package.Version}\n\n" +
@@ -87,6 +106,7 @@ public sealed partial class AppDebloatViewModel : ObservableObject
         InstalledView.SortDescriptions.Add(new SortDescription(nameof(AppxItemViewModel.CategoryDisplay), ListSortDirection.Ascending));
         InstalledView.SortDescriptions.Add(new SortDescription(nameof(AppxItemViewModel.FriendlyName), ListSortDirection.Ascending));
         InstalledView.Filter = item => item is AppxItemViewModel app &&
+            (!ShowOnlyQueued || app.IsQueued) &&
             (string.IsNullOrWhiteSpace(SearchText) ||
              app.FriendlyName.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
              app.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
@@ -117,7 +137,24 @@ public sealed partial class AppDebloatViewModel : ObservableObject
     private string _statusText = "Carregando aplicativos instalados…";
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AccountProblem))]
     private string? _accountWarning;
+
+    /// <summary>Aviso da conta (ex.: conta da Microsoft não sincronizada) no mesmo componente dos demais avisos.</summary>
+    public ProblemInfo? AccountProblem => AccountWarning is null ? null : new ProblemInfo(ProblemKind.Warning, "Atenção à conta do Windows", AccountWarning);
+
+    /// <summary>Mostra só os apps marcados para remoção (revisão antes do lote).</summary>
+    [ObservableProperty]
+    private bool _showOnlyQueued;
+
+    /// <summary>App mostrado no detalhe.</summary>
+    [ObservableProperty]
+    private AppxItemViewModel? _selectedApp;
+
+    partial void OnShowOnlyQueuedChanged(bool value) => InstalledView.Refresh();
+
+    [RelayCommand]
+    private void ClearSelection() => SelectedApp = null;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(QueueSummary))]
@@ -129,8 +166,8 @@ public sealed partial class AppDebloatViewModel : ObservableObject
         {
             var system = Queue.Count(item => item.IsSystem);
             return Queue.Count == 0
-                ? "Nenhum app selecionado."
-                : $"{Queue.Count} app(s) na fila{(system > 0 ? $" · {system} do sistema" : string.Empty)}" +
+                ? "Nenhum app marcado para remoção."
+                : $"{Queue.Count} app(s) marcado(s){(system > 0 ? $" · {system} do sistema" : string.Empty)}" +
                   (RemoveForAllUsers ? " · para TODAS as contas (volta só pela Store)" : " · somente a conta atual");
         }
     }
@@ -157,7 +194,22 @@ public sealed partial class AppDebloatViewModel : ObservableObject
             Installed.Clear();
             Queue.Clear();
             foreach (var package in inventory.Packages)
-                Installed.Add(new AppxItemViewModel(package));
+            {
+                var app = new AppxItemViewModel(package);
+                app.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName != nameof(AppxItemViewModel.IsQueued))
+                        return;
+                    if (app.IsQueued && !Queue.Contains(app))
+                        Queue.Add(app);
+                    else if (!app.IsQueued)
+                        Queue.Remove(app);
+                    if (ShowOnlyQueued)
+                        InstalledView.Refresh();
+                };
+                Installed.Add(app);
+            }
+            SelectedApp = InstalledView.Cast<AppxItemViewModel>().FirstOrDefault();
             AccountWarning = inventory.AccountWarning;
             var sponsored = inventory.Packages.Count(package => package.Category == AppxCategory.Sponsored);
             StatusText = $"{inventory.Packages.Count} app(s) removíveis encontrados ({sponsored} patrocinados). " +
@@ -176,16 +228,18 @@ public sealed partial class AppDebloatViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void AddToQueue(IList? selected) => Move(selected?.OfType<AppxItemViewModel>().ToArray() ?? [], Installed, Queue);
+    private void AddAllSponsored()
+    {
+        foreach (var item in Installed.Where(item => item.Category == AppxCategory.Sponsored))
+            item.IsQueued = true;
+    }
 
     [RelayCommand]
-    private void RemoveFromQueue(IList? selected) => Move(selected?.OfType<AppxItemViewModel>().ToArray() ?? [], Queue, Installed);
-
-    [RelayCommand]
-    private void AddAllSponsored() => Move(Installed.Where(item => item.Category == AppxCategory.Sponsored).ToArray(), Installed, Queue);
-
-    [RelayCommand]
-    private void ClearQueue() => Move(Queue.ToArray(), Queue, Installed);
+    private void ClearQueue()
+    {
+        foreach (var item in Queue.ToArray())
+            item.IsQueued = false;
+    }
 
     [RelayCommand(CanExecute = nameof(CanRemove))]
     private async Task RemoveSelectedAsync()
@@ -290,7 +344,8 @@ public sealed partial class AppDebloatViewModel : ObservableObject
     private async Task LoadRemovedAsync()
     {
         Removed.Clear();
-        // Um app reinstalado (por exemplo, pela Store) volta a aparecer no inventário e sai desta lista.
+        // Um app reinstalado (por exemplo, pela Store) volta a aparecer no inventário e sai desta lista. A fila não tira apps
+        // de Installed (a lista mostra todos, com a caixa de marcar), então Installed é o inventário completo.
         var installedNames = Installed.Select(item => item.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var package in await _service.GetRestorableAsync())
         {
@@ -298,14 +353,5 @@ public sealed partial class AppDebloatViewModel : ObservableObject
                 Removed.Add(new RemovedAppxItemViewModel(package));
         }
         RestoreCommand.NotifyCanExecuteChanged();
-    }
-
-    private static void Move(IReadOnlyList<AppxItemViewModel> items, ObservableCollection<AppxItemViewModel> from, ObservableCollection<AppxItemViewModel> to)
-    {
-        foreach (var item in items)
-        {
-            if (from.Remove(item))
-                to.Add(item);
-        }
     }
 }
