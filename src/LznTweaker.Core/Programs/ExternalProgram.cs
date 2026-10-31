@@ -28,26 +28,25 @@ public sealed record ProgramSetting(string Name, string Value, EvidenceLevel Evi
 
 public sealed record ProgramSource(string Title, string Url, EvidenceLevel Kind);
 
+/// <param name="Summary">O que faz, em uma ou duas frases.</param>
+/// <param name="Purpose">Linha curta mostrada na lista.</param>
 /// <param name="OfficialUrl">Página oficial (nunca o arquivo de instalação).</param>
 /// <param name="IconResource">Nome do arquivo em Assets/Programs; nulo quando não há logotipo oficial publicado.</param>
-/// <param name="FutureIntegration">Recurso equivalente que o LZN Tweaker poderia implementar por conta própria no futuro.</param>
+/// <param name="Steps">Tutorial resumido.</param>
+/// <param name="Cautions">Cuidados, incluindo as limitações.</param>
 public sealed record ExternalProgram(
     string Id,
     string Name,
     string Developer,
     string Summary,
     string Purpose,
-    IReadOnlyList<string> Features,
     IReadOnlyList<ProgramTag> Tags,
     ProgramSafety Safety,
     ProgramLicense License,
     string? LicenseNote,
     string OfficialUrl,
     string? IconResource,
-    string Benefits,
-    string Limitations,
     IReadOnlyList<ProgramSetting> Settings,
     IReadOnlyList<string> Steps,
     IReadOnlyList<string> Cautions,
-    IReadOnlyList<ProgramSource> Sources,
-    string FutureIntegration);
+    IReadOnlyList<ProgramSource> Sources);

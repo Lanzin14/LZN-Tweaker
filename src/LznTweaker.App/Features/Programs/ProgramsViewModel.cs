@@ -19,9 +19,23 @@ public sealed partial class ProgramFilterOption(ProgramTag? tag, string title) :
     private bool _isSelected;
 }
 
-public sealed record ProgramSettingRow(string Name, string Value, string? Note, string EvidenceText, Brush EvidenceBrush);
+/// <summary>Valor de referência numa linha só; a origem e a observação ficam na dica (ToolTip).</summary>
+public sealed record ProgramSettingRow(string Name, string Value, string? Note, string EvidenceText, Brush EvidenceBrush)
+{
+    public string Tooltip => Note is null ? EvidenceText : $"{EvidenceText}. {Note}";
+}
 
 public sealed record ProgramSourceRow(string Title, string Url, string KindText);
+
+/// <summary>Número do passo do tutorial a partir do AlternationIndex (começa em 0).</summary>
+public sealed class StepNumberConverter : System.Windows.Data.IValueConverter
+{
+    public static StepNumberConverter Instance { get; } = new();
+    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) =>
+        value is int index ? (index + 1).ToString(culture) : string.Empty;
+    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) =>
+        throw new NotSupportedException();
+}
 
 /// <summary>Card de um programa externo: informações, configurações de referência e fontes.</summary>
 public sealed partial class ProgramCardViewModel : ObservableObject
@@ -43,18 +57,15 @@ public sealed partial class ProgramCardViewModel : ObservableObject
     public string Developer => Program.Developer;
     public string Summary => Program.Summary;
     public string Purpose => Program.Purpose;
-    public IReadOnlyList<string> Features => Program.Features;
     public IReadOnlyList<string> TagTexts => Program.Tags.Select(TagText).ToArray();
     public IReadOnlyList<string> Steps => Program.Steps;
     public IReadOnlyList<string> Cautions => Program.Cautions;
-    public string Benefits => Program.Benefits;
-    public string Limitations => Program.Limitations;
-    public string FutureIntegration => Program.FutureIntegration;
     public string OfficialHost => Uri.TryCreate(Program.OfficialUrl, UriKind.Absolute, out var uri) ? uri.Host : Program.OfficialUrl;
     public IReadOnlyList<ProgramSettingRow> Settings { get; }
     public IReadOnlyList<ProgramSourceRow> Sources { get; }
     public bool HasSettings => Settings.Count > 0;
     public bool HasSteps => Steps.Count > 0;
+    public string SourcesTitle => $"Fontes e referências ({Sources.Count})";
     public ImageSource? Icon { get; }
     public bool HasIcon => Icon is not null;
     public string Monogram => new string(Program.Name.Where(char.IsLetterOrDigit).Take(2).ToArray()).ToUpperInvariant();

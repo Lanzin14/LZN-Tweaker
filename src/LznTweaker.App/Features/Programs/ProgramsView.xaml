@@ -12,7 +12,7 @@
             <Setter Property="LineHeight" Value="19" />
         </Style>
 
-        <!-- Lista com marcador, reutilizada em funcionalidades, passos e cuidados. -->
+        <!-- Lista com marcador (cuidados). -->
         <DataTemplate x:Key="Bullet">
             <Grid Margin="0,2">
                 <Grid.ColumnDefinitions>
@@ -61,7 +61,7 @@
             </Grid>
         </DataTemplate>
 
-        <!-- Detalhe: o que é, para que serve, valores de referência, cuidados e fontes -->
+        <!-- Detalhe: o que faz, tutorial, valores de referência, fontes (recolhidas) e cuidados por último -->
         <DataTemplate x:Key="ProgramDetail" DataType="{x:Type local:ProgramCardViewModel}">
             <StackPanel>
                 <Grid>
@@ -93,68 +93,81 @@
                     </StackPanel>
                 </Button>
 
-                <TextBlock Text="O que é" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBlock Text="O que faz" Style="{StaticResource Lzn.DetailLabel}" />
                 <TextBlock Text="{Binding Summary}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" />
-                <TextBlock Text="Finalidade" Style="{StaticResource Lzn.DetailLabel}" />
-                <TextBlock Text="{Binding Purpose}" Style="{StaticResource Small}" TextWrapping="Wrap" />
 
-                <TextBlock Text="Principais funcionalidades" Style="{StaticResource Lzn.DetailLabel}" />
-                <ItemsControl ItemsSource="{Binding Features}" ItemTemplate="{StaticResource Bullet}" Focusable="False" />
-
-                <StackPanel Visibility="{Binding HasSettings, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                    <TextBlock Text="Configurações recomendadas" Style="{StaticResource Lzn.DetailLabel}" />
-                    <ItemsControl ItemsSource="{Binding Settings}" Focusable="False">
+                <StackPanel Visibility="{Binding HasSteps, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                    <TextBlock Text="Tutorial" Style="{StaticResource Lzn.DetailLabel}" />
+                    <ItemsControl ItemsSource="{Binding Steps}" AlternationCount="20" Focusable="False">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type local:ProgramSettingRow}">
-                                <Border Background="{StaticResource Lzn.SurfaceSunken}" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,9" Margin="0,0,0,6">
-                                    <StackPanel>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,10,0" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Value}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.Text}" />
-                                        </Grid>
-                                        <TextBlock Text="{Binding EvidenceText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding EvidenceBrush}" Margin="0,4,0,0" />
-                                        <TextBlock Text="{Binding Note}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,2,0,0"
-                                                   Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
-                                    </StackPanel>
-                                </Border>
+                            <DataTemplate>
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="26" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="18" Height="18" CornerRadius="9" Background="{StaticResource Lzn.AccentSoft}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,1,0,0">
+                                        <TextBlock Text="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ContentPresenter}, Converter={x:Static local:StepNumberConverter.Instance}}"
+                                                   FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
 
-                <StackPanel Visibility="{Binding HasSteps, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                    <TextBlock Text="Como usar" Style="{StaticResource Lzn.DetailLabel}" />
-                    <ItemsControl ItemsSource="{Binding Steps}" ItemTemplate="{StaticResource Bullet}" Focusable="False" />
+                <StackPanel Visibility="{Binding HasSettings, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                    <TextBlock Text="Valores de referência" Style="{StaticResource Lzn.DetailLabel}" />
+                    <ItemsControl ItemsSource="{Binding Settings}" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:ProgramSettingRow}">
+                                <Grid Margin="0,3" Background="Transparent" ToolTip="{Binding Tooltip}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="14" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Width="6" Height="6" Fill="{Binding EvidenceBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{StaticResource Small}" TextWrapping="Wrap" Margin="0,0,10,0" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Value}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
+                                               Foreground="{StaticResource Lzn.Text}" VerticalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Passe o mouse sobre um valor para ver a origem e a observação." Style="{StaticResource Lzn.Text.Caption}" Margin="0,4,0,0" />
                 </StackPanel>
 
-                <TextBlock Text="Benefícios possíveis" Style="{StaticResource Lzn.DetailLabel}" />
-                <TextBlock Text="{Binding Benefits}" Style="{StaticResource Small}" TextWrapping="Wrap" />
-                <TextBlock Text="Limitações" Style="{StaticResource Lzn.DetailLabel}" />
-                <TextBlock Text="{Binding Limitations}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+                <Expander Margin="0,14,0,0" Foreground="{StaticResource Lzn.TextSecondary}">
+                    <Expander.Header>
+                        <TextBlock Text="{Binding SourcesTitle}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" />
+                    </Expander.Header>
+                    <ItemsControl ItemsSource="{Binding Sources}" Focusable="False" Margin="0,4,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:ProgramSourceRow}">
+                                <Button Style="{StaticResource Lzn.GhostButton}" HorizontalAlignment="Left" Padding="4,3" ToolTip="{Binding Url}"
+                                        Command="{Binding DataContext.OpenSourceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                    <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap">
+                                        <Run Text="{StaticResource Lzn.Glyph.OpenExternal}" FontFamily="{StaticResource Lzn.IconFont}" Foreground="{StaticResource Lzn.AccentHover}" /><Run Text="  " /><Run Text="{Binding Title, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" /><Run Text=" · " Foreground="{StaticResource Lzn.TextMuted}" /><Run Text="{Binding KindText, Mode=OneWay}" Foreground="{StaticResource Lzn.TextMuted}" />
+                                    </TextBlock>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
 
-                <TextBlock Text="Cuidados" Style="{StaticResource Lzn.DetailLabel}" Foreground="{StaticResource Lzn.RiskWarn}" />
-                <ItemsControl ItemsSource="{Binding Cautions}" ItemTemplate="{StaticResource Bullet}" Focusable="False" />
-
-                <TextBlock Text="Integração futura no LZN Tweaker" Style="{StaticResource Lzn.DetailLabel}" />
-                <TextBlock Text="{Binding FutureIntegration}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" />
-
-                <TextBlock Text="Fontes e referências" Style="{StaticResource Lzn.DetailLabel}" />
-                <ItemsControl ItemsSource="{Binding Sources}" Focusable="False">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:ProgramSourceRow}">
-                            <Button Style="{StaticResource Lzn.GhostButton}" HorizontalAlignment="Left" Padding="4,3" ToolTip="{Binding Url}"
-                                    Command="{Binding DataContext.OpenSourceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
-                                <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap">
-                                    <Run Text="{StaticResource Lzn.Glyph.OpenExternal}" FontFamily="{StaticResource Lzn.IconFont}" Foreground="{StaticResource Lzn.AccentHover}" /><Run Text="  " /><Run Text="{Binding Title, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" /><Run Text=" · " Foreground="{StaticResource Lzn.TextMuted}" /><Run Text="{Binding KindText, Mode=OneWay}" Foreground="{StaticResource Lzn.TextMuted}" />
-                                </TextBlock>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <!-- Cuidados por último, em destaque -->
+                <Border Style="{StaticResource Lzn.Badge.Warn}" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="14,10" Margin="0,16,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE7BA;" Style="{StaticResource Lzn.Icon}" FontSize="12" Foreground="{StaticResource Lzn.RiskWarn}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <TextBlock Text="Cuidados" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.RiskWarn}" />
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding Cautions}" ItemTemplate="{StaticResource Bullet}" Focusable="False" Margin="0,6,0,0" />
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
@@ -197,7 +210,7 @@
         </Grid>
 
         <controls:MasterDetailLayout Grid.Row="3" Selected="{Binding SelectedProgram}" DetailTemplate="{StaticResource ProgramDetail}" CloseCommand="{Binding ClearSelectionCommand}"
-                                     Placeholder="Selecione um programa para ver o que faz, as configurações recomendadas e o site oficial.">
+                                     Placeholder="Selecione um programa para ver o que faz, o tutorial e os cuidados.">
             <controls:MasterDetailLayout.Master>
                 <Grid>
                     <ListBox Style="{StaticResource Lzn.List}" ItemsSource="{Binding ProgramsView}" SelectedItem="{Binding SelectedProgram}"

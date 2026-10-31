@@ -27,16 +27,16 @@ public sealed class ProgramCatalogTests
     }
 
     [Fact]
-    public void Every_program_explains_itself_and_cites_sources()
+    public void Every_program_explains_itself_briefly_and_cites_sources()
     {
         foreach (var program in ProgramCatalog.All)
         {
             Assert.False(string.IsNullOrWhiteSpace(program.Summary), program.Id);
             Assert.False(string.IsNullOrWhiteSpace(program.Purpose), program.Id);
-            Assert.False(string.IsNullOrWhiteSpace(program.Benefits), program.Id);
-            Assert.False(string.IsNullOrWhiteSpace(program.Limitations), program.Id);
-            Assert.False(string.IsNullOrWhiteSpace(program.FutureIntegration), program.Id);
-            Assert.NotEmpty(program.Features);
+            // Página enxuta: o que faz curto, tutorial e cuidados de poucos itens.
+            Assert.True(program.Summary.Length <= 200, $"{program.Id}: 'O que faz' com {program.Summary.Length} caracteres");
+            Assert.InRange(program.Steps.Count, 2, 4);
+            Assert.InRange(program.Cautions.Count, 1, 3);
             Assert.NotEmpty(program.Tags);
             Assert.NotEmpty(program.Cautions);
             Assert.NotEmpty(program.Sources);
@@ -47,7 +47,7 @@ public sealed class ProgramCatalogTests
     public void Texts_never_promise_gains()
     {
         var text = string.Join(" ", ProgramCatalog.All.SelectMany(p =>
-            new[] { p.Summary, p.Purpose, p.Benefits }.Concat(p.Features).Concat(p.Steps).Concat(p.Settings.Select(s => s.Note ?? ""))));
+            new[] { p.Summary, p.Purpose }.Concat(p.Steps).Concat(p.Settings.Select(s => s.Note ?? ""))));
         foreach (var forbidden in new[] { "garante", "garantido", "aumenta o FPS", "remove o input lag", "sem risco" })
             Assert.DoesNotContain(forbidden, text, StringComparison.OrdinalIgnoreCase);
     }
