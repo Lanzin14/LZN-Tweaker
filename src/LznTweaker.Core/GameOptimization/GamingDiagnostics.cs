@@ -4,7 +4,7 @@ using LznTweaker.Core.Execution;
 
 namespace LznTweaker.Core.GameOptimization;
 
-public enum OptimizationArea { Windows, Steam, Cs2, Valorant, Overwatch2, Deadlock, Hardware }
+public enum OptimizationArea { Windows, Steam, Cs2, Valorant, Overwatch2, Deadlock, Fortnite, Hardware }
 
 public enum DiagnosticStatus
 {
@@ -317,6 +317,7 @@ internal static class DiagnosticRules
         SupportedGames.Cs2Id => OptimizationArea.Cs2,
         SupportedGames.ValorantId => OptimizationArea.Valorant,
         SupportedGames.Overwatch2Id => OptimizationArea.Overwatch2,
+        SupportedGames.FortniteId => OptimizationArea.Fortnite,
         _ => OptimizationArea.Deadlock
     };
 

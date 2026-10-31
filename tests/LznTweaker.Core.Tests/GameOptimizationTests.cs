@@ -21,14 +21,16 @@ internal sealed class FakeGameEnvironment : IDisposable
         File.WriteAllText(Path.Combine(SteamRoot, "config", "loginusers.vdf"),
             "\"users\" { \"76561198091286736\" { \"PersonaName\" \"Jogador\" \"MostRecent\" \"1\" } }");
         RiotMetadata = Path.Combine(Root, "Riot", "Metadata");
+        EpicInstalledList = Path.Combine(Root, "Epic", "LauncherInstalled.dat");
         History = new TweakOperationHistory(Path.Combine(Root, "history.json"));
     }
 
     public string Root { get; }
     public string SteamRoot { get; }
     public string RiotMetadata { get; }
+    public string EpicInstalledList { get; }
     public TweakOperationHistory History { get; }
-    public GameLocator Locator => new(new SteamLibraryLocator(() => SteamRoot), RiotMetadata);
+    public GameLocator Locator => new(new SteamLibraryLocator(() => SteamRoot), RiotMetadata, EpicInstalledList);
 
     public string InstallSteamGame(string appId, string installDir, string exeRelative)
     {
@@ -87,6 +89,35 @@ public sealed class GameLocatorTests
         Assert.EndsWith("VALORANT-Win64-Shipping.exe", valorant.ExecutablePath);
         Assert.Null(valorant.SteamLibraryPath);
         Assert.Null(SupportedGames.Valorant.SteamAppId);
+    }
+
+    [Fact]
+    public void Fortnite_is_found_through_the_epic_launcher_list_only()
+    {
+        using var env = new FakeGameEnvironment();
+        var install = Path.Combine(env.Root, "Epic Games", "Fortnite");
+        var exe = Path.Combine(install, "FortniteGame", "Binaries", "Win64", "FortniteClient-Win64-Shipping.exe");
+        Directory.CreateDirectory(Path.GetDirectoryName(exe)!);
+        File.WriteAllText(exe, "exe");
+        Directory.CreateDirectory(Path.GetDirectoryName(env.EpicInstalledList)!);
+        File.WriteAllText(env.EpicInstalledList, JsonSerializer.Serialize(new
+        {
+            InstallationList = new[]
+            {
+                new { InstallLocation = Path.Combine(env.Root, "Outro"), AppName = "Heather" },
+                new { InstallLocation = install, AppName = "Fortnite" }
+            }
+        }));
+
+        var fortnite = env.Locator.Locate(SupportedGames.Fortnite);
+
+        Assert.True(fortnite.IsInstalled);
+        Assert.Equal(exe, fortnite.ExecutablePath);
+        Assert.Null(fortnite.SteamLibraryPath);
+
+        // Lista corrompida ou ausente: tratado como não instalado, sem exceção.
+        File.WriteAllText(env.EpicInstalledList, "{ corrompido");
+        Assert.False(env.Locator.Locate(SupportedGames.Fortnite).IsInstalled);
     }
 
     [Fact]
