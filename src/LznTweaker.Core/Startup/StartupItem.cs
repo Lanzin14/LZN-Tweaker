@@ -53,13 +53,14 @@ public sealed class StartupItem
         _ => "Utilitário do Sistema"
     };
 
+    /// <summary>Ícone da categoria (Segoe Fluent Icons): jogo, teclado, mensagem, áudio, nuvem, engrenagem.</summary>
     public string CategoryGlyph => Category switch
     {
-        StartupCategory.GameLauncher => "🎮",
-        StartupCategory.HardwareAndPeripherals => "⌨",
-        StartupCategory.CommunicationAndChat => "💬",
-        StartupCategory.MediaAndAudio => "🎵",
-        StartupCategory.CloudAndSync => "☁",
-        _ => "⚙"
+        StartupCategory.GameLauncher => "",
+        StartupCategory.HardwareAndPeripherals => "",
+        StartupCategory.CommunicationAndChat => "",
+        StartupCategory.MediaAndAudio => "",
+        StartupCategory.CloudAndSync => "",
+        _ => ""
     };
 }

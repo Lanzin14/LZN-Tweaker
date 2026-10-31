@@ -34,6 +34,10 @@ public sealed class StartupItemViewModel : INotifyPropertyChanged
     public StartupItem Item { get; }
 
     public string Name => Item.Name;
+    /// <summary>Nome para a lista: sem o sufixo de identificação (ex.: "_CFB2E46F…"); nomes que tinham o sufixo ganham espaços entre as palavras.</summary>
+    public string Title => FriendlyNameOf(Item.Name);
+    /// <summary>O nome técnico aparece no detalhe quando difere do nome amigável.</summary>
+    public bool ShowsTechnicalName => !string.Equals(Title, Name, StringComparison.Ordinal);
     public string Command => Item.Command;
     public string Publisher => Item.Publisher;
     public string LocationDisplay => Item.LocationDisplay;
@@ -64,6 +68,13 @@ public sealed class StartupItemViewModel : INotifyPropertyChanged
     }
 
     public Action? OnStateChanged { get; set; }
+
+    internal static string FriendlyNameOf(string name)
+    {
+        // Só nomes gerados (ex.: GoogleChromeAutoLaunch_CFB2…) são reescritos; nomes de marca como AnyDesk ficam como estão.
+        var trimmed = System.Text.RegularExpressions.Regex.Replace(name, "_[0-9A-Fa-f]{16,}$", "");
+        return trimmed == name || trimmed.Contains(' ') ? trimmed : System.Text.RegularExpressions.Regex.Replace(trimmed, "(?<=[a-z])(?=[A-Z])", " ");
+    }
 
     public Brush ImpactBrush => Item.Impact switch
     {
@@ -101,6 +112,7 @@ public sealed class StartupViewModel : INotifyPropertyChanged
         _dialogs = dialogs;
         RefreshCommand = new AsyncRelayCommand(() => RefreshAsync());
         DisableLaunchersCommand = new RelayCommand(DisableLaunchersWithConfirmation);
+        ClearSelectionCommand = new RelayCommand(() => SelectedItem = null);
         FilteredView = CollectionViewSource.GetDefaultView(_allItems);
         FilteredView.Filter = FilterPredicate;
 
@@ -111,6 +123,33 @@ public sealed class StartupViewModel : INotifyPropertyChanged
     public ICollectionView FilteredView { get; }
     public IAsyncRelayCommand RefreshCommand { get; }
     public IRelayCommand DisableLaunchersCommand { get; }
+    public IRelayCommand ClearSelectionCommand { get; }
+
+    private StartupItemViewModel? _selectedItem;
+    /// <summary>Item mostrado no detalhe.</summary>
+    public StartupItemViewModel? SelectedItem
+    {
+        get => _selectedItem;
+        set
+        {
+            if (_selectedItem == value) return;
+            _selectedItem = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private ProblemInfo? _problem;
+    /// <summary>Falha de leitura em linguagem simples, mostrada no Banner (nulo quando a lista foi lida).</summary>
+    public ProblemInfo? Problem
+    {
+        get => _problem;
+        private set
+        {
+            if (_problem == value) return;
+            _problem = value;
+            OnPropertyChanged();
+        }
+    }
 
     /// <summary>Chamado quando a página aparece: lê os programas só na primeira vez.</summary>
     public async Task OnShownAsync()
@@ -191,6 +230,7 @@ public sealed class StartupViewModel : INotifyPropertyChanged
     public async Task RefreshAsync(CancellationToken cancellationToken = default)
     {
         IsBusy = true;
+        Problem = null;
         StatusMessage = "Consultando registro e pastas de inicialização do Windows…";
 
         try
@@ -209,10 +249,12 @@ public sealed class StartupViewModel : INotifyPropertyChanged
             StatusMessage = $"Lista atualizada: {SummaryText}.";
             UpdateCounters();
             FilteredView.Refresh();
+            SelectedItem = FilteredView.Cast<StartupItemViewModel>().FirstOrDefault();
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Não foi possível carregar a inicialização: {ex.Message}";
+            Problem = ProblemInfo.FromException(ex, "Não foi possível ler os programas de inicialização");
+            StatusMessage = string.Empty;
         }
         finally
         {
@@ -240,7 +282,8 @@ public sealed class StartupViewModel : INotifyPropertyChanged
         // Filtro por Texto de Busca
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
-            var matchName = item.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
+            var matchName = item.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                            item.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
             var matchPub = item.Publisher.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
             var matchCmd = item.Command.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
             if (!matchName && !matchPub && !matchCmd) return false;
