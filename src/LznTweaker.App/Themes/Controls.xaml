@@ -602,13 +602,14 @@
     <Style x:Key="Lzn.ListRow" TargetType="ListBoxItem">
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="12,9" />
         <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
         <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
                     <Grid Margin="0,1">
-                        <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,9" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
+                        <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="{TemplateBinding Padding}" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
                             <ContentPresenter />
                         </Border>
                         <Border x:Name="Indicator" Width="3" Height="20" CornerRadius="2" HorizontalAlignment="Left" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />

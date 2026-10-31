@@ -128,6 +128,10 @@ public partial class TweakCardsViewModel : ObservableObject
     [ObservableProperty]
     private string _statusText = "Lendo o estado atual dos ajustes…";
 
+    /// <summary>Contagem curta ao lado do título no layout Foco (ex.: "14 de 33 ativos"); vazia em páginas só de ferramentas.</summary>
+    [ObservableProperty]
+    private string _countText = string.Empty;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDetailOverlayOpen))]
     private CardViewModel? _selectedCard;
@@ -193,6 +197,7 @@ public partial class TweakCardsViewModel : ObservableObject
             StatusText = tweaks.Length == 0
                 ? "Ferramentas do Windows; cada ação pede confirmação quando altera algo."
                 : $"{active} de {tweaks.Length} ajustes ativos · estado lido do sistema às {DateTime.Now:HH:mm:ss}";
+            CountText = tweaks.Length == 0 ? string.Empty : $"{active} de {tweaks.Length} ativos";
         }
         catch (Exception ex) when (ex is System.IO.IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
         {
@@ -229,6 +234,27 @@ public partial class TweakCardsViewModel : ObservableObject
 
     [RelayCommand]
     private void CloseDetails() => SelectedCard = null;
+
+    /// <summary>
+    /// Botão principal do detalhe (layout Foco). Ajustes só ficam pendentes (aplicar é pelo lote, com ponto de
+    /// restauração); ações pontuais entram na fila; atalhos e ferramentas seguem o mesmo fluxo do botão da linha.
+    /// </summary>
+    [RelayCommand]
+    private async Task PrimaryActionAsync(CardViewModel? card)
+    {
+        switch (card)
+        {
+            case TweakCardViewModel { IsToggle: true } tweak when tweak.CanPrimaryAction:
+                tweak.IsOn = !tweak.IsOn;
+                break;
+            case TweakCardViewModel tweak when tweak.IsAction:
+                ToggleQueue(tweak);
+                break;
+            case QuickActionCardViewModel action:
+                await RunQuickActionAsync(action);
+                break;
+        }
+    }
 
     [RelayCommand]
     private void ToggleQueue(TweakCardViewModel? card)

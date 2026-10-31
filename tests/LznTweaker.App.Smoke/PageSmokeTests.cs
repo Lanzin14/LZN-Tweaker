@@ -226,6 +226,24 @@ public sealed class PageSmokeTests
         Pump(TimeSpan.FromMilliseconds(400));
         Save(window, Path.Combine(output, "general-list.png"));
 
+        // Botão principal do detalhe (layout Foco): marca a alteração como pendente e, de novo, cancela. Nada é aplicado.
+        var toggle = general.Cards.OfType<LznTweaker.Features.TweakCards.TweakCardViewModel>().FirstOrDefault(card => card.IsToggle && card.CanPrimaryAction);
+        if (toggle is null)
+            errors.Add("geral: nenhum ajuste com botão principal disponível");
+        else
+        {
+            general.SelectedCard = toggle;
+            general.PrimaryActionCommand.Execute(toggle);
+            Pump(TimeSpan.FromMilliseconds(300));
+            if (!toggle.IsPending || !general.HasPending || toggle.PrimaryActionText != "Cancelar alteração")
+                errors.Add($"geral: o botão principal deveria deixar o ajuste pendente (pendente {toggle.IsPending}, texto {toggle.PrimaryActionText})");
+            Save(window, Path.Combine(output, "general-pending.png"));
+            general.PrimaryActionCommand.Execute(toggle);
+            Pump(TimeSpan.FromMilliseconds(300));
+            if (toggle.IsPending || general.HasPending)
+                errors.Add("geral: o botão principal, de novo, deveria cancelar a alteração");
+        }
+
         general.SearchText = "nenhum-ajuste";
         Pump(TimeSpan.FromMilliseconds(200));
         if (general.SelectedCard is not null && general.VisibleCount == 0)

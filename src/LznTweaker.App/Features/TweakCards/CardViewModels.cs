@@ -56,12 +56,21 @@ public abstract partial class CardViewModel(string id, string tabKey, string gly
         _ => RiskLevel.High
     };
 
+    /// <summary>Texto do botão principal do detalhe (layout Foco); nulo quando o item não tem ação (guias).</summary>
+    public virtual string? PrimaryActionText => null;
+    public virtual bool CanPrimaryAction => false;
+    /// <summary>Explica o que o botão principal faz ou por que está desabilitado.</summary>
+    public virtual string? PrimaryActionTooltip => null;
+
     protected void NotifyState()
     {
         OnPropertyChanged(nameof(StateText));
         OnPropertyChanged(nameof(StateBrush));
         OnPropertyChanged(nameof(IsActive));
         OnPropertyChanged(nameof(IsPending));
+        OnPropertyChanged(nameof(PrimaryActionText));
+        OnPropertyChanged(nameof(CanPrimaryAction));
+        OnPropertyChanged(nameof(PrimaryActionTooltip));
     }
 }
 
@@ -82,6 +91,7 @@ public sealed partial class TweakCardViewModel : CardViewModel
     {
         Definition = definition;
         _isRecommended = isRecommended;
+        ChangesText = DescribeChanges(definition);
         IsToggle = definition.InvokeScript is null && !definition.IsOneShotOperation &&
                    (definition.RegistryChanges is { Count: > 0 } || definition.HklmRegistryChanges is { Count: > 0 } ||
                     definition.ServiceChanges is { Count: > 0 } || definition.ScheduledTasksToDisable is { Count: > 0 });
@@ -142,6 +152,46 @@ public sealed partial class TweakCardViewModel : CardViewModel
         : _detectedState == TweakSystemState.Enabled ? CardBrushes.Active : CardBrushes.Muted;
 
     public string ActionButtonText => IsQueued ? "Na fila ✓" : "Adicionar à fila";
+
+    /// <summary>
+    /// Botão principal do detalhe: só marca ou desmarca a alteração (como o interruptor). Aplicar continua sendo pelo
+    /// lote, em "Revisar e aplicar", com ponto de restauração.
+    /// </summary>
+    public override string PrimaryActionText => IsToggle
+        ? IsPending ? "Cancelar alteração" : ActualOn ? "Desfazer ajuste" : "Ativar ajuste"
+        : IsQueued ? "Tirar da fila" : "Adicionar à fila";
+
+    public override bool CanPrimaryAction => !IsToggle || IsPending || IsSwitchEnabled;
+
+    public override string PrimaryActionTooltip => IsToggle
+        ? IsPending ? "Volta ao estado atual do sistema; nada foi aplicado ainda." : SwitchTooltip
+        : "Ação pontual: entra na fila e é executada ao revisar e aplicar.";
+
+    /// <summary>"O que será alterado", montado a partir do catálogo (registro, serviços, tarefas ou script).</summary>
+    public string ChangesText { get; }
+
+    private static string DescribeChanges(TweakDefinition definition)
+    {
+        var lines = new List<string>();
+        foreach (var change in definition.RegistryChanges ?? [])
+            lines.Add($"HKCU\\{change.SubKey}\n  {change.Name} = {FormatValue(change.Value)}");
+        foreach (var change in definition.HklmRegistryChanges ?? [])
+            lines.Add($"HKLM\\{change.SubKey}\n  {change.Name} = {FormatValue(change.Value)}");
+        foreach (var service in definition.ServiceChanges ?? [])
+            lines.Add($"Serviço {service.Name}: inicialização {service.TargetStartupType}");
+        foreach (var task in definition.ScheduledTasksToDisable ?? [])
+            lines.Add($"Tarefa agendada desativada: {task}");
+        if (definition.InvokeScript is not null)
+            lines.Add("Script do PowerShell (o resultado é conferido depois de executar).");
+        return lines.Count == 0 ? "Nenhuma alteração direta descrita para este item." : string.Join("\n", lines);
+    }
+
+    private static string FormatValue(object value) => value switch
+    {
+        string text => $"\"{text}\"",
+        byte[] bytes => string.Join(" ", bytes.Select(b => b.ToString("X2"))),
+        _ => value.ToString() ?? string.Empty
+    };
     public string RestartText => Definition.RestartNote ?? (Definition.RequiresRestart ? "Requer reinicialização" : "Aplica imediatamente");
     public string RollbackText => Definition.HasReliableRollback ? "Reversível pelo app (valor anterior registrado)" : "Sem reversão automática pelo app";
     public string AdministratorText => Definition.RequiresAdministrator ? "Exige administrador" : "Não exige administrador";
@@ -220,7 +270,12 @@ public sealed partial class QuickActionCardViewModel(QuickActionDefinition defin
     private string? _lastResult;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanPrimaryAction))]
     private bool _isRunning;
+
+    public override string PrimaryActionText => ButtonText;
+    public override bool CanPrimaryAction => !IsRunning;
+    public override string? PrimaryActionTooltip => Note;
 
     public override string RiskTooltip => Risk switch
     {
@@ -229,7 +284,11 @@ public sealed partial class QuickActionCardViewModel(QuickActionDefinition defin
         _ => "Pode afetar o funcionamento do sistema."
     };
 
-    public override string StateText => LastResult ?? (Definition.NavigateTo is null ? "Pronto para executar" : "Atalho");
+    public override string StateText => LastResult ?? (Definition.NavigateTo is null ? "Pronto" : "Atalho");
+
+    /// <summary>Aviso da confirmação sem a pergunta final (ex.: "Abrir agora?"), que só faz sentido na caixa de diálogo.</summary>
+    public string? ConfirmationNotice => Definition.Confirmation is not { } text ? null
+        : text.TrimEnd().EndsWith('?') && text.LastIndexOf("\n\n", StringComparison.Ordinal) is > 0 and var cut ? text[..cut].TrimEnd() : text;
     public override Brush StateBrush => CardBrushes.Muted;
     public override bool IsActive => false;
     public override bool IsPending => false;

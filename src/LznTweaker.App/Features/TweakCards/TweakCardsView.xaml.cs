@@ -42,6 +42,15 @@ public sealed class DetailsTemplateSelector : DataTemplateSelector
     };
 }
 
+/// <summary>Linha do layout Foco: guias (Discord) têm modelo próprio; ajustes e ferramentas usam a linha limpa.</summary>
+public sealed class FocusRowSelector : DataTemplateSelector
+{
+    public DataTemplate? Card { get; set; }
+    public DataTemplate? Guide { get; set; }
+
+    public override DataTemplate? SelectTemplate(object item, DependencyObject container) => item is GuideCardViewModel ? Guide : Card;
+}
+
 public sealed class InverseBooleanConverter : IValueConverter
 {
     public static InverseBooleanConverter Instance { get; } = new();
