@@ -444,6 +444,53 @@ de que nenhuma ação mudou de comportamento.
 
 *Validação:* teste de guarda de aliases (zero usos); prints finais.
 
+### Fase 3b: layout "Foco" (aprovado em 31/10/2026, a partir do mockup C)
+
+Referência: o print do mockup C (lista à esquerda, detalhe grande à direita). Decisões do usuário:
+
+- **Cor:** continua o roxo Obsidian. O laranja do mockup não entra.
+- **Sidebar:** abre recolhida, só com ícones (nome na dica). O botão de expandir continua e a escolha é lembrada entre
+  sessões (adianta o item 1 da Fase 6).
+- **Controle:** a lista não tem interruptor. Cada linha mostra ponto de estado, nome e estado. Ligar ou desligar fica no
+  botão principal do detalhe, que só marca o ajuste como pendente; aplicar continua sendo por "Revisar e aplicar", com
+  ponto de restauração.
+- **Quadros do detalhe:** só texto real do catálogo. "Compatibilidade" e "Como desfazer" ficam lado a lado, e "Como
+  funciona" (motivo técnico) fica recolhível. Não se cria campo "Benefício".
+
+O que muda, em ordem de entrega (um commit cada):
+
+1. **Sidebar recolhida por padrão e lembrada.** O item ativo, recolhido, vira um quadrado roxo suave com ícone em
+   Lavender, como no mockup. Preferência salva em `%LocalAppData%\LznTweaker\ui.json`, e um arquivo corrompido volta ao
+   padrão.
+2. **Cabeçalho compacto das páginas de lista.** O título e a contagem ficam na mesma linha ("Geral  14 de 33 ativos").
+   "Saiba mais" vira um ícone de informação ao lado do título. A busca fica logo abaixo, com o ícone de filtros dentro
+   da mesma linha. As abas (Ajustes do Windows, Discord) ficam como um seletor discreto.
+3. **Lista limpa.** Coluna própria, separada do detalhe por um traço de 1 px. Rótulos de grupo em Overline com espaço
+   entre letras, mantendo o ícone da categoria. Linhas de 48 px, sem ícone, descrição nem interruptor: ponto colorido,
+   nome em 15 px e estado à direita. A linha selecionada usa o roxo suave e o marcador de 3 px.
+4. **Detalhe grande, sem moldura.**
+   - Selos no topo: categoria em roxo suave, risco e modo de aplicação.
+   - Título com 32 px.
+   - Descrição com 16 px.
+   - Quadros "Compatibilidade" e "Como desfazer".
+   - Quadro **"O que será alterado"**, gerado do catálogo: chaves de registro com o valor (HKCU/HKLM), serviços com o
+     tipo de inicialização e tarefas agendadas. Script aparece como "Script do PowerShell, verificado depois".
+   - "Como funciona" recolhível.
+   - "Estado detectado".
+5. **Barra de ação no rodapé do detalhe.**
+   - Botão principal conforme o estado: "Ativar ajuste" ou "Desfazer ajuste", que marcam como pendente, e
+     "Cancelar alteração" quando já está pendente. Em ação pontual: "Adicionar à fila". Em atalho: o texto do atalho.
+     Em guia: nenhum.
+   - Botão secundário "Verificar estado".
+   - Estado à direita (ex.: "● Ativo · confirmado no sistema").
+   - Quando a ação não está disponível, o botão fica desabilitado e a dica explica por quê.
+6. **Geral, Rede e Reparos migram para o `MasterDetailLayout`** com esse visual. O mesmo padrão de linha limpa e detalhe
+   grande vale para Inicialização (interruptor sai da linha e fica no detalhe), Histórico, Programas e Remover apps
+   (a caixa de marcar continua na linha, porque lá ela é seleção para lote, não estado).
+
+Validação: o teste de interface cobre seleção, busca vazia, janela estreita e os botões do detalhe (sem aplicar nada).
+Prints comparados com o mockup.
+
 ### Depois do redesign
 - Conferir os nomes do Discord no app real.
 - Teste de ponta a ponta numa máquina virtual (aplicar, verificar, desfazer, com ponto de restauração).
