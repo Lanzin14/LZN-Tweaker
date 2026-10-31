@@ -29,6 +29,7 @@ public sealed partial class HistoryEntryViewModel(TweakOperationResult entry, st
     public string Outcome => Entry.Outcome;
     public string Message => Entry.Message;
     public string PreviousState => $"Antes: {Entry.PreviousState}";
+    public string PreviousValue => Entry.PreviousState;
     public string? RestorePage { get; } = restorePage;
     public bool CanRestoreHere { get; } = canRestoreHere;
     public bool HasRestoreElsewhere => !CanRestoreHere && RestorePage is not null;
@@ -195,7 +196,17 @@ public sealed partial class BackupsViewModel : ObservableObject
     {
         EntriesView.Refresh();
         VisibleCount = Entries.Count(Matches);
+        // O detalhe acompanha a lista: se o item selecionado saiu do filtro, mostra o primeiro visível.
+        if (SelectedEntry is null || !Matches(SelectedEntry))
+            SelectedEntry = EntriesView.Cast<HistoryEntryViewModel>().FirstOrDefault();
     }
+
+    /// <summary>Registro mostrado no detalhe.</summary>
+    [ObservableProperty]
+    private HistoryEntryViewModel? _selectedEntry;
+
+    [RelayCommand]
+    private void ClearSelection() => SelectedEntry = null;
 
     private bool Matches(HistoryEntryViewModel entry)
     {

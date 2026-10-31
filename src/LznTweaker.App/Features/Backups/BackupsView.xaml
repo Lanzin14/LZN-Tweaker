@@ -6,90 +6,130 @@
              xmlns:local="clr-namespace:LznTweaker.Features.Backups"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
              Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
-    <Grid Margin="28,22,28,16">
+    <UserControl.Resources>
+        <!-- Linha: caixa de marcar (só restauráveis), operação, área, quando e resultado -->
+        <DataTemplate x:Key="HistoryRow" DataType="{x:Type local:HistoryEntryViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="28" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
+                          Visibility="{Binding CanRestoreHere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                          ToolTip="Marcar para restaurar em lote" AutomationProperties.Name="{Binding Title, StringFormat=Marcar {0} para restaurar}" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
+                    <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0">
+                        <Run Text="{Binding Area, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding When, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                    <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding OutcomeBrush}" Margin="0,0,6,0" />
+                    <TextBlock Text="{Binding Outcome}" Foreground="{Binding OutcomeBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Detalhe: o que aconteceu, valor anterior e como restaurar -->
+        <DataTemplate x:Key="HistoryDetail" DataType="{x:Type local:HistoryEntryViewModel}">
+            <StackPanel>
+                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Border Style="{StaticResource Lzn.Badge}" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding OutcomeBrush}" Margin="0,0,6,0" />
+                            <TextBlock Text="{Binding Outcome}" Foreground="{Binding OutcomeBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Lzn.Badge}" Margin="8,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Area}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                    </Border>
+                </StackPanel>
+
+                <TextBlock Text="Quando" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBlock Text="{Binding When}" Style="{StaticResource Lzn.Text.Body}" />
+
+                <TextBlock Text="O que aconteceu" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBlock Text="{Binding Message}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" />
+
+                <TextBlock Text="Valor anterior" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBox Text="{Binding PreviousValue, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
+                         Foreground="{StaticResource Lzn.TextSecondary}" Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
+                         AutomationProperties.Name="Valor anterior" />
+
+                <TextBlock Text="Restauração" Style="{StaticResource Lzn.DetailLabel}" />
+                <TextBlock Text="{Binding RestoreHint}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap"
+                           Visibility="{Binding RestoreHint, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                <TextBlock Text="Este registro não tem valor anterior para restaurar." Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap"
+                           Visibility="{Binding RestoreHint, Converter={x:Static infra:VisibilityConverter.WhenNull}}" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                    <Button Style="{StaticResource Lzn.PrimaryButton}" Margin="0,0,8,0"
+                            Visibility="{Binding CanRestoreHere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                            Command="{Binding DataContext.RestoreOneCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                        <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE7A7;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Restaurar este" /></StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Abrir página de origem"
+                            Visibility="{Binding HasRestoreElsewhere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                            Command="{Binding DataContext.OpenOriginCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="28,22,28,0">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel>
         <controls:PageHeader Title="Histórico" Guide="{x:Static shell:CategoryGuides.Backups}" Status="{Binding Summary}">
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Atualizar" FontSize="12" /></StackPanel>
                 </Button>
-                <Button Style="{StaticResource Lzn.GlowButton}" Command="{Binding RestoreSelectedCommand}" ToolTip="Restaura em lote os ajustes marcados que têm valor anterior registrado. Marque ao menos um para habilitar." ToolTipService.ShowOnDisabled="True">
+                <Button Style="{StaticResource Lzn.PrimaryButton}" Command="{Binding RestoreSelectedCommand}" ToolTip="Restaura em lote os ajustes marcados que têm valor anterior registrado. Marque ao menos um para habilitar." ToolTipService.ShowOnDisabled="True">
                     <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE7A7;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Restaurar selecionados" FontSize="12" /></StackPanel>
                 </Button>
             </StackPanel>
         </controls:PageHeader>
-        <controls:Banner Problem="{Binding Problem}">
+
+        <controls:Banner Grid.Row="1" Problem="{Binding Problem}">
             <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Tentar de novo" Command="{Binding RefreshCommand}" />
         </controls:Banner>
-        </StackPanel>
 
-        <Grid Grid.Row="1" Margin="0,0,0,12">
+        <Grid Grid.Row="2" Margin="0,0,0,14">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MaxWidth="340" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBox Style="{StaticResource Lzn.SearchBox}" Height="36" Tag="Pesquisar no histórico…" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-            <Border Grid.Column="1" Margin="8,0,0,0" CornerRadius="9" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" Padding="10,0,4,0">
+            <TextBox Style="{StaticResource Lzn.SearchBox}" Height="36" Tag="Pesquisar no histórico…" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     AutomationProperties.Name="Pesquisar no histórico" />
+            <Border Grid.Column="1" Margin="8,0,0,0" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" Padding="10,0,4,0">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="&#xE71C;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,0,4,0" />
-                    <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding OutcomeOptions}" SelectedItem="{Binding OutcomeFilter}" MinWidth="170" BorderThickness="0" Background="Transparent" />
+                    <TextBlock Text="{StaticResource Lzn.Glyph.Filter}" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,0,4,0" />
+                    <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding OutcomeOptions}" SelectedItem="{Binding OutcomeFilter}" MinWidth="170"
+                              BorderThickness="0" Background="Transparent" AutomationProperties.Name="Filtrar por resultado" />
                 </StackPanel>
             </Border>
-            <TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+            <TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.Text.Caption}"
                        Text="{Binding VisibleCount, StringFormat={}{0} registro(s)}" />
         </Grid>
 
-        <Grid Grid.Row="2">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <ItemsControl ItemsSource="{Binding EntriesView}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:HistoryEntryViewModel}">
-                            <Border Style="{StaticResource Lzn.Card}" Margin="0,0,6,8" Padding="14,10">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected}" VerticalAlignment="Top" Margin="0,2,10,0"
-                                              Visibility="{Binding CanRestoreHere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" AutomationProperties.Name="{Binding Title}" />
-                                    <StackPanel Grid.Column="1">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" />
-                                            <TextBlock Text="{Binding Area}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding Message}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
-                                        <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,4,0,0">
-                                            <Run Text="{Binding When, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding PreviousState, Mode=OneWay}" /><Run Text="  " /><Run Text="{Binding RestoreHint, Mode=OneWay}" Foreground="{StaticResource Lzn.AccentText}" />
-                                        </TextBlock>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="12,0,0,0">
-                                        <TextBlock Text="{Binding Outcome}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{Binding OutcomeBrush}" HorizontalAlignment="Right" />
-                                        <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Restaurar" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,6,0,0" HorizontalAlignment="Right"
-                                                Visibility="{Binding CanRestoreHere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
-                                                Command="{Binding DataContext.RestoreOneCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
-                                        <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Abrir origem" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,6,0,0" HorizontalAlignment="Right"
-                                                Visibility="{Binding HasRestoreElsewhere, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
-                                                Command="{Binding DataContext.OpenOriginCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
-                        Visibility="{Binding VisibleCount, Converter={x:Static infra:VisibilityConverter.WhenZero}}">
-                <TextBlock Text="&#xE81C;" Style="{StaticResource Lzn.Icon}" FontSize="28" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
-                <TextBlock Text="Nenhum registro encontrado." FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,10,0,0" />
-            </StackPanel>
-        </Grid>
+        <controls:MasterDetailLayout Grid.Row="3" Selected="{Binding SelectedEntry}" DetailTemplate="{StaticResource HistoryDetail}" CloseCommand="{Binding ClearSelectionCommand}"
+                                     Placeholder="Selecione um registro para ver o que aconteceu, o valor anterior e como restaurar.">
+            <controls:MasterDetailLayout.Master>
+                <Grid>
+                    <ListBox Style="{StaticResource Lzn.List}" ItemsSource="{Binding EntriesView}" SelectedItem="{Binding SelectedEntry}"
+                             ItemTemplate="{StaticResource HistoryRow}" AutomationProperties.Name="Registros do histórico" />
+                    <controls:EmptyState Glyph="&#xE81C;" Message="Nenhum registro corresponde à busca ou ao filtro. Tudo o que o LZN Tweaker alterar aparece aqui."
+                                         Visibility="{Binding VisibleCount, Converter={x:Static infra:VisibilityConverter.WhenZero}}" />
+                </Grid>
+            </controls:MasterDetailLayout.Master>
+        </controls:MasterDetailLayout>
     </Grid>
 </UserControl>
