@@ -595,4 +595,114 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <!-- ═══ Lista + detalhe ═══ -->
+    <!-- Linha de lista: hover em grafite, selecionada em roxo suave com o marcador de 3 px à esquerda. -->
+    <Style x:Key="Lzn.ListRow" TargetType="ListBoxItem">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Grid Margin="0,1">
+                        <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,9" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
+                            <ContentPresenter />
+                        </Border>
+                        <Border x:Name="Indicator" Width="3" Height="20" CornerRadius="2" HorizontalAlignment="Left" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
+                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                            <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Lista sem moldura própria, para usar com Lzn.ListRow. -->
+    <Style x:Key="Lzn.List" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0,0,6,16" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource Lzn.ListRow}" />
+    </Style>
+
+    <!-- Rótulo e conteúdo de uma seção do detalhe. -->
+    <Style x:Key="Lzn.DetailLabel" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Text.Overline}">
+        <Setter Property="Margin" Value="0,16,0,6" />
+    </Style>
+
+    <Style TargetType="controls:MasterDetailLayout">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:MasterDetailLayout">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MinWidth="320" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Content="{TemplateBinding Master}" />
+
+                        <!-- Detalhe fixo -->
+                        <Border x:Name="Docked" Grid.Column="1" Width="{StaticResource Lzn.Layout.DetailWidth}" Margin="16,0,0,16" Background="{StaticResource Lzn.Surface}"
+                                BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}">
+                            <Grid>
+                                <ScrollViewer x:Name="DockedContent" VerticalScrollBarVisibility="Auto" Padding="22,20,16,18" Focusable="False">
+                                    <ContentPresenter Content="{TemplateBinding Selected}" ContentTemplate="{TemplateBinding DetailTemplate}" ContentTemplateSelector="{TemplateBinding DetailTemplateSelector}" />
+                                </ScrollViewer>
+                                <StackPanel x:Name="DockedEmpty" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Visibility="Collapsed">
+                                    <TextBlock Text="{StaticResource Lzn.Glyph.Select}" Style="{StaticResource Lzn.Icon}" FontSize="26" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
+                                    <TextBlock Text="{TemplateBinding Placeholder}" Style="{StaticResource Lzn.Text.Caption}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Detalhe por cima da lista (janela estreita) -->
+                        <Grid x:Name="Overlay" Grid.ColumnSpan="2" Visibility="Collapsed">
+                            <Border Background="{StaticResource Lzn.Overlay}">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding CloseCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                                </Border.InputBindings>
+                            </Border>
+                            <Border HorizontalAlignment="Right" Width="{StaticResource Lzn.Layout.DetailWidth}" Background="{StaticResource Lzn.Surface}"
+                                    BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1,0,0,0">
+                                <DockPanel Margin="22,16,16,18">
+                                    <Button DockPanel.Dock="Top" HorizontalAlignment="Right" Style="{StaticResource Lzn.GhostButton}" ToolTip="Fechar (Esc)" AutomationProperties.Name="Fechar detalhes"
+                                            Command="{Binding CloseCommand, RelativeSource={RelativeSource TemplatedParent}}">
+                                        <TextBlock Text="{StaticResource Lzn.Glyph.Close}" Style="{StaticResource Lzn.Icon}" FontSize="11" />
+                                    </Button>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,6,0,0" Focusable="False">
+                                        <ContentPresenter Content="{TemplateBinding Selected}" ContentTemplate="{TemplateBinding DetailTemplate}" ContentTemplateSelector="{TemplateBinding DetailTemplateSelector}" />
+                                    </ScrollViewer>
+                                </DockPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Selected" Value="{x:Null}">
+                            <Setter TargetName="DockedContent" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="DockedEmpty" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsDocked" Value="False">
+                            <Setter TargetName="Docked" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsOverlayOpen" Value="True">
+                            <Setter TargetName="Overlay" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

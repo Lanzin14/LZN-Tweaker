@@ -282,36 +282,6 @@
             </StackPanel>
         </DataTemplate>
 
-        <!-- Linha da lista compacta: hover em grafite, selecionada em roxo suave com marcador à esquerda -->
-        <Style x:Key="CardRow" TargetType="ListBoxItem">
-            <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
-            <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Grid Margin="0,1">
-                            <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,9" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
-                                <ContentPresenter />
-                            </Border>
-                            <Border x:Name="Indicator" Width="3" Height="20" CornerRadius="2" HorizontalAlignment="Left" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                                <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
-                                <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <local:DetailsTemplateSelector x:Key="DetailsSelector" Tweak="{StaticResource TweakDetails}" Action="{StaticResource ActionDetails}" Guide="{StaticResource GuideDetails}" />
     </UserControl.Resources>
 
@@ -455,7 +425,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ListBox x:Name="CardList" ItemsSource="{Binding CardsView}" SelectedItem="{Binding SelectedCard}" Background="Transparent" BorderThickness="0"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" Padding="0,0,6,18" ItemContainerStyle="{StaticResource CardRow}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" Padding="0,0,6,18" ItemContainerStyle="{StaticResource Lzn.ListRow}"
                              AutomationProperties.Name="Ajustes" KeyboardNavigation.TabNavigation="Once">
                         <ListBox.GroupStyle>
                             <GroupStyle HeaderTemplate="{StaticResource GroupHeader}">
