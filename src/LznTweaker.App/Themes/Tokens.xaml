@@ -36,12 +36,12 @@
     <Color x:Key="Lzn.Color.RedStroke">#5A2A2E</Color>
     <Color x:Key="Lzn.Color.Blue300">#7DB7FA</Color>
 
-    <!-- Sidebar: Eminência (#6C3082), escolha do usuário. Hover clareia, item ativo escurece; textos claros para contraste AA. -->
-    <Color x:Key="Lzn.Color.Eminence">#6C3082</Color>
-    <Color x:Key="Lzn.Color.EminenceHover">#7B3C93</Color>
-    <Color x:Key="Lzn.Color.EminenceActive">#4F2061</Color>
-    <Color x:Key="Lzn.Color.EminenceStroke">#8A4FA3</Color>
-    <Color x:Key="Lzn.Color.EminenceMuted">#E2D3EC</Color>
+    <!-- Sidebar: Índigo (#4B0082), escolha do usuário. Hover clareia, item ativo escurece; textos claros para contraste AA. -->
+    <Color x:Key="Lzn.Color.Indigo">#4B0082</Color>
+    <Color x:Key="Lzn.Color.IndigoHover">#5E1A9A</Color>
+    <Color x:Key="Lzn.Color.IndigoActive">#33005C</Color>
+    <Color x:Key="Lzn.Color.IndigoStroke">#6A2DA6</Color>
+    <Color x:Key="Lzn.Color.IndigoMuted">#E2D3EC</Color>
 
     <!-- Marca de terceiros: Discord. Blurple e símbolo oficiais de https://discord.com/branding (sem alteração do desenho). -->
     <Color x:Key="Lzn.Color.DiscordBlurple">#5865F2</Color>
@@ -58,13 +58,13 @@
 
     <!-- ═══ 2. Semânticos ═══ -->
     <SolidColorBrush x:Key="Lzn.Background" Color="{StaticResource Lzn.Color.Gray950}" />
-    <!-- Sidebar em Eminência; o conteúdo fica no Background escuro. -->
-    <SolidColorBrush x:Key="Lzn.Sidebar" Color="{StaticResource Lzn.Color.Eminence}" />
-    <SolidColorBrush x:Key="Lzn.Sidebar.Hover" Color="{StaticResource Lzn.Color.EminenceHover}" />
-    <SolidColorBrush x:Key="Lzn.Sidebar.Active" Color="{StaticResource Lzn.Color.EminenceActive}" />
-    <SolidColorBrush x:Key="Lzn.Sidebar.Stroke" Color="{StaticResource Lzn.Color.EminenceStroke}" />
+    <!-- Sidebar em Índigo; o conteúdo fica no Background escuro. -->
+    <SolidColorBrush x:Key="Lzn.Sidebar" Color="{StaticResource Lzn.Color.Indigo}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Hover" Color="{StaticResource Lzn.Color.IndigoHover}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Active" Color="{StaticResource Lzn.Color.IndigoActive}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Stroke" Color="{StaticResource Lzn.Color.IndigoStroke}" />
     <SolidColorBrush x:Key="Lzn.Sidebar.Text" Color="{StaticResource Lzn.Color.Gray50}" />
-    <SolidColorBrush x:Key="Lzn.Sidebar.TextMuted" Color="{StaticResource Lzn.Color.EminenceMuted}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.TextMuted" Color="{StaticResource Lzn.Color.IndigoMuted}" />
     <!-- Área rebaixada dentro de cards e painéis (Surface): volta ao tom do fundo. -->
     <SolidColorBrush x:Key="Lzn.SurfaceSunken" Color="{StaticResource Lzn.Color.Gray950}" />
     <SolidColorBrush x:Key="Lzn.Surface" Color="{StaticResource Lzn.Color.Gray900}" />
@@ -139,7 +139,9 @@
     <sys:Double x:Key="Lzn.Layout.ListWidth">460</sys:Double>
     <Thickness x:Key="Lzn.Padding.Page">28,22,28,16</Thickness>
 
-    <FontFamily x:Key="Lzn.Font">Segoe UI Variable Text, Segoe UI</FontFamily>
+    <!-- Fontes embutidas (Assets/Fonts, SIL OFL 1.1): Manrope no conteúdo, IBM Plex Sans na sidebar; Segoe UI como reserva. -->
+    <FontFamily x:Key="Lzn.Font">pack://application:,,,/LznTweaker;component/Assets/Fonts/Manrope/#Manrope ExtraLight, Segoe UI Variable Text, Segoe UI</FontFamily>
+    <FontFamily x:Key="Lzn.SidebarFont">pack://application:,,,/LznTweaker;component/Assets/Fonts/IBMPlexSans/#IBM Plex Sans, Segoe UI Variable Text, Segoe UI</FontFamily>
     <!-- Valores técnicos (chaves de registro, comandos, caminhos). -->
     <FontFamily x:Key="Lzn.MonoFont">Cascadia Mono, Consolas</FontFamily>
     <!-- Segoe Fluent Icons no Windows 11; Segoe MDL2 Assets no Windows 10. -->

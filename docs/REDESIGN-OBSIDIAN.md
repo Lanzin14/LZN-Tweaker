@@ -80,7 +80,7 @@ A skill `ui-ux-pro-max --design-system` sugeriu, para "ferramenta desktop gamer 
 | Text | Branco frio | `#E9E8F0` | Títulos, textos principais, valores. |
 | Muted | Cinza | `#858594` | Descrições, metadados, rótulos. |
 | Danger | Vermelho suave | `#E47777` | Erros, risco alto, ações destrutivas. |
-| Sidebar | Eminência | `#6C3082` | Fundo da barra lateral (escolha do usuário em 31/10/2026). Hover `#7B3C93`, ativo `#4F2061`, traço `#8A4FA3`, texto `#E9E8F0` e secundário `#E2D3EC` (todos AA, conferidos no teste de guarda). |
+| Sidebar | Índigo | `#4B0082` | Fundo da barra lateral (escolha do usuário em 31/10/2026; antes Eminência `#6C3082`). Hover `#5E1A9A`, ativo `#33005C`, traço `#6A2DA6`, texto `#E9E8F0` e secundário `#E2D3EC` (todos AA, conferidos no teste de guarda). |
 
 ### 3.2 Cores de estado (complementares, já em uso)
 
@@ -212,7 +212,7 @@ Regras:
 
 ### 5.2 Tipografia
 
-Fonte: **Segoe UI Variable** (Display nos títulos, Text no corpo; queda para Segoe UI no Windows 10).
+Fonte (decisão do usuário em 31/10/2026, substitui a Segoe UI): **Manrope** no conteúdo e **IBM Plex Sans** na sidebar, embutidas no app (SIL OFL 1.1, ver `Assets/Fonts/FONTES.md`), com Segoe UI como reserva.
 Técnica: **Cascadia Mono, Consolas**.
 
 | Estilo | Tamanho / peso | Uso |

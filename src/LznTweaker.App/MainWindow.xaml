@@ -43,8 +43,8 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- Sidebar expansível: 208 px com nomes ou 68 px só com ícones -->
-        <Border BorderBrush="{StaticResource Lzn.Sidebar.Stroke}" BorderThickness="0,0,1,0">
+        <!-- Sidebar expansível: 208 px com nomes ou 68 px só com ícones; texto em IBM Plex Sans -->
+        <Border BorderBrush="{StaticResource Lzn.Sidebar.Stroke}" BorderThickness="0,0,1,0" TextElement.FontFamily="{StaticResource Lzn.SidebarFont}">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Background" Value="{StaticResource Lzn.Sidebar}" />

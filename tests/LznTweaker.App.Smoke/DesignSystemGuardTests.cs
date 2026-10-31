@@ -55,11 +55,11 @@ public sealed partial class DesignSystemGuardTests
     [InlineData("Green300", "Gray900", "Estado ativo sobre Surface")]
     [InlineData("Amber300", "Gray900", "Estado pendente sobre Surface")]
     [InlineData("Red400", "Gray900", "Erro sobre Surface")]
-    [InlineData("Gray50", "Eminence", "Texto da sidebar")]
-    [InlineData("EminenceMuted", "Eminence", "Texto secundário da sidebar")]
-    [InlineData("Gray50", "EminenceHover", "Item da sidebar no hover")]
-    [InlineData("Gray50", "EminenceActive", "Item ativo da sidebar")]
-    [InlineData("Amber300", "EminenceActive", "Aviso no rodapé da sidebar")]
+    [InlineData("Gray50", "Indigo", "Texto da sidebar")]
+    [InlineData("IndigoMuted", "Indigo", "Texto secundário da sidebar")]
+    [InlineData("Gray50", "IndigoHover", "Item da sidebar no hover")]
+    [InlineData("Gray50", "IndigoActive", "Item ativo da sidebar")]
+    [InlineData("Amber300", "IndigoActive", "Aviso no rodapé da sidebar")]
     public void Text_pairs_meet_wcag_aa(string foreground, string background, string usage)
     {
         var colors = TokenColor().Matches(File.ReadAllText(TokensPath)).ToDictionary(match => match.Groups[1].Value, match => match.Groups[2].Value);

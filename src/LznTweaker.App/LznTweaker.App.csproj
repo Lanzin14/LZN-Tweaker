@@ -26,6 +26,9 @@
     <Resource Include="Assets\Brand\lzn-logo-mark.png" />
     <!-- Logotipos oficiais dos programas recomendados (fontes em Assets\Programs\FONTES.md). -->
     <Resource Include="Assets\Programs\*.png" />
+    <!-- Fontes embutidas (Assets\Fonts\FONTES.md); a licença OFL acompanha a pasta de saída. -->
+    <Resource Include="Assets\Fonts\**\*.ttf" />
+    <None Update="Assets\Fonts\**\OFL.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Assets\Brand\source\**" />
   </ItemGroup>
 
