@@ -139,8 +139,8 @@
     <sys:Double x:Key="Lzn.Layout.ListWidth">460</sys:Double>
     <Thickness x:Key="Lzn.Padding.Page">28,22,28,16</Thickness>
 
-    <!-- Fontes embutidas (Assets/Fonts, SIL OFL 1.1): Manrope no conteúdo, IBM Plex Sans na sidebar; Segoe UI como reserva. -->
-    <FontFamily x:Key="Lzn.Font">pack://application:,,,/LznTweaker;component/Assets/Fonts/Manrope/#Manrope ExtraLight, Segoe UI Variable Text, Segoe UI</FontFamily>
+    <!-- Fontes embutidas (Assets/Fonts, SIL OFL 1.1): Space Grotesk no conteúdo, IBM Plex Sans na sidebar; Segoe UI como reserva. -->
+    <FontFamily x:Key="Lzn.Font">pack://application:,,,/LznTweaker;component/Assets/Fonts/SpaceGrotesk/#Space Grotesk, Segoe UI Variable Text, Segoe UI</FontFamily>
     <FontFamily x:Key="Lzn.SidebarFont">pack://application:,,,/LznTweaker;component/Assets/Fonts/IBMPlexSans/#IBM Plex Sans, Segoe UI Variable Text, Segoe UI</FontFamily>
     <!-- Valores técnicos (chaves de registro, comandos, caminhos). -->
     <FontFamily x:Key="Lzn.MonoFont">Cascadia Mono, Consolas</FontFamily>
