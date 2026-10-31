@@ -224,5 +224,15 @@ public sealed partial class ProgramsViewModel : ObservableObject
     {
         ProgramsView.Refresh();
         OnPropertyChanged(nameof(VisibleCount));
+        // O detalhe acompanha a lista: se o programa selecionado saiu do filtro, mostra o primeiro visível.
+        if (SelectedProgram is null || !SelectedProgram.Matches(SelectedTag, SearchText))
+            SelectedProgram = ProgramsView.Cast<ProgramCardViewModel>().FirstOrDefault();
     }
+
+    /// <summary>Programa mostrado no detalhe.</summary>
+    [ObservableProperty]
+    private ProgramCardViewModel? _selectedProgram;
+
+    [RelayCommand]
+    private void ClearSelection() => SelectedProgram = null;
 }

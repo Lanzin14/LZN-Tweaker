@@ -88,7 +88,7 @@ public sealed class PageSmokeTests
         return errors;
     }
 
-    /// <summary>Programas: filtros e busca precisam mudar a lista; o card expandido precisa renderizar sem erro de binding.</summary>
+    /// <summary>Programas: filtros e busca precisam mudar a lista; o detalhe de cada programa precisa renderizar sem erro de binding.</summary>
     private static IEnumerable<string> CheckProgramsPage(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
     {
         var errors = new List<string>();
@@ -118,14 +118,17 @@ public sealed class PageSmokeTests
             errors.Add("programas: busca sem resultado deveria mostrar 0");
         programs.ClearFiltersCommand.Execute(null);
 
+        // Lista + detalhe: cada programa abre no detalhe sem erro de binding; a seleção acompanha o filtro.
         var before = bindingErrors.Messages.Count;
+        if (programs.SelectedProgram is null)
+            errors.Add("programas: com a lista cheia, um programa deveria estar selecionado");
         foreach (var card in programs.Programs)
-            card.IsExpanded = true;
-        Pump(TimeSpan.FromSeconds(1));
+        {
+            programs.SelectedProgram = card;
+            Pump(TimeSpan.FromMilliseconds(150));
+        }
         Save(window, Path.Combine(output, "programs-expanded.png"));
-        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"programas (expandido): {message}"));
-        foreach (var card in programs.Programs)
-            card.IsExpanded = false;
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"programas (detalhe): {message}"));
         return errors;
     }
 
