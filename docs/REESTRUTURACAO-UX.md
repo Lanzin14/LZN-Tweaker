@@ -158,3 +158,7 @@ Decisões para o usuário antes de começar:
 - Confirmar a junção de Geral + Avançado numa lista de caixas de seleção (formato WinUtil). Nesse formato, o botão "Ativar" por ajuste sai.
 - Confirmar o fim das páginas Hardware, Rede e Reparos como itens da sidebar (viram abas de Ferramentas).
 - Confirmar o Início como painel, sem o texto de apresentação.
+
+## Mockups
+
+Imagens da proposta (dados de exemplo) em `docs/mockups-ux/`: `1-inicio.png`, `2-ajustes.png`, `3-ferramentas.png` e `4-jogos.png`.
