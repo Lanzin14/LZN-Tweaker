@@ -163,8 +163,11 @@ public sealed class PageSmokeTests
         Pump(TimeSpan.FromMilliseconds(300));
         Save(window, Path.Combine(output, "general-all.png"));
 
-        general.SelectTabCommand.Execute(general.Tabs.Single(tab => tab.Key == "discord"));
+        // Como o RadioButton faz: marca a aba nova com a antiga ainda marcada. A lista precisa trocar sem atualizar.
+        general.Tabs.Single(tab => tab.Key == "discord").IsSelected = true;
         Pump(TimeSpan.FromMilliseconds(500));
+        if (general.Tabs.Count(tab => tab.IsSelected) != 1)
+            errors.Add("discord: mais de uma aba ficou marcada");
         var visible = general.CardsView.Cast<LznTweaker.Features.TweakCards.CardViewModel>().ToList();
         if (visible.Count == 0 || !visible.All(card => card is LznTweaker.Features.TweakCards.GuideCardViewModel))
             errors.Add($"discord: a aba mostra {visible.Count} card(s), esperado só guias");

@@ -55,6 +55,11 @@ public partial class TweakCardsViewModel : ObservableObject
             {
                 if (e.PropertyName == nameof(CardTabViewModel.IsSelected) && sender is CardTabViewModel { IsSelected: true } selected)
                 {
+                    // O RadioButton marca a aba nova antes de desmarcar a antiga: guarda a escolha e desmarca as
+                    // outras antes de filtrar, senão a lista continua mostrando a aba anterior.
+                    _selectedTabKey = selected.Key;
+                    foreach (var other in Tabs.Where(other => !ReferenceEquals(other, selected)))
+                        other.IsSelected = false;
                     SelectedTabDescription = selected.Description;
                     SelectedTabHighlight = selected.Highlight;
                     RefreshView();
@@ -83,6 +88,8 @@ public partial class TweakCardsViewModel : ObservableObject
         foreach (var action in actions)
             Cards.Add(new QuickActionCardViewModel(action, tabKey) { Category = category });
     }
+
+    private string? _selectedTabKey;
 
     public string Title { get; }
     public CategoryGuide Guide { get; }
@@ -397,7 +404,7 @@ public partial class TweakCardsViewModel : ObservableObject
             if (!card.SearchText.Contains(search, StringComparison.CurrentCultureIgnoreCase))
                 return false;
         }
-        else if (Tabs.FirstOrDefault(tab => tab.IsSelected)?.Key is { } tab && card.TabKey != tab)
+        else if (_selectedTabKey is { } tab && card.TabKey != tab)
         {
             return false;
         }
