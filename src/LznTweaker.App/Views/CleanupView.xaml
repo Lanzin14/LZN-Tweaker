@@ -3,58 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:shell="clr-namespace:LznTweaker.Shell"
+             xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
              Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-
-        <Style x:Key="CategoryCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource StrokeBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="Padding" Value="16" />
-            <Setter Property="Margin" Value="0,0,0,12" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="{StaticResource AccentStrokeBrush}" />
-                    <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <DataTemplate x:Key="CategoryTemplate">
-            <Border Style="{StaticResource CategoryCardStyle}">
+        <!-- Área de varredura em linha compacta: caixa, nome, descrição, caminho em monoespaçada e tamanho alinhado à direita -->
+        <DataTemplate x:Key="CategoryRow">
+            <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Md}"
+                    Padding="14,11" Margin="0,0,0,6">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-
-                    <!-- Selection Checkbox -->
-                    <CheckBox Style="{StaticResource AccentCheckBoxStyle}"
-                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                              VerticalAlignment="Center" Margin="0,0,14,0" />
-
-                    <!-- Title and Path details -->
+                    <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,14,0"
+                              AutomationProperties.Name="{Binding Title}" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" />
-                            <Border Visibility="{Binding RequiresElevation, Converter={StaticResource BoolToVis}}"
-                                    Background="{StaticResource Lzn.SurfaceActive}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="4" Padding="5,1" Margin="8,0,0,0">
-                                <TextBlock Text="SISTEMA (UAC)" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" />
+                            <Border Style="{StaticResource Lzn.Badge}" Margin="8,0,0,0" VerticalAlignment="Center"
+                                    Visibility="{Binding RequiresElevation, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
+                                    ToolTip="Pasta do sistema: o Windows pede permissão de administrador para limpar.">
+                                <TextBlock Text="Sistema" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
                             </Border>
                         </StackPanel>
-                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,3,0,0" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding PathSummary, StringFormat='Local: {0}'}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                        <TextBlock Text="{Binding PathSummary}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                                   TextTrimming="CharacterEllipsis" Margin="0,3,0,0" ToolTip="{Binding PathSummary}" />
                     </StackPanel>
-
-                    <!-- Size and Count Badge -->
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="14,0,0,0">
-                        <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="8" Padding="10,5">
-                            <TextBlock Text="{Binding SizeDisplay}" FontSize="13" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Right" />
-                        </Border>
-                        <TextBlock Text="{Binding StatusText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Right" Margin="0,4,0,0" />
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="16,0,0,0" MinWidth="110">
+                        <TextBlock Text="{Binding SizeDisplay}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" HorizontalAlignment="Right"
+                                   Typography.NumeralAlignment="Tabular" />
+                        <TextBlock Text="{Binding StatusText}" Style="{StaticResource Lzn.Text.Caption}" HorizontalAlignment="Right" Margin="0,2,0,0" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -63,33 +43,35 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="28,22,28,28">
-            <controls:PageHeader Title="Limpeza" Guide="{x:Static shell:CategoryGuides.Cleanup}" Status="Arquivos em uso são preservados: o que estiver aberto fica onde está." Margin="0,0,0,20" />
+            <controls:PageHeader Title="Limpeza" Guide="{x:Static shell:CategoryGuides.Cleanup}" Status="Arquivos em uso são preservados: o que estiver aberto fica onde está." />
 
-            <!-- Top Action & Space Summary Card -->
-            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,0,18">
+            <controls:Banner Problem="{Binding Problem}">
+                <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Varrer de novo" Command="{Binding ScanCommand}" />
+            </controls:Banner>
+
+            <!-- Resumo: o maior número da tela e as duas ações -->
+            <Border Style="{StaticResource Lzn.Panel}" Padding="20,18" Margin="0,0,0,16">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="ESPAÇO RECONHECIDO PARA LIBERAÇÃO" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" />
-                        <TextBlock Text="{Binding TotalFoundText}" FontSize="32" FontWeight="Bold" Foreground="{StaticResource Lzn.Text}" Margin="0,4,0,2" />
-                        <TextBlock Text="{Binding SelectedSizeText, StringFormat='{}{0} para remoção segura.'}" FontSize="12" Foreground="{StaticResource Lzn.AccentText}" />
+                        <TextBlock Text="Espaço que pode ser liberado" Style="{StaticResource Lzn.Text.Caption}" />
+                        <TextBlock Text="{Binding TotalFoundText}" FontSize="{StaticResource Lzn.FontSize.Display}" FontWeight="SemiBold" Margin="0,2,0,2" Typography.NumeralAlignment="Tabular" />
+                        <TextBlock Text="{Binding SelectedSizeText, StringFormat={}{0} nas áreas marcadas}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" />
                     </StackPanel>
-
-                    <!-- Action Buttons -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Command="{Binding ScanCommand}" IsEnabled="{Binding CanScan}" Margin="0,0,10,0" Padding="14,10">
+                        <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding ScanCommand}" IsEnabled="{Binding CanScan}" Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,6,0" />
-                                <TextBlock Text="Iniciar varredura" />
+                                <TextBlock Text="{StaticResource Lzn.Glyph.Search}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
+                                <TextBlock Text="Iniciar varredura" FontSize="12" />
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding CleanCommand}" IsEnabled="{Binding CanClean}" Padding="18,10">
+                        <Button Style="{StaticResource Lzn.PrimaryButton}" Command="{Binding CleanCommand}" IsEnabled="{Binding CanClean}"
+                                ToolTip="Marque ao menos uma área com arquivos encontrados. Pede confirmação antes de apagar." ToolTipService.ShowOnDisabled="True">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE945;" Style="{StaticResource Lzn.Icon}" FontSize="12" Margin="0,0,6,0" />
+                                <TextBlock Text="{StaticResource Lzn.Glyph.Delete}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
                                 <TextBlock Text="Limpar selecionados" />
                             </StackPanel>
                         </Button>
@@ -97,29 +79,22 @@
                 </Grid>
             </Border>
 
-            <!-- Progress & Status Banner -->
-            <Border Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,16">
-                <StackPanel>
-                    <Grid Margin="0,0,0,6">
-                        <TextBlock Text="{Binding StatusMessage}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextTrimming="CharacterEllipsis" />
-                        <TextBlock Text="{Binding ProgressText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Right" />
-                    </Grid>
-                    <ProgressBar Height="5" Value="{Binding ProgressValue, Mode=OneWay}" Background="{StaticResource Lzn.SurfaceRaised}" Foreground="{StaticResource Lzn.AccentHover}" BorderThickness="0" />
-                </StackPanel>
-            </Border>
+            <!-- Progresso e status -->
+            <Grid Margin="0,0,0,6">
+                <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextTrimming="CharacterEllipsis" Margin="0,0,120,0" />
+                <TextBlock Text="{Binding ProgressText}" Style="{StaticResource Lzn.Text.Caption}" HorizontalAlignment="Right" />
+            </Grid>
+            <ProgressBar Height="3" Value="{Binding ProgressValue, Mode=OneWay}" Margin="0,0,0,20" />
 
-            <!-- Categories Selection Bar -->
-            <Grid Margin="0,0,0,12">
-                <TextBlock Text="ÁREAS DE VARREDURA" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
+            <!-- Áreas de varredura -->
+            <Grid Margin="0,0,0,10">
+                <TextBlock Text="Áreas de varredura" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Marcar todos" Command="{Binding SelectAllCommand}" Padding="10,5" Margin="0,0,6,0" FontSize="{StaticResource Lzn.FontSize.Caption}" />
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="Desmarcar todos" Command="{Binding SelectNoneCommand}" Padding="10,5" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+                    <Button Style="{StaticResource Lzn.GhostButton}" Content="Marcar todos" Command="{Binding SelectAllCommand}" Margin="0,0,4,0" />
+                    <Button Style="{StaticResource Lzn.GhostButton}" Content="Desmarcar todos" Command="{Binding SelectNoneCommand}" />
                 </StackPanel>
             </Grid>
-
-            <!-- Category Cards List -->
-            <ItemsControl ItemsSource="{Binding Categories}" ItemTemplate="{StaticResource CategoryTemplate}" />
-
+            <ItemsControl ItemsSource="{Binding Categories}" ItemTemplate="{StaticResource CategoryRow}" Focusable="False" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

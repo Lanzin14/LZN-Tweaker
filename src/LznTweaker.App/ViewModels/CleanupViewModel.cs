@@ -160,6 +160,19 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
         }
     }
 
+    private ProblemInfo? _problem;
+    /// <summary>Falha da varredura ou da limpeza em linguagem simples, mostrada no Banner (nulo quando deu certo).</summary>
+    public ProblemInfo? Problem
+    {
+        get => _problem;
+        private set
+        {
+            if (_problem == value) return;
+            _problem = value;
+            OnPropertyChanged();
+        }
+    }
+
     public double ProgressValue
     {
         get => _progressValue;
@@ -202,6 +215,7 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
     {
         if (IsBusy) return;
         IsBusy = true;
+        Problem = null;
         StatusMessage = "Varrendo diretórios de temporários, logs e caches do Windows…";
         ProgressValue = 0;
         _totalFoundBytes = 0;
@@ -237,7 +251,8 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Erro durante a varredura: {ex.Message}";
+            Problem = ProblemInfo.FromException(ex, "A varredura não foi concluída");
+            StatusMessage = "Varredura interrompida.";
         }
         finally
         {
@@ -273,7 +288,8 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Falha na limpeza: {ex.Message}";
+            Problem = ProblemInfo.FromException(ex, "A limpeza não foi concluída");
+            StatusMessage = "Limpeza interrompida. Rode a varredura de novo para ver o que restou.";
             return null;
         }
         finally
