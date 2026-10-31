@@ -306,10 +306,10 @@
     </Style>
 
     <!-- ═══ Navegação ═══ -->
-    <!-- Item da sidebar: roxo suave e barra roxa à esquerda quando selecionado (o ícone fica em Lavender, ver MainWindow). -->
+    <!-- Item da sidebar (Eminência): tom mais claro no hover, mais escuro e marcador claro quando selecionado. -->
     <Style x:Key="Lzn.NavItem" TargetType="ListBoxItem">
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+        <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.TextMuted}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
@@ -319,17 +319,17 @@
                             <ContentPresenter />
                         </Border>
                         <Border x:Name="Indicator" Width="3" Height="18" CornerRadius="2" HorizontalAlignment="Left"
-                                Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                                Background="{StaticResource Lzn.Sidebar.Text}" Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.Sidebar.Hover}" />
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.Text}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.Sidebar.Active}" />
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.Text}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

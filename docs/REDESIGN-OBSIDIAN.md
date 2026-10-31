@@ -72,14 +72,15 @@ A skill `ui-ux-pro-max --design-system` sugeriu, para "ferramenta desktop gamer 
 
 | Token | Cor | HEX | Uso |
 |---|---|---|---|
-| Background | Preto azulado | `#111116` | Fundo das páginas. |
-| Surface | Grafite escuro | `#1B1B24` | Sidebar, cards, painéis, detalhe fixo. |
+| Background | Preto azulado | `#0A0A0E` | Fundo das páginas (escurecido em 31/10/2026, como no mockup C; antes `#111116`). |
+| Surface | Grafite escuro | `#1B1B24` | Cards e painéis. |
 | Elevated | Grafite elevado | `#292936` | Campos, blocos de código, hover de linhas, menus. |
 | Accent | Roxo elétrico | `#8175FF` | Botão principal, seleção ativa, interruptor ligado, marcador de item ativo, logotipo. |
 | Lavender | Lavanda | `#A69FFF` | Hover do botão principal, anel de foco, links, destaque secundário. |
 | Text | Branco frio | `#E9E8F0` | Títulos, textos principais, valores. |
 | Muted | Cinza | `#858594` | Descrições, metadados, rótulos. |
 | Danger | Vermelho suave | `#E47777` | Erros, risco alto, ações destrutivas. |
+| Sidebar | Eminência | `#6C3082` | Fundo da barra lateral (escolha do usuário em 31/10/2026). Hover `#7B3C93`, ativo `#4F2061`, traço `#8A4FA3`, texto `#E9E8F0` e secundário `#E2D3EC` (todos AA, conferidos no teste de guarda). |
 
 ### 3.2 Cores de estado (complementares, já em uso)
 

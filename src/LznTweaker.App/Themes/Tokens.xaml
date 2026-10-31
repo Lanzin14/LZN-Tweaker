@@ -5,7 +5,7 @@
     <!-- ═══ 1. Primitivos: paleta LZN Obsidian ═══ -->
     <!-- Background #111116, Surface #1B1B24, Elevated #292936, Accent #8175FF, Lavender #A69FFF, Text #E9E8F0, Muted #858594, Danger #E47777.
          Roxo só para ação, seleção e foco; verde, âmbar e vermelho só para estado e risco. -->
-    <Color x:Key="Lzn.Color.Gray950">#111116</Color>
+    <Color x:Key="Lzn.Color.Gray950">#0A0A0E</Color>
     <Color x:Key="Lzn.Color.Gray900">#1B1B24</Color>
     <Color x:Key="Lzn.Color.Gray875">#20202A</Color>
     <Color x:Key="Lzn.Color.Gray850">#24242F</Color>
@@ -36,6 +36,13 @@
     <Color x:Key="Lzn.Color.RedStroke">#5A2A2E</Color>
     <Color x:Key="Lzn.Color.Blue300">#7DB7FA</Color>
 
+    <!-- Sidebar: Eminência (#6C3082), escolha do usuário. Hover clareia, item ativo escurece; textos claros para contraste AA. -->
+    <Color x:Key="Lzn.Color.Eminence">#6C3082</Color>
+    <Color x:Key="Lzn.Color.EminenceHover">#7B3C93</Color>
+    <Color x:Key="Lzn.Color.EminenceActive">#4F2061</Color>
+    <Color x:Key="Lzn.Color.EminenceStroke">#8A4FA3</Color>
+    <Color x:Key="Lzn.Color.EminenceMuted">#E2D3EC</Color>
+
     <!-- Marca de terceiros: Discord. Blurple e símbolo oficiais de https://discord.com/branding (sem alteração do desenho). -->
     <Color x:Key="Lzn.Color.DiscordBlurple">#5865F2</Color>
     <Color x:Key="Lzn.Color.DiscordSoft">#1A1D3B</Color>
@@ -51,8 +58,13 @@
 
     <!-- ═══ 2. Semânticos ═══ -->
     <SolidColorBrush x:Key="Lzn.Background" Color="{StaticResource Lzn.Color.Gray950}" />
-    <!-- Sidebar em Surface (paleta oficial); o conteúdo fica no Background. -->
-    <SolidColorBrush x:Key="Lzn.Sidebar" Color="{StaticResource Lzn.Color.Gray900}" />
+    <!-- Sidebar em Eminência; o conteúdo fica no Background escuro. -->
+    <SolidColorBrush x:Key="Lzn.Sidebar" Color="{StaticResource Lzn.Color.Eminence}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Hover" Color="{StaticResource Lzn.Color.EminenceHover}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Active" Color="{StaticResource Lzn.Color.EminenceActive}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Stroke" Color="{StaticResource Lzn.Color.EminenceStroke}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Text" Color="{StaticResource Lzn.Color.Gray50}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.TextMuted" Color="{StaticResource Lzn.Color.EminenceMuted}" />
     <!-- Área rebaixada dentro de cards e painéis (Surface): volta ao tom do fundo. -->
     <SolidColorBrush x:Key="Lzn.SurfaceSunken" Color="{StaticResource Lzn.Color.Gray950}" />
     <SolidColorBrush x:Key="Lzn.Surface" Color="{StaticResource Lzn.Color.Gray900}" />
