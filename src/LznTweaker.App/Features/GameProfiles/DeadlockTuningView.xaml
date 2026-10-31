@@ -160,9 +160,6 @@
                                     <TextBlock Text="{Binding Summary}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
                                     <TextBlock Text="{Binding Warning, StringFormat=⚠ {0}}" Foreground="{StaticResource WarningBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,5,0,0"
                                                TextWrapping="Wrap" Visibility="{Binding HasWarning, Converter={StaticResource BoolToVisibility}}" />
-                                    <Button Style="{StaticResource LinkButtonStyle}" Content="Ver arquivo no GitHub ↗" HorizontalAlignment="Left" Margin="0,7,0,0"
-                                            Command="{Binding DataContext.OpenSourceCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="12,0,0,0">
                                     <TextBlock Text="{Binding RiskText}" Foreground="{Binding RiskBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold"
@@ -194,7 +191,7 @@
                     <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" LineHeight="17" Margin="0,6,0,0">
                         • Feche o Deadlock. Toda atualização grande do jogo reinstala o gameinfo.gi; depois de um patch, reaplique o perfil.<LineBreak />
                         • O jogo exibe um aviso de que pode bloquear o matchmaking com ConVars alteradas no gameinfo.gi; segundo o autor, isso ainda não é aplicado.<LineBreak />
-                        • Os perfis são do projeto OptimizationLock (GPL-3.0) e são baixados do GitHub do autor no momento da aplicação. Ganhos de FPS variam por hardware e não são garantidos.
+                        • Os perfis são do projeto OptimizationLock (GPL-3.0) e o código de cada um vem embutido no app: nada é baixado. Depois de um patch grande, o app avisa se o perfil parecer desatualizado. Ganhos de FPS variam por hardware e não são garantidos.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -206,8 +203,6 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Button Style="{StaticResource LinkButtonStyle}" Content="Projeto OptimizationLock ↗" VerticalAlignment="Center" HorizontalAlignment="Left"
-                        Command="{Binding OpenSourceCommand}" />
                 <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}" Content="Desfazer" Command="{Binding UndoCommand}" Padding="16,10" Margin="0,0,9,0" />
                 <Button Grid.Column="2" Style="{StaticResource PrimaryButtonStyle}" Content="Aplicar perfil selecionado" Command="{Binding ApplyCommand}" Padding="18,10" />
             </Grid>

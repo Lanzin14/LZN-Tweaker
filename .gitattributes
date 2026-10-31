@@ -1,0 +1,2 @@
+# Perfis do Deadlock embutidos: cópia exata dos arquivos do OptimizationLock (sem converter fim de linha).
+src/LznTweaker.Core/GameTuning/Profiles/Deadlock/*.gi -text

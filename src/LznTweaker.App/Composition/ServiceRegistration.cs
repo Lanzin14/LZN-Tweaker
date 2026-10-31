@@ -44,7 +44,6 @@ public static class ServiceRegistration
         services.AddSingleton<SystemInformationService>();
         services.AddSingleton<SystemCleanupService>();
         services.AddSingleton<StartupManagerService>();
-        services.AddSingleton(_ => CreateHttpClient());
         services.AddSingleton<SteamLibraryLocator>();
         services.AddSingleton<GameTuningService>();
         services.AddSingleton<AppxDebloatService>();
@@ -101,13 +100,5 @@ public static class ServiceRegistration
         services.AddSingleton<ShellViewModel>();
         services.AddSingleton<MainWindow>();
         return services;
-    }
-
-    private static HttpClient CreateHttpClient()
-    {
-        var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-        // A API do GitHub exige User-Agent.
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("LznTweaker/1.0");
-        return client;
     }
 }

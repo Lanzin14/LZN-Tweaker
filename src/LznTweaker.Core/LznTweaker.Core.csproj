@@ -11,6 +11,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Execution\Scripts\*.ps1" LogicalName="LznTweaker.Core.Execution.Scripts.%(Filename)%(Extension)" />
+    <!-- Perfis do Deadlock (OptimizationLock, GPL-3.0) embutidos; a licença acompanha o app. -->
+    <EmbeddedResource Include="GameTuning\Profiles\Deadlock\*.gi" LogicalName="LznTweaker.Core.GameTuning.Deadlock.%(Filename)%(Extension)" />
+    <None Include="GameTuning\Profiles\Deadlock\LICENSE-GPL-3.0.txt" Link="Licenses\OptimizationLock\LICENSE-GPL-3.0.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="GameTuning\Profiles\Deadlock\FONTES.md" Link="Licenses\OptimizationLock\FONTES.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

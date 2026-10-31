@@ -1,6 +1,4 @@
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Text;
 using LznTweaker.Core.GameTuning;
 using LznTweaker.Core.Tweaks;
@@ -55,7 +53,7 @@ public sealed class GameTuningServiceTests : IDisposable
     private readonly string _installRoot;
     private readonly string _gameInfoPath;
     private readonly string _stateDirectory;
-    private readonly FakeHttpHandler _http = new();
+    private string _profileContent = string.Empty;
     private readonly TweakOperationHistory _history;
     private bool _gameRunning;
 
@@ -72,7 +70,7 @@ public sealed class GameTuningServiceTests : IDisposable
     public void Dispose() => Directory.Delete(_root, recursive: true);
 
     private GameTuningService CreateService() =>
-        new(new HttpClient(_http), _history, new SteamLibraryLocator(() => null), _stateDirectory, () => _gameRunning);
+        new(_history, new SteamLibraryLocator(() => null), _stateDirectory, () => _gameRunning, _ => Encoding.UTF8.GetBytes(_profileContent));
 
     private DeadlockInstallation Installation => CreateService().FromUserSelection(_installRoot, out _)!;
 
@@ -101,9 +99,9 @@ public sealed class GameTuningServiceTests : IDisposable
 
     private async Task<TweakOperationResult> ApplyAsync(GameTuningService service, string profileId, string content)
     {
-        _http.RawContent = content;
-        var download = await service.DownloadAsync(DeadlockProfiles.GetById(profileId), Installation);
-        return await service.ApplyAsync(Installation, download);
+        _profileContent = content;
+        var prepared = service.Prepare(DeadlockProfiles.GetById(profileId), Installation);
+        return await service.ApplyAsync(Installation, prepared);
     }
 
     [Fact]
@@ -177,26 +175,26 @@ public sealed class GameTuningServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task Html_or_truncated_download_is_rejected_before_anything_changes()
+    public void Html_or_truncated_profile_is_rejected_before_anything_changes()
     {
         var service = CreateService();
-        _http.RawContent = "<!DOCTYPE html><html>" + new string(' ', 2000) + "</html>";
-        await Assert.ThrowsAsync<InvalidDataException>(() => service.DownloadAsync(DeadlockProfiles.GetById(DeadlockProfiles.RecommendedId), Installation));
+        _profileContent = "<!DOCTYPE html><html>" + new string(' ', 2000) + "</html>";
+        Assert.Throws<InvalidDataException>(() => service.Prepare(DeadlockProfiles.GetById(DeadlockProfiles.RecommendedId), Installation));
 
-        _http.RawContent = "\"GameInfo\" { game \"citadel\" }" + new string(' ', 2000);
-        await Assert.ThrowsAsync<InvalidDataException>(() => service.DownloadAsync(DeadlockProfiles.GetById(DeadlockProfiles.RecommendedId), Installation));
+        _profileContent = "\"GameInfo\" { game \"citadel\" }" + new string(' ', 2000);
+        Assert.Throws<InvalidDataException>(() => service.Prepare(DeadlockProfiles.GetById(DeadlockProfiles.RecommendedId), Installation));
 
         Assert.Contains("\"original\"", File.ReadAllText(_gameInfoPath));
         Assert.False(Directory.Exists(_stateDirectory));
     }
 
     [Fact]
-    public async Task Missing_search_path_in_profile_is_reported_as_compatibility_warning()
+    public void Missing_search_path_in_profile_is_reported_as_compatibility_warning()
     {
         File.WriteAllText(_gameInfoPath, GameInfo("original", "Game citadel/conteudo_novo"));
-        _http.RawContent = GameInfo("recomendada");
+        _profileContent = GameInfo("recomendada");
 
-        var download = await CreateService().DownloadAsync(DeadlockProfiles.GetById(DeadlockProfiles.RecommendedId), Installation);
+        var download = CreateService().Prepare(DeadlockProfiles.GetById(DeadlockProfiles.RecommendedId), Installation);
 
         var warning = Assert.Single(download.CompatibilityWarnings);
         Assert.Contains("citadel/conteudo_novo", warning);
@@ -231,22 +229,28 @@ public sealed class GameTuningServiceTests : IDisposable
     }
 
     [Fact]
-    public void Profile_urls_escape_spaces_and_apostrophes()
+    public void Every_profile_is_embedded_in_the_app_and_is_a_valid_gameinfo()
     {
-        Assert.Equal("Sqooky%27s%20.gi/gameinfo.gi", GameTuningService.EscapePath(DeadlockProfiles.GetById(DeadlockProfiles.RecommendedId).RepositoryPath));
         Assert.Equal(4, DeadlockProfiles.All.Count);
+        foreach (var profile in DeadlockProfiles.All)
+        {
+            var text = GameTuningService.ValidateProfile(GameTuningService.LoadEmbedded(profile));
+            Assert.Contains("citadel", text);
+            Assert.Equal(12, profile.SourceCommit.Length);
+        }
     }
 
-    private sealed class FakeHttpHandler : HttpMessageHandler
+    [Fact]
+    public async Task Embedded_profile_applies_without_internet_and_undo_restores_the_original()
     {
-        public string RawContent { get; set; } = string.Empty;
+        var service = new GameTuningService(_history, new SteamLibraryLocator(() => null), _stateDirectory, () => false, loadContent: null);
+        var profile = DeadlockProfiles.GetById(DeadlockProfiles.LowEndId);
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var body = request.RequestUri!.Host == "api.github.com"
-                ? """[{"sha":"abcdef1234567890","commit":{"committer":{"date":"2026-10-27T12:00:00Z"}}}]"""
-                : RawContent;
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(body, Encoding.UTF8) });
-        }
+        var result = await service.ApplyAsync(Installation, service.Prepare(profile, Installation));
+
+        Assert.Equal("Sucesso verificado", result.Outcome);
+        Assert.Equal(GameTuningService.LoadEmbedded(profile), File.ReadAllBytes(_gameInfoPath));
+        Assert.Equal("Reversão verificada", (await service.UndoAsync(Installation)).Outcome);
+        Assert.Contains("\"original\"", File.ReadAllText(_gameInfoPath));
     }
 }

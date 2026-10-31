@@ -8,23 +8,23 @@ public sealed record GameConfigProfile(
     string Author,
     string RiskLevel,
     string? Warning,
-    string RepositoryPath)
+    string ResourceFile,
+    string SourceCommit,
+    DateOnly SourceDate)
 {
-    /// <summary>Link para a página do arquivo no GitHub (para o usuário conferir a origem).</summary>
-    public string WebUrl => $"{DeadlockProfiles.RepositoryWebUrl}/blob/main/{Uri.EscapeDataString(RepositoryPath).Replace("%2F", "/")}";
+    /// <summary>Nome do recurso embutido em LznTweaker.Core (GameTuning/Profiles/Deadlock).</summary>
+    public string ResourceName => $"LznTweaker.Core.GameTuning.Deadlock.{ResourceFile}";
 }
 
 /// <summary>
-/// Perfis do Deadlock vindos do projeto OptimizationLock (GPL-3.0). Os arquivos não são embutidos no app:
-/// são baixados do repositório do autor na hora de aplicar, para não redistribuir conteúdo GPL e para
-/// sempre usar a versão ajustada ao patch atual do jogo (o gameinfo.gi muda a cada atualização grande).
+/// Perfis do Deadlock do projeto OptimizationLock (GPL-3.0), embutidos no app: o conteúdo do gameinfo.gi de cada
+/// perfil vai junto e é aplicado sem acessar a internet. Cópia exata dos arquivos do autor; a licença e a origem
+/// (commit e data) ficam em GameTuning/Profiles/Deadlock e são copiadas para a pasta do app. O gameinfo.gi muda a
+/// cada patch grande do jogo: a comparação de SearchPaths avisa quando a cópia parece desatualizada.
 /// </summary>
 public static class DeadlockProfiles
 {
     public const string SteamAppId = "1422450";
-    public const string RepositoryWebUrl = "https://github.com/Sqooky/OptimizationLock";
-    internal const string RawBaseUrl = "https://raw.githubusercontent.com/Sqooky/OptimizationLock/main/";
-    internal const string CommitsApiUrl = "https://api.github.com/repos/Sqooky/OptimizationLock/commits";
 
     public const string RecommendedId = "deadlock-recommended";
     public const string SqookyMaxFpsId = "deadlock-sqooky-maxfps";
@@ -40,7 +40,7 @@ public static class DeadlockProfiles
             "câmera, tentando preservar ao máximo a fidelidade visual. Efeitos conhecidos: prédios aparecendo de repente à distância " +
             "e retratos de heróis mais escuros.",
             "Sqooky", "Baixo", null,
-            "Sqooky's .gi/gameinfo.gi"),
+            "recommended.gi", "aa2844d4a93f", new DateOnly(2026, 10, 27)),
         new(SqookyMaxFpsId,
             "Sqooky's Max FPS Config",
             "Configuração agressiva, com o maior FPS geral conhecido pelo autor.",
@@ -48,7 +48,7 @@ public static class DeadlockProfiles
             "e que pode causar problemas em alguns computadores, embora normalmente renda mais. Desliga também física de cliente, " +
             "ragdolls e luzes dinâmicas.",
             "Sqooky", "Médio", "Pode apresentar pequenos bugs visuais.",
-            "maximumfps or minimum spec config and resources here/gameinfo.gi"),
+            "sqooky-maxfps.gi", "aa2844d4a93f", new DateOnly(2026, 10, 27)),
         new(LowEndId,
             "Max FPS (Low-End)",
             "Prioriza FPS acima de tudo, reduzindo drasticamente a qualidade visual. Recomendada apenas para computadores menos potentes.",
@@ -56,7 +56,7 @@ public static class DeadlockProfiles
             "a maior parte do pós-processamento, e reduz texturas. Efeitos conhecidos: heróis ausentes na loja/tela final, contornos " +
             "sólidos e poças com reflexo colorido.",
             "Kaizuchaneru", "Médio", "Reduz muito a qualidade visual; textos e efeitos podem ficar difíceis de ler.",
-            "kaizuchanerus minimum spec/gameinfo.gi"),
+            "low-end.gi", "347a6694bd77", new DateOnly(2026, 10, 21)),
         new(BootMaxFpsId,
             "Boot's Max FPS (descontinuado)",
             "Max FPS agressivo que o próprio autor do repositório marca como descontinuado (sem manutenção).",
@@ -64,7 +64,7 @@ public static class DeadlockProfiles
             "\"rende bom FPS, mas está funcionalmente descontinuado\", porque o autor não consegue mais mantê-lo. Pode quebrar após " +
             "atualizações do jogo antes dos outros perfis.",
             "Boot", "Alto", "Sem manutenção ativa: maior chance de quebrar após um patch do Deadlock.",
-            "boot's maxium fps config/gameinfo.gi")
+            "boot-maxfps.gi", "4f900690efc2", new DateOnly(2026, 9, 4))
     ];
 
     public static GameConfigProfile GetById(string id) =>

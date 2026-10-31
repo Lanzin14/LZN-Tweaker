@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.IO;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -22,13 +21,11 @@ public enum GameConfigState
 
 public sealed record GameConfigStatus(GameConfigState State, string? AppliedProfileId, DateTimeOffset? AppliedAt, string Message);
 
-/// <summary>Perfil baixado e validado, pronto para ser aplicado.</summary>
-public sealed record ProfileDownload(
+/// <summary>Perfil embutido, validado e comparado com o arquivo atual, pronto para ser aplicado.</summary>
+public sealed record PreparedProfile(
     GameConfigProfile Profile,
     byte[] Content,
     string Sha256,
-    string? CommitSha,
-    DateTimeOffset? CommitDate,
     IReadOnlyList<string> CompatibilityWarnings);
 
 /// <summary>
@@ -45,19 +42,19 @@ public sealed class GameTuningService
     private const int MaximumProfileBytes = 2_000_000;
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
-    private readonly HttpClient _http;
+    private readonly Func<GameConfigProfile, byte[]> _loadContent;
     private readonly TweakOperationHistory _history;
     private readonly SteamLibraryLocator _locator;
     private readonly string _stateDirectory;
     private readonly Func<bool> _isDeadlockRunning;
 
-    public GameTuningService(HttpClient http, TweakOperationHistory history, SteamLibraryLocator locator)
-        : this(http, history, locator, stateDirectory: null, isDeadlockRunning: null) { }
+    public GameTuningService(TweakOperationHistory history, SteamLibraryLocator locator)
+        : this(history, locator, stateDirectory: null, isDeadlockRunning: null, loadContent: null) { }
 
-    internal GameTuningService(HttpClient http, TweakOperationHistory history, SteamLibraryLocator locator,
-        string? stateDirectory, Func<bool>? isDeadlockRunning)
+    internal GameTuningService(TweakOperationHistory history, SteamLibraryLocator locator,
+        string? stateDirectory, Func<bool>? isDeadlockRunning, Func<GameConfigProfile, byte[]>? loadContent)
     {
-        _http = http;
+        _loadContent = loadContent ?? LoadEmbedded;
         _history = history;
         _locator = locator;
         _stateDirectory = stateDirectory ?? Path.Combine(
@@ -117,27 +114,26 @@ public sealed class GameTuningService
                 $"O perfil \"{profileName}\" foi substituído depois de aplicado — normalmente por uma atualização do Deadlock. Reaplique um perfil se quiser voltar a usá-lo.");
     }
 
-    /// <summary>Baixa o perfil do repositório do autor, valida o conteúdo e compara com o arquivo atual.</summary>
-    public async Task<ProfileDownload> DownloadAsync(GameConfigProfile profile, DeadlockInstallation installation, CancellationToken cancellationToken = default)
+    /// <summary>Lê o perfil embutido no app, valida o conteúdo e compara com o arquivo atual. Não acessa a internet.</summary>
+    public PreparedProfile Prepare(GameConfigProfile profile, DeadlockInstallation installation)
     {
-        var url = DeadlockProfiles.RawBaseUrl + EscapePath(profile.RepositoryPath);
-        byte[] content;
-        try
-        {
-            content = await _http.GetByteArrayAsync(url, cancellationToken);
-        }
-        catch (HttpRequestException ex)
-        {
-            throw new InvalidOperationException($"Não foi possível baixar o perfil do GitHub ({ex.Message}). Verifique a conexão.", ex);
-        }
-
+        var content = _loadContent(profile);
         var text = ValidateProfile(content);
         var current = File.ReadAllText(installation.GameInfoPath);
-        var (commitSha, commitDate) = await TryGetLatestCommitAsync(profile.RepositoryPath, cancellationToken);
-        return new ProfileDownload(profile, content, Sha256(content), commitSha, commitDate, CompareSearchPaths(current, text));
+        return new PreparedProfile(profile, content, Sha256(content), CompareSearchPaths(current, text));
     }
 
-    public async Task<TweakOperationResult> ApplyAsync(DeadlockInstallation installation, ProfileDownload download, CancellationToken cancellationToken = default)
+    /// <summary>Conteúdo do gameinfo.gi do perfil, embutido em LznTweaker.Core.</summary>
+    internal static byte[] LoadEmbedded(GameConfigProfile profile)
+    {
+        using var stream = typeof(GameTuningService).Assembly.GetManifestResourceStream(profile.ResourceName)
+            ?? throw new InvalidDataException($"O perfil \"{profile.Name}\" não está embutido no app ({profile.ResourceFile}).");
+        using var memory = new MemoryStream();
+        stream.CopyTo(memory);
+        return memory.ToArray();
+    }
+
+    public async Task<TweakOperationResult> ApplyAsync(DeadlockInstallation installation, PreparedProfile download, CancellationToken cancellationToken = default)
     {
         var startedAt = DateTimeOffset.Now;
         var profile = download.Profile;
@@ -182,8 +178,8 @@ public sealed class GameTuningService
         }
 
         SaveState(new AppliedState(Path.GetFullPath(target), profile.Id, download.Sha256, backupHash, startedAt,
-            DeadlockProfiles.RawBaseUrl + EscapePath(profile.RepositoryPath), download.CommitSha));
-        var source = download.CommitDate is { } date ? $" Versão do GitHub de {date.LocalDateTime:d} ({download.CommitSha?[..7]})." : string.Empty;
+            $"embutido:{profile.ResourceFile}", profile.SourceCommit));
+        var source = $" Versão do OptimizationLock de {profile.SourceDate:d} ({profile.SourceCommit[..7]}), embutida no app.";
         return await RecordAsync(startedAt, profile.Name, $"gameinfo.gi anterior (SHA-256 {backupHash[..12]}…)", "Sucesso verificado",
             $"Perfil gravado e conferido por hash.{source} {backupNote} O Deadlock substitui este arquivo a cada atualização grande.",
             cancellationToken);
@@ -234,17 +230,17 @@ public sealed class GameTuningService
             "O gameinfo.gi original foi restaurado e conferido por hash; o perfil modificado foi descartado.", cancellationToken);
     }
 
-    /// <summary>Confere se o conteúdo baixado é um gameinfo.gi completo (e não uma página de erro ou um arquivo truncado).</summary>
+    /// <summary>Confere se o conteúdo é um gameinfo.gi completo (e não um arquivo vazio, truncado ou de outro tipo).</summary>
     internal static string ValidateProfile(byte[] content)
     {
         if (content.Length is < MinimumProfileBytes or > MaximumProfileBytes)
-            throw new InvalidDataException($"O arquivo baixado tem {content.Length:N0} bytes, fora do tamanho esperado para um gameinfo.gi.");
+            throw new InvalidDataException($"O perfil tem {content.Length:N0} bytes, fora do tamanho esperado para um gameinfo.gi.");
         var text = Encoding.UTF8.GetString(content);
         if (text.TrimStart('﻿', ' ', '\r', '\n', '\t').StartsWith('<'))
-            throw new InvalidDataException("O GitHub retornou uma página HTML em vez do arquivo de configuração.");
+            throw new InvalidDataException("O perfil é uma página HTML, não um arquivo de configuração.");
         var searchPaths = GetSearchPaths(text);
         if (searchPaths.Count == 0 || !searchPaths.Any(entry => entry.Contains("citadel", StringComparison.OrdinalIgnoreCase)))
-            throw new InvalidDataException("O arquivo baixado não tem a estrutura GameInfo/FileSystem/SearchPaths do Deadlock.");
+            throw new InvalidDataException("O perfil não tem a estrutura GameInfo/FileSystem/SearchPaths do Deadlock.");
         return text;
     }
 
@@ -274,23 +270,6 @@ public sealed class GameTuningService
         catch (Exception ex) when (ex is ArgumentException or IndexOutOfRangeException)
         {
             return [];
-        }
-    }
-
-    private async Task<(string? Sha, DateTimeOffset? Date)> TryGetLatestCommitAsync(string repositoryPath, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var url = $"{DeadlockProfiles.CommitsApiUrl}?path={Uri.EscapeDataString(repositoryPath)}&per_page=1";
-            using var document = JsonDocument.Parse(await _http.GetStringAsync(url, cancellationToken));
-            var commit = document.RootElement[0];
-            return (commit.GetProperty("sha").GetString(),
-                commit.GetProperty("commit").GetProperty("committer").GetProperty("date").GetDateTimeOffset());
-        }
-        catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidOperationException or KeyNotFoundException or IndexOutOfRangeException or FormatException)
-        {
-            // A data da versão é informativa; sem ela (limite da API, offline), o perfil ainda é validado pelo conteúdo.
-            return (null, null);
         }
     }
 
@@ -380,8 +359,6 @@ public sealed class GameTuningService
         await _history.AppendAsync(result, cancellationToken);
         return result;
     }
-
-    internal static string EscapePath(string repositoryPath) => Uri.EscapeDataString(repositoryPath).Replace("%2F", "/");
 
     private static string HashFile(string path)
     {

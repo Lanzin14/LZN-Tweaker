@@ -33,7 +33,8 @@ public sealed partial class DeadlockProfileOption(GameConfigProfile profile) : O
         (Profile.Warning is null ? string.Empty : $"Aviso: {Profile.Warning}\n\n") +
         $"O que é alterado: o arquivo game\\citadel\\gameinfo.gi do Deadlock é substituído pelo deste perfil (ConVars de vídeo, " +
         $"áudio, rede e interface). Nenhuma configuração do Windows é tocada.\n" +
-        $"Autor: {Profile.Author} · Projeto OptimizationLock (GPL-3.0), baixado do GitHub na hora de aplicar.\n" +
+        $"Autor: {Profile.Author} · Projeto OptimizationLock (GPL-3.0). O código do perfil vem embutido no app " +
+        $"(versão de {Profile.SourceDate:d}); nada é baixado.\n" +
         $"Reversão: o original é guardado antes e pode ser restaurado com \"Desfazer\".";
 
 }
@@ -138,15 +139,15 @@ public sealed partial class DeadlockTuningViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            LastResultText = $"Baixando \"{option.Name}\" do GitHub e validando o arquivo…";
-            ProfileDownload download;
+            LastResultText = $"Validando \"{option.Name}\" e comparando com o seu gameinfo.gi…";
+            PreparedProfile download;
             try
             {
-                download = await _service.DownloadAsync(option.Profile, installation);
+                download = await Task.Run(() => _service.Prepare(option.Profile, installation));
             }
-            catch (Exception ex) when (ex is InvalidOperationException or System.IO.InvalidDataException or TaskCanceledException)
+            catch (Exception ex) when (ex is System.IO.IOException or UnauthorizedAccessException)
             {
-                LastResultText = $"Download não concluído: {ex.Message}";
+                LastResultText = $"Perfil não preparado: {ex.Message}";
                 _dialogs.ShowError($"{ex.Message}\n\nNada foi alterado.", "Perfil do Deadlock");
                 return;
             }
@@ -192,10 +193,6 @@ public sealed partial class DeadlockTuningViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    private void OpenSource(DeadlockProfileOption? option) =>
-        _dialogs.OpenUrl(option?.Profile.WebUrl ?? DeadlockProfiles.RepositoryWebUrl);
-
     private bool CanChangeInstallation() => !IsBusy;
     private bool CanApply() => !IsBusy && Installation is not null && Profiles.Any(profile => profile.IsSelected);
     private bool CanUndo() => !IsBusy && Installation is not null && State != GameConfigState.NotApplied;
@@ -225,12 +222,10 @@ public sealed partial class DeadlockTuningViewModel : ObservableObject
         }
     }
 
-    private static string BuildConfirmation(DeadlockInstallation installation, ProfileDownload download)
+    private static string BuildConfirmation(DeadlockInstallation installation, PreparedProfile download)
     {
         var profile = download.Profile;
-        var version = download.CommitDate is { } date
-            ? $"Versão do GitHub: {date.LocalDateTime:d} (commit {download.CommitSha?[..7]})."
-            : "Data da versão no GitHub indisponível (limite da API ou sem conexão); o conteúdo foi validado mesmo assim.";
+        var version = $"Versão embutida no app: OptimizationLock de {profile.SourceDate:d} (commit {profile.SourceCommit[..7]}).";
         var compatibility = download.CompatibilityWarnings.Count == 0
             ? "• Compatibilidade: o perfil carrega todos os caminhos de conteúdo do seu arquivo atual.\n"
             : "• ATENÇÃO, possível incompatibilidade com o patch atual:\n" + string.Join("\n", download.CompatibilityWarnings.Select(warning => $"   – {warning}")) + "\n";
