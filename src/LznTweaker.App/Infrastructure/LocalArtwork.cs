@@ -80,6 +80,22 @@ public static class LocalArtwork
         }
     }
 
+    /// <summary>Executável do Epic Games Launcher na pasta padrão de instalação, se existir.</summary>
+    public static string? EpicLauncherPath()
+    {
+        foreach (var programFiles in new[] { Environment.SpecialFolder.ProgramFilesX86, Environment.SpecialFolder.ProgramFiles })
+        {
+            var folder = Path.Combine(Environment.GetFolderPath(programFiles), "Epic Games", "Launcher", "Portal", "Binaries");
+            foreach (var platform in new[] { "Win64", "Win32" })
+            {
+                var path = Path.Combine(folder, platform, "EpicGamesLauncher.exe");
+                if (File.Exists(path))
+                    return path;
+            }
+        }
+        return null;
+    }
+
     private static BitmapImage LoadBitmap(string file)
     {
         var image = new BitmapImage();

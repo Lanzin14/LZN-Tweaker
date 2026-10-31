@@ -101,6 +101,34 @@ A página do `gameinfo.gi` continua como está. Do vídeo, só entram itens comp
 | LatencyMon | **Manual**, com o alerta do autor: o driver apontado nem sempre é o culpado. |
 | Mouse | **Manual** (A19). |
 
+## H. Fortnite (Epic Games Launcher)
+
+Detecção somente leitura pela lista do launcher (`ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat`,
+`AppName = "Fortnite"`). Tudo o mais é **Manual**: o Fortnite não estava instalado para validar um editor do
+`GameUserSettings.ini` e a Epic orienta mudar as opções no menu do jogo. Dados em
+`src/LznTweaker.Core/GameOptimization/FortniteRecommendations.cs`; cada linha tem origem Oficial, Técnica, Comunidade
+ou Experimental, mostrada na página.
+
+| Item | Decisão |
+|---|---|
+| Perfil competitivo (Modo Desempenho) | **Manual**. Nomes e valores do artigo da Epic "melhores configurações para jogo competitivo em 2026" (30/04/2026). |
+| Perfil alternativo DirectX 12 | **Manual**, apresentado como alternativa a testar, nunca como superior. Relatos da comunidade são contraditórios. |
+| Resolução 3D | 100%; reduzir em etapas de 10% só se faltar FPS (Epic). |
+| NVIDIA (Painel de Controle, perfil do Fortnite) | **Manual**. Reflex Ligado + Boost no jogo; Modo de baixa latência Desligado (o Reflex tem prioridade, NVIDIA); energia em desempenho máximo só no perfil; V-Sync desligado com a nota de G-SYNC (comunidade); cache de shader padrão; filtragem "Alto desempenho" como experimental. |
+| AMD (Adrenalin, perfil do jogo) | **Manual**. Anti-Lag ativado; Chill desativado (a AMD documenta que os dois não ficam ativos juntos); V-Sync a critério do app; FreeSync conforme o monitor. Anti-Lag 2 não é recomendado: exige suporte do jogo e o Fortnite não estava na lista da AMD em 31/10/2026. |
+| Escolha NVIDIA/AMD | **Manual pelo usuário**. A página não detecta a placa nem a fabricante e não cria configurações a partir do hardware. |
+| Argumentos `-d3d12 -FeatureLevelEs31` / `-d3d12 -sm6` | **Manual**, só quando o modo de renderização não fica salvo (ajuda da Epic), com o caminho no launcher e como remover. |
+| Texturas de Alta Resolução | **Manual** (launcher > Opções); reversível marcando de novo. |
+| Programas em segundo plano | **Manual**; aponta para a página Inicialização, que já existe. |
+| Travadas, frametime, perda de pacotes | **Manual** (Exibir FPS, PresentMon, estatísticas de rede). Nenhuma promessa de FPS ou ping. |
+| Prioridade Acima do normal | **Recusado**: sem recomendação oficial, o Windows já favorece a janela em primeiro plano e manter a prioridade exigiria um processo vigiando o jogo. Fica só a instrução manual pelo Gerenciador de Tarefas, que volta ao normal ao fechar o jogo. |
+| Prioridade Tempo real, afinidade de CPU, serviços do Windows | **Recusado** sempre. |
+| Easy Anti-Cheat / BattlEye | **Nunca tocados.** |
+
+Fontes consultadas em 31/10/2026: artigo e páginas de ajuda da Epic (modo de desempenho, texturas de alta resolução,
+argumentos quando o modo não fica salvo); ajudas da AMD sobre Radeon Anti-Lag, Anti-Lag 2 e Radeon Chill; artigo da
+NVIDIA sobre Reflex e o Modo de baixa latência; discussões da comunidade (Reddit) sobre Modo Desempenho x DirectX 12.
+
 ## Ignorado
 
 Publicidade do ExitLag e cupom; divulgação de curso. Não fazem parte de nenhuma otimização.

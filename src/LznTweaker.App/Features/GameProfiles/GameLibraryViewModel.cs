@@ -10,7 +10,7 @@ using LznTweaker.Infrastructure;
 
 namespace LznTweaker.Features.GameProfiles;
 
-public enum LibraryPlatform { Windows, Steam, Riot }
+public enum LibraryPlatform { Windows, Steam, Riot, Epic }
 
 /// <summary>Ícone de plataforma ao lado do jogo. Sem arquivo local, mostra só a inicial (Windows usa o logotipo vetorial).</summary>
 public sealed record PlatformBadge(LibraryPlatform Platform, string Name, ImageSource? Icon)
@@ -88,6 +88,9 @@ public sealed partial class GameLibraryViewModel : ObservableObject
             new(SupportedGames.Deadlock.Name, Page(OptimizationArea.Deadlock, "Deadlock — ajustes compartilhados",
                 "Cache de shaders do Deadlock na Steam e verificação do jogo. Os perfis do gameinfo.gi ficam na outra aba."),
                 [LibraryPlatform.Windows, LibraryPlatform.Steam], SupportedGames.Deadlock, "DL"),
+            new(SupportedGames.Fortnite.Name, Page(OptimizationArea.Fortnite, "Fortnite",
+                "Configurações de vídeo, da placa de vídeo (NVIDIA ou AMD, à sua escolha) e orientações. Tudo manual: o app não edita arquivos do jogo nem toca no Easy Anti-Cheat."),
+                [LibraryPlatform.Windows, LibraryPlatform.Epic], SupportedGames.Fortnite, "FN"),
             new("Hardware e diagnóstico", Page(OptimizationArea.Hardware, "Hardware — somente diagnóstico",
                 "Orientações sobre memória RAM, XMP/EXPO, BIOS, chipset e Resizable BAR. Só diagnóstico: o app nunca altera BIOS, XMP, overclock ou undervolt."),
                 [], glyph: "\uE950")
@@ -128,7 +131,7 @@ public sealed partial class GameLibraryViewModel : ObservableObject
         {
             var games = await Task.Run(() => SupportedGames.All.Select(_locator.Locate).ToArray());
             var steamRoot = _locator.Steam.SteamRoot;
-            LoadArtwork(steamRoot);
+            LoadArtwork(steamRoot, games);
             foreach (var section in Sections)
             {
                 var detected = section.Game is null ? null : games.First(game => game.Game.Id == section.Game.Id);
@@ -138,9 +141,12 @@ public sealed partial class GameLibraryViewModel : ObservableObject
                 section.Page.DetectionText = detected switch
                 {
                     null => string.Empty,
-                    { IsInstalled: false } => detected.Game.Platform == GamePlatform.Riot
-                        ? "Não encontrado: o Riot Client não registra uma instalação do VALORANT neste PC. As orientações abaixo continuam válidas."
-                        : "Não encontrado nas bibliotecas da Steam deste PC.",
+                    { IsInstalled: false } => detected.Game.Platform switch
+                    {
+                        GamePlatform.Riot => "Não encontrado: o Riot Client não registra uma instalação do VALORANT neste PC. As orientações abaixo continuam válidas.",
+                        GamePlatform.Epic => "Não encontrado: o Epic Games Launcher não registra uma instalação do Fortnite neste PC. As orientações abaixo continuam válidas.",
+                        _ => "Não encontrado nas bibliotecas da Steam deste PC."
+                    },
                     _ => $"Instalado em {detected.InstallPath}" + (detected.ExecutablePath is null ? " (executável não encontrado)" : string.Empty)
                 };
                 await section.Page.LoadActionsAsync(detected, steamRoot);
@@ -169,19 +175,24 @@ public sealed partial class GameLibraryViewModel : ObservableObject
         }
     }
 
-    private void LoadArtwork(string? steamRoot)
+    private void LoadArtwork(string? steamRoot, IReadOnlyList<DetectedGame> games)
     {
         var steamIcon = steamRoot is null ? null : LocalArtwork.ExecutableIcon(Path.Combine(steamRoot, "steam.exe"));
         var riotIcon = LocalArtwork.ExecutableIcon(LocalArtwork.RiotClientPath());
+        var epicIcon = LocalArtwork.ExecutableIcon(LocalArtwork.EpicLauncherPath());
         foreach (var section in Sections)
         {
+            // Jogos da Epic: ícone do próprio executável instalado; sem ele, o monograma.
             section.Icon = section.Game?.SteamAppId is { } appId
                 ? LocalArtwork.SteamAppIcon(steamRoot, appId)
-                : section.PlatformKinds is [LibraryPlatform.Steam] ? steamIcon : null;
+                : section.Game?.Platform == GamePlatform.Epic
+                    ? LocalArtwork.ExecutableIcon(games.FirstOrDefault(game => game.Game.Id == section.Game.Id)?.ExecutablePath)
+                    : section.PlatformKinds is [LibraryPlatform.Steam] ? steamIcon : null;
             section.Platforms = section.PlatformKinds.Select(platform => platform switch
             {
                 LibraryPlatform.Steam => new PlatformBadge(platform, "Steam", steamIcon),
                 LibraryPlatform.Riot => new PlatformBadge(platform, "Riot Client", riotIcon),
+                LibraryPlatform.Epic => new PlatformBadge(platform, "Epic Games", epicIcon),
                 _ => new PlatformBadge(platform, "Windows", null)
             }).ToArray();
         }

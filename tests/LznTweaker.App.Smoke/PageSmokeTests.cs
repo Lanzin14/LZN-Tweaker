@@ -82,6 +82,7 @@ public sealed class PageSmokeTests
         errors.AddRange(CheckProgramsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGpuPage(provider, shell, window, bindingErrors, output));
+        errors.AddRange(CheckFortnitePage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGeneralList(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckSidebar(shell, window, bindingErrors, output));
 
@@ -203,6 +204,47 @@ public sealed class PageSmokeTests
         gpu.ToggleOverviewCommand.Execute(null);
         gpu.Tabs[0].IsSelected = true;
         errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"gpu: {message}"));
+        return errors;
+    }
+
+    /// <summary>
+    /// Jogos › Fortnite: nenhuma fabricante vem marcada (a placa nunca é detectada), os dois perfis de vídeo e as
+    /// seções NVIDIA e AMD renderizam sem erro de binding. Nada é aplicado.
+    /// </summary>
+    private static IEnumerable<string> CheckFortnitePage(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var library = provider.GetRequiredService<LznTweaker.Features.GameProfiles.GameLibraryViewModel>();
+        shell.Navigate(ShellPages.Games);
+        Pump(TimeSpan.FromSeconds(1));
+        var section = library.Sections.SingleOrDefault(item => item.Game?.Id == LznTweaker.Core.GameOptimization.SupportedGames.FortniteId);
+        if (section is null)
+            return ["fortnite: seção ausente na biblioteca de jogos"];
+        var before = bindingErrors.Messages.Count;
+        library.SelectedSection = section;
+        Pump(TimeSpan.FromMilliseconds(500));
+        var page = section.Page;
+        if (!page.IsFortnite || page.HasGpuChoice || page.GpuSettings.Count != 0)
+            errors.Add("fortnite: a fabricante da placa deveria começar sem escolha");
+        if (!page.UsesPerformanceMode || page.FortniteVideoSettings.Count == 0)
+            errors.Add("fortnite: o perfil competitivo deveria vir selecionado");
+        if (!section.Platforms.Any(badge => badge.Name == "Epic Games"))
+            errors.Add("fortnite: selo da Epic Games ausente");
+        Save(window, Path.Combine(output, "games-fortnite.png"));
+
+        page.IsNvidiaChosen = true;
+        Pump(TimeSpan.FromMilliseconds(300));
+        if (!page.HasGpuChoice || page.GpuSettings.Count == 0 || page.IsAmdChosen)
+            errors.Add("fortnite: a seção NVIDIA não abriu");
+        Save(window, Path.Combine(output, "games-fortnite-nvidia.png"));
+        page.IsAmdChosen = true;
+        page.UsesDirectX12 = true;
+        Pump(TimeSpan.FromMilliseconds(300));
+        if (page.IsNvidiaChosen || page.UsesPerformanceMode || page.GpuSettings.Count == 0)
+            errors.Add("fortnite: AMD e DirectX 12 não ficaram ativos");
+        Save(window, Path.Combine(output, "games-fortnite-amd-dx12.png"));
+        page.UsesPerformanceMode = true;
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"fortnite: {message}"));
         return errors;
     }
 

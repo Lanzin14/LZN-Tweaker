@@ -124,6 +124,35 @@ public sealed record ProcedureView(string Title, IReadOnlyList<NumberedStep> Ste
         new(procedure.Title, procedure.Steps.Select((text, index) => new NumberedStep(index + 1, text)).ToArray(), procedure.Warning);
 }
 
+/// <summary>Fabricante escolhida pelo usuário na página do Fortnite (nunca detectada).</summary>
+public enum FortniteGpuChoice { None, Nvidia, Amd }
+
+/// <summary>Linha de configuração do Fortnite com a origem da recomendação.</summary>
+public sealed class RecommendedSettingViewModel(RecommendedSetting setting)
+{
+    public string Name => setting.Name;
+    public string Value => setting.Value;
+    public string Purpose => setting.Purpose;
+    public string? Note => setting.Note;
+    public string EvidenceText => setting.Evidence switch
+    {
+        EvidenceKind.Official => "Oficial",
+        EvidenceKind.Technical => "Técnica",
+        EvidenceKind.Community => "Comunidade",
+        _ => "Experimental"
+    };
+    public Brush EvidenceBrush => setting.Evidence switch
+    {
+        EvidenceKind.Official => StatusBrushes.Green,
+        EvidenceKind.Technical => StatusBrushes.Purple,
+        EvidenceKind.Community => StatusBrushes.Gray,
+        _ => StatusBrushes.Amber
+    };
+
+    public static IReadOnlyList<RecommendedSettingViewModel> From(IEnumerable<RecommendedSetting> settings) =>
+        settings.Select(setting => new RecommendedSettingViewModel(setting)).ToArray();
+}
+
 public sealed class BackupItemViewModel(SteamFolderBackup backup)
 {
     public SteamFolderBackup Backup { get; } = backup;
@@ -180,6 +209,54 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
     public IReadOnlyList<InGameSetting> VideoSettings => HasRecommendations ? Cs2Recommendations.Video : [];
     public IReadOnlyList<string> RecommendationNotes => HasRecommendations ? Cs2Recommendations.Notes : [];
     public string VideoMenuPath => Cs2Recommendations.VideoMenuPath;
+
+    // Fortnite: perfil de vídeo e fabricante escolhidos pelo usuário. A placa de vídeo nunca é detectada aqui.
+    public bool IsFortnite => _area == OptimizationArea.Fortnite;
+    public string FortniteVideoMenuPath => FortniteRecommendations.VideoMenuPath;
+    public IReadOnlyList<string> FortniteVideoNotes => IsFortnite ? FortniteRecommendations.VideoNotes : [];
+    public IReadOnlyList<string> FortniteGpuNotes => IsFortnite ? FortniteRecommendations.GpuNotes : [];
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UsesPerformanceMode), nameof(FortniteVideoSettings), nameof(FortniteProfileSummary))]
+    private bool _usesDirectX12;
+
+    public bool UsesPerformanceMode
+    {
+        get => !UsesDirectX12;
+        set { if (value) UsesDirectX12 = false; }
+    }
+
+    public string FortniteProfileSummary => UsesDirectX12
+        ? "Alternativa para quem tem travadas, instabilidade ou imagem ruim no Modo Desempenho. Não é melhor para todos: compare os dois."
+        : "Perfil competitivo recomendado pela Epic: Modo de Renderização \"Desempenho\", com menos recursos gráficos para aliviar CPU, GPU e memória.";
+
+    public IReadOnlyList<RecommendedSettingViewModel> FortniteVideoSettings => !IsFortnite ? []
+        : RecommendedSettingViewModel.From(UsesDirectX12 ? FortniteRecommendations.DirectX12 : FortniteRecommendations.PerformanceMode);
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNvidiaChosen), nameof(IsAmdChosen), nameof(HasGpuChoice), nameof(GpuSettings), nameof(GpuMenuPath))]
+    private FortniteGpuChoice _gpuChoice;
+
+    public bool IsNvidiaChosen
+    {
+        get => GpuChoice == FortniteGpuChoice.Nvidia;
+        set { if (value) GpuChoice = FortniteGpuChoice.Nvidia; }
+    }
+
+    public bool IsAmdChosen
+    {
+        get => GpuChoice == FortniteGpuChoice.Amd;
+        set { if (value) GpuChoice = FortniteGpuChoice.Amd; }
+    }
+
+    public bool HasGpuChoice => GpuChoice != FortniteGpuChoice.None;
+    public string GpuMenuPath => GpuChoice == FortniteGpuChoice.Amd ? FortniteRecommendations.AmdMenuPath : FortniteRecommendations.NvidiaMenuPath;
+    public IReadOnlyList<RecommendedSettingViewModel> GpuSettings => GpuChoice switch
+    {
+        FortniteGpuChoice.Nvidia => RecommendedSettingViewModel.From(FortniteRecommendations.Nvidia),
+        FortniteGpuChoice.Amd => RecommendedSettingViewModel.From(FortniteRecommendations.Amd),
+        _ => []
+    };
 
     /// <summary>Jogo desta página, quando é uma página de jogo.</summary>
     public DetectedGame? Game { get; private set; }

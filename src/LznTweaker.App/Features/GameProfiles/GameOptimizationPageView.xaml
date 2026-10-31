@@ -27,6 +27,39 @@
             <Setter Property="Padding" Value="6,2" />
             <Setter Property="Margin" Value="0,6,6,0" />
         </Style>
+        <!-- Linha de configuração do Fortnite: nome, valor, função curta, observação e origem. -->
+        <DataTemplate DataType="{x:Type local:RecommendedSettingViewModel}">
+            <Grid Margin="0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="FnName" MinWidth="200" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="FnValue" MinWidth="150" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="FnEvidence" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Margin="0,0,14,0" VerticalAlignment="Top" TextWrapping="Wrap" MaxWidth="220" />
+                <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,14,0" MaxWidth="220">
+                    <TextBlock Text="{Binding Value}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" />
+                </Border>
+                <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                    <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Note}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0"
+                               Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                </StackPanel>
+                <Border Grid.Column="3" VerticalAlignment="Top" HorizontalAlignment="Right" CornerRadius="4" Padding="6,1" BorderThickness="1" BorderBrush="{Binding EvidenceBrush}">
+                    <TextBlock Text="{Binding EvidenceText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding EvidenceBrush}" />
+                </Border>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="FnNoteTemplate">
+            <Grid Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="18" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Info}" VerticalAlignment="Top" Margin="0,1,0,0" />
+                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -140,6 +173,74 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+            </StackPanel>
+
+            <!-- Fortnite: instruções manuais. Perfil de vídeo e fabricante da placa escolhidos pelo usuário (nada é detectado nem aplicado). -->
+            <StackPanel Visibility="{Binding IsFortnite, Converter={StaticResource BoolToVisibility}}" Margin="0,18,0,4">
+                <Grid>
+                    <TextBlock Text="Configurações recomendadas" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
+                    <Border Style="{StaticResource Lzn.Badge.Warn}" HorizontalAlignment="Right">
+                        <TextBlock Text="Instruções manuais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" />
+                    </Border>
+                </Grid>
+                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="0,3,0,0" TextWrapping="Wrap"
+                           Text="O LZN Tweaker não aplica nem verifica estes ajustes. Origem de cada linha: Oficial (Epic, NVIDIA ou AMD), Técnica, Comunidade ou Experimental (teste e volte se piorar)." />
+
+                <!-- 1. Configurações gerais (vídeo do jogo) -->
+                <Border Style="{StaticResource Lzn.Panel}" Margin="0,12,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
+                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="Configurações gerais: vídeo do jogo" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="32,4,0,0" TextWrapping="Wrap">
+                            <Run Text="Onde: " /><Run Text="{Binding FortniteVideoMenuPath, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="32,10,0,0">
+                            <RadioButton Style="{StaticResource Lzn.Tab}" GroupName="FnProfile" IsChecked="{Binding UsesPerformanceMode}" AutomationProperties.Name="Perfil competitivo, Modo Desempenho">
+                                <TextBlock Text="Competitivo · Modo Desempenho" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource Lzn.Tab}" GroupName="FnProfile" IsChecked="{Binding UsesDirectX12}" AutomationProperties.Name="Perfil alternativo, DirectX 12">
+                                <TextBlock Text="Alternativo · DirectX 12" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
+                            </RadioButton>
+                        </StackPanel>
+                        <TextBlock Text="{Binding FortniteProfileSummary}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="32,8,0,4" TextWrapping="Wrap" />
+                        <ItemsControl ItemsSource="{Binding FortniteVideoSettings}" Focusable="False" Margin="32,0,0,0" Grid.IsSharedSizeScope="True" />
+                        <ItemsControl ItemsSource="{Binding FortniteVideoNotes}" ItemTemplate="{StaticResource FnNoteTemplate}" Focusable="False" Margin="32,8,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Placa de vídeo: NVIDIA ou AMD, escolha manual -->
+                <Border Style="{StaticResource Lzn.Panel}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
+                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="Placa de vídeo: escolha a fabricante" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="32,10,0,0">
+                            <RadioButton Style="{StaticResource Lzn.Tab}" GroupName="FnVendor" IsChecked="{Binding IsNvidiaChosen}" AutomationProperties.Name="Placa NVIDIA">
+                                <TextBlock Text="NVIDIA" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource Lzn.Tab}" GroupName="FnVendor" IsChecked="{Binding IsAmdChosen}" AutomationProperties.Name="Placa AMD">
+                                <TextBlock Text="AMD" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
+                            </RadioButton>
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding FortniteGpuNotes}" ItemTemplate="{StaticResource FnNoteTemplate}" Focusable="False" Margin="32,8,0,0" />
+                        <StackPanel Visibility="{Binding HasGpuChoice, Converter={StaticResource BoolToVisibility}}">
+                            <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="32,8,0,4" TextWrapping="Wrap">
+                                <Run Text="Onde: " /><Run Text="{Binding GpuMenuPath, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                            </TextBlock>
+                            <ItemsControl ItemsSource="{Binding GpuSettings}" Focusable="False" Margin="32,0,0,0" Grid.IsSharedSizeScope="True" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="4,10,0,0" TextWrapping="Wrap"
+                           Text="3. Argumentos de inicialização, texturas de alta resolução, segundo plano, travadas e rede ficam em Orientações, no fim da página." />
             </StackPanel>
 
             <!-- Ações automáticas -->
