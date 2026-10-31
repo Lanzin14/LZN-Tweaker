@@ -15,11 +15,9 @@
             <Setter Property="Padding" Value="14,12" />
             <Setter Property="Margin" Value="0,0,0,8" />
         </Style>
-        <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
-            <Setter Property="Margin" Value="2,14,0,8" />
+        <!-- Título de seção da página do jogo: mesmo estilo dos cabeçalhos de grupo das outras páginas. -->
+        <Style x:Key="SectionTitle" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Text.Subtitle}">
+            <Setter Property="Margin" Value="2,18,0,8" />
         </Style>
         <Style x:Key="Chip" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
@@ -146,7 +144,7 @@
 
             <!-- Ações automáticas -->
             <StackPanel Visibility="{Binding HasActions, Converter={StaticResource BoolToVisibility}}">
-                <TextBlock Style="{StaticResource SectionTitle}" Text="AÇÕES (MARQUE E CLIQUE EM EXECUTAR)" />
+                <TextBlock Style="{StaticResource SectionTitle}" Text="Ações: marque e clique em Executar selecionados" />
                 <ItemsControl ItemsSource="{Binding Actions}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:OptimizationActionViewModel}">
@@ -158,15 +156,16 @@
                                     </Grid.ColumnDefinitions>
                                     <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected}" VerticalAlignment="Top" Margin="0,2,10,0" />
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" />
                                         <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" TextWrapping="Wrap" />
                                         <TextBlock Text="{Binding State}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" TextWrapping="Wrap" />
-                                        <WrapPanel>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Risk, StringFormat=Risco: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" /></Border>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding GamesAffected, StringFormat=Afeta: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" /></Border>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Prerequisites, StringFormat=Requisitos: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskLow}" TextWrapping="Wrap" /></Border>
-                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Reversibility}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" TextWrapping="Wrap" /></Border>
+                                        <WrapPanel Margin="0,6,0,0">
+                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding Risk, StringFormat=Risco {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" /></Border>
+                                            <Border Style="{StaticResource Chip}"><TextBlock Text="{Binding GamesAffected, StringFormat=Afeta: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" /></Border>
                                         </WrapPanel>
+                                        <TextBlock Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,4,0,0">
+                                            <Run Text="{Binding Prerequisites, Mode=OneWay, StringFormat=Antes: {0}}" /><Run Text=" · " /><Run Text="{Binding Reversibility, Mode=OneWay}" />
+                                        </TextBlock>
                                         <TextBlock Text="{Binding ResultText}" Foreground="{Binding ResultBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,6,0,0" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Grid>
@@ -176,13 +175,13 @@
                 </ItemsControl>
                 <Grid Margin="0,4,0,0">
                     <TextBlock Text="{Binding RunSummary}" Foreground="{StaticResource AccentTextBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,220,0" />
-                    <Button HorizontalAlignment="Right" Style="{StaticResource PrimaryButtonStyle}" Content="▶ Executar selecionados" Command="{Binding RunCommand}" Padding="16,9" />
+                    <Button HorizontalAlignment="Right" Style="{StaticResource Lzn.PrimaryButton}" Content="Executar selecionados" Command="{Binding RunCommand}" />
                 </Grid>
             </StackPanel>
 
             <!-- Backups -->
             <StackPanel Visibility="{Binding HasBackups, Converter={StaticResource BoolToVisibility}}">
-                <TextBlock Style="{StaticResource SectionTitle}" Text="BACKUPS FEITOS PELO APP" />
+                <TextBlock Style="{StaticResource SectionTitle}" Text="Backups feitos pelo app" />
                 <ItemsControl ItemsSource="{Binding Backups}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:BackupItemViewModel}">
@@ -205,7 +204,7 @@
 
             <!-- Diagnóstico -->
             <StackPanel Visibility="{Binding HasDiagnostics, Converter={StaticResource BoolToVisibility}}">
-                <TextBlock Style="{StaticResource SectionTitle}" Text="DIAGNÓSTICO (SOMENTE LEITURA)" />
+                <TextBlock Style="{StaticResource SectionTitle}" Text="Diagnóstico (somente leitura)" />
                 <ItemsControl ItemsSource="{Binding Diagnostics}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:DiagnosticItemViewModel}">
@@ -228,7 +227,7 @@
             </StackPanel>
 
             <!-- Orientações manuais -->
-            <TextBlock Style="{StaticResource SectionTitle}" Text="ORIENTAÇÕES (O APP NÃO APLICA)" />
+            <TextBlock Style="{StaticResource SectionTitle}" Text="Orientações (o app não aplica)" />
             <ItemsControl ItemsSource="{Binding Guidance}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type local:GuidanceItemViewModel}">
