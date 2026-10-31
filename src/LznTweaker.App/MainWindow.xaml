@@ -163,7 +163,18 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type shell:NavItem}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Width="24" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                                <TextBlock Text="{Binding Glyph}" FontSize="14" Width="24">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
+                                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource Lzn.AccentHover}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                 <TextBlock Text="{Binding Title}" FontSize="13" VerticalAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
                                            Style="{StaticResource ExpandedOnly}" />
                             </StackPanel>

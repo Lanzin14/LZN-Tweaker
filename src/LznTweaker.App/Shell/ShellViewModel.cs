@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LznTweaker.Core.Preferences;
 using LznTweaker.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -45,10 +46,14 @@ public sealed class ToastViewModel(Notification notification)
 public sealed partial class ShellViewModel : ObservableObject
 {
     private readonly IServiceProvider _services;
+    private readonly UiPreferencesStore _uiPreferences;
 
-    public ShellViewModel(IServiceProvider services, INotificationService notifications, NavigationService navigation)
+    public ShellViewModel(IServiceProvider services, INotificationService notifications, NavigationService navigation, UiPreferencesStore uiPreferences)
     {
         _services = services;
+        _uiPreferences = uiPreferences;
+        // Layout Foco: a sidebar abre recolhida (só ícones) até o usuário escolher outra coisa; a escolha é lembrada.
+        _isSidebarCollapsed = uiPreferences.Load().SidebarCollapsed;
         NavItems = new ObservableCollection<NavItem>(ShellPages.All);
         NavView = CollectionViewSource.GetDefaultView(NavItems);
         NavView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(NavItem.Section)));
@@ -93,6 +98,7 @@ public sealed partial class ShellViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(SidebarToggleText));
         OnPropertyChanged(nameof(SidebarToggleGlyph));
+        _uiPreferences.TrySave(new UiPreferences { SidebarCollapsed = value });
     }
 
     partial void OnStatusTextChanged(string value) => OnPropertyChanged(nameof(FooterSummary));

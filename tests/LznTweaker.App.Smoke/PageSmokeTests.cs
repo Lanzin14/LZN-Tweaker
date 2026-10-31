@@ -52,6 +52,9 @@ public sealed class PageSmokeTests
         var services = new ServiceCollection().AddLznTweaker();
         // Sem UAC: scripts que exigiriam elevação falham em vez de abrir o pedido de administrador.
         services.AddSingleton(sp => new ScriptRunnerService(sp.GetRequiredService<ElevatedWorkspace>(), allowElevationPrompt: false));
+        // Preferências de interface numa pasta temporária: o teste nunca grava nas preferências reais do usuário.
+        var uiPreferencesPath = Path.Combine(Path.GetTempPath(), $"lzn-smoke-ui-{Guid.NewGuid():N}.json");
+        services.AddSingleton(new LznTweaker.Core.Preferences.UiPreferencesStore(uiPreferencesPath));
         using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true });
 
         var window = provider.GetRequiredService<MainWindow>();
@@ -253,17 +256,22 @@ public sealed class PageSmokeTests
             errors.Add("sidebar: seções fora da ordem esperada: " + sections);
         var before = bindingErrors.Messages.Count;
         var sidebar = (FrameworkElement)((System.Windows.Controls.Panel)window.Content).Children[0];
-        var expandedWidth = sidebar.ActualWidth;
-        shell.ToggleSidebarCommand.Execute(null);
+        // Layout Foco: sem preferência salva, a sidebar abre recolhida.
+        if (!shell.IsSidebarCollapsed)
+            errors.Add("sidebar: deveria começar recolhida");
         shell.Navigate(ShellPages.General);
-        Pump(TimeSpan.FromMilliseconds(500));
-        if (!shell.IsSidebarCollapsed || sidebar.ActualWidth >= expandedWidth / 2)
-            errors.Add($"sidebar: recolhida com {sidebar.ActualWidth} px (expandida: {expandedWidth} px)");
+        Pump(TimeSpan.FromMilliseconds(400));
+        var collapsedWidth = sidebar.ActualWidth;
         Save(window, Path.Combine(output, "sidebar-collapsed.png"));
         shell.ToggleSidebarCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(400));
+        if (shell.IsSidebarCollapsed || sidebar.ActualWidth <= collapsedWidth * 2)
+            errors.Add($"sidebar: expandida com {sidebar.ActualWidth} px (recolhida: {collapsedWidth} px)");
+        Save(window, Path.Combine(output, "sidebar-expanded.png"));
+        shell.ToggleSidebarCommand.Execute(null);
         Pump(TimeSpan.FromMilliseconds(300));
-        if (shell.IsSidebarCollapsed || sidebar.ActualWidth != expandedWidth)
-            errors.Add("sidebar: não voltou a expandir");
+        if (!shell.IsSidebarCollapsed || sidebar.ActualWidth != collapsedWidth)
+            errors.Add("sidebar: não voltou a recolher");
         errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"sidebar: {message}"));
         return errors;
     }

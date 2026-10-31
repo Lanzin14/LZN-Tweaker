@@ -306,7 +306,7 @@
     </Style>
 
     <!-- ═══ Navegação ═══ -->
-    <!-- Item da sidebar: barra violeta à esquerda quando selecionado. -->
+    <!-- Item da sidebar: roxo suave e barra roxa à esquerda quando selecionado (o ícone fica em Lavender, ver MainWindow). -->
     <Style x:Key="Lzn.NavItem" TargetType="ListBoxItem">
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
         <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
@@ -327,7 +327,7 @@
                             <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceActive}" />
+                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
                             <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
                         </Trigger>

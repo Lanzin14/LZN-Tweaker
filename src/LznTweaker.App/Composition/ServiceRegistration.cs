@@ -1,5 +1,6 @@
 using System.Net.Http;
 using LznTweaker.Core;
+using LznTweaker.Core.Preferences;
 using LznTweaker.Core.Changes;
 using LznTweaker.Core.Cleanup;
 using LznTweaker.Core.Debloat;
@@ -54,6 +55,7 @@ public static class ServiceRegistration
         services.AddSingleton<SystemToolsService>();
         services.AddSingleton<GpuDetectionService>();
         services.AddSingleton<GpuPreferencesStore>();
+        services.AddSingleton<UiPreferencesStore>();
 
         // Infraestrutura da interface
         services.AddSingleton<IUserDialogs, UserDialogs>();
