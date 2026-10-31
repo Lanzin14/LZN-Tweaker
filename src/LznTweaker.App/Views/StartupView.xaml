@@ -14,7 +14,7 @@
             </Border>
         </DataTemplate>
 
-        <!-- Linha: ícone da categoria, nome amigável, fabricante, impacto, estado e interruptor -->
+        <!-- Linha: ícone da categoria, nome amigável, fabricante, impacto e estado (o interruptor fica no detalhe) -->
         <DataTemplate x:Key="StartupRow" DataType="{x:Type vm:StartupItemViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -36,15 +36,13 @@
                     <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding StateBrush}" Margin="0,0,6,0" />
                     <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" />
                 </StackPanel>
-                <CheckBox Grid.Column="4" Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding IsEnabled, Mode=TwoWay}" VerticalAlignment="Center"
-                          ToolTip="Ligado: abre com o Windows. A mudança vale na hora." AutomationProperties.Name="{Binding Title}" />
             </Grid>
         </DataTemplate>
 
         <!-- Detalhe do item selecionado -->
         <DataTemplate x:Key="StartupDetail" DataType="{x:Type vm:StartupItemViewModel}">
             <StackPanel>
-                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Display}" TextWrapping="Wrap" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ImpactBadge}" />
                     <Border Style="{StaticResource Lzn.Badge}" Margin="8,0,0,0" VerticalAlignment="Center">

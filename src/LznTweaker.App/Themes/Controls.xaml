@@ -650,17 +650,19 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:MasterDetailLayout">
                     <Grid>
+                        <!-- Layout Foco: lista de largura fixa com traço à direita; o detalhe, sem moldura, ocupa o resto. -->
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" MinWidth="320" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ContentPresenter Content="{TemplateBinding Master}" />
+                        <Border x:Name="MasterPane" Width="{StaticResource Lzn.Layout.ListWidth}" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,1,0" Padding="0,0,14,0">
+                            <ContentPresenter Content="{TemplateBinding Master}" />
+                        </Border>
 
                         <!-- Detalhe fixo -->
-                        <Border x:Name="Docked" Grid.Column="1" Width="{StaticResource Lzn.Layout.DetailWidth}" Margin="16,0,0,16" Background="{StaticResource Lzn.Surface}"
-                                BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}">
+                        <Border x:Name="Docked" Grid.Column="1" Background="Transparent">
                             <Grid>
-                                <ScrollViewer x:Name="DockedContent" VerticalScrollBarVisibility="Auto" Padding="22,20,16,18" Focusable="False">
+                                <ScrollViewer x:Name="DockedContent" VerticalScrollBarVisibility="Auto" Padding="36,4,24,20" Focusable="False">
                                     <ContentPresenter Content="{TemplateBinding Selected}" ContentTemplate="{TemplateBinding DetailTemplate}" ContentTemplateSelector="{TemplateBinding DetailTemplateSelector}" />
                                 </ScrollViewer>
                                 <StackPanel x:Name="DockedEmpty" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Visibility="Collapsed">
@@ -698,6 +700,10 @@
                         </Trigger>
                         <Trigger Property="IsDocked" Value="False">
                             <Setter TargetName="Docked" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="MasterPane" Property="Width" Value="NaN" />
+                            <Setter TargetName="MasterPane" Property="Grid.ColumnSpan" Value="2" />
+                            <Setter TargetName="MasterPane" Property="BorderThickness" Value="0" />
+                            <Setter TargetName="MasterPane" Property="Padding" Value="0" />
                         </Trigger>
                         <Trigger Property="IsOverlayOpen" Value="True">
                             <Setter TargetName="Overlay" Property="Visibility" Value="Visible" />

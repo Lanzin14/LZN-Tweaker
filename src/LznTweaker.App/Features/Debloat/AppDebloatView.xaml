@@ -37,7 +37,7 @@
         <!-- Detalhe: se é seguro remover, pacote, versão e observações -->
         <DataTemplate x:Key="AppDetail" DataType="{x:Type local:AppxItemViewModel}">
             <StackPanel>
-                <TextBlock Text="{Binding FriendlyName}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding FriendlyName}" Style="{StaticResource Lzn.Text.Display}" TextWrapping="Wrap" />
                 <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Left" Margin="0,8,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CategoryBadge}" />
                 </Border>

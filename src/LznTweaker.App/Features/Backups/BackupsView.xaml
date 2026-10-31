@@ -34,7 +34,7 @@
         <!-- Detalhe: o que aconteceu, valor anterior e como restaurar -->
         <DataTemplate x:Key="HistoryDetail" DataType="{x:Type local:HistoryEntryViewModel}">
             <StackPanel>
-                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Display}" TextWrapping="Wrap" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <Border Style="{StaticResource Lzn.Badge}" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal">
