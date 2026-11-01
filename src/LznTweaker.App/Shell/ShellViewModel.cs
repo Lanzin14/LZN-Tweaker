@@ -114,6 +114,11 @@ public sealed partial class ShellViewModel : ObservableObject
 
     public void Navigate(string pageKey)
     {
+        if (ShellPages.ToolTabs.Contains(pageKey))
+        {
+            _services.GetRequiredService<LznTweaker.Features.Tools.ToolsViewModel>().SelectedTabKey = pageKey;
+            pageKey = ShellPages.Tools;
+        }
         var item = NavItems.FirstOrDefault(candidate => candidate.Key == pageKey);
         if (item is not null)
             SelectedItem = item;

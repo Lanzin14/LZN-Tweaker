@@ -24,8 +24,6 @@ public partial class TweakCardsView : UserControl
 }
 
 public sealed class GeneralPageView(GeneralPageViewModel viewModel) : TweakCardsView(viewModel);
-public sealed class NetworkPageView(NetworkPageViewModel viewModel) : TweakCardsView(viewModel);
-public sealed class FixesPageView(FixesPageViewModel viewModel) : TweakCardsView(viewModel);
 
 public sealed class DetailsTemplateSelector : DataTemplateSelector
 {

@@ -1,0 +1,92 @@
+<UserControl x:Class="LznTweaker.Features.Tools.ToolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:LznTweaker.Features.Tools"
+             xmlns:controls="clr-namespace:LznTweaker.Controls"
+             xmlns:shell="clr-namespace:LznTweaker.Shell"
+             xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
+             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+    <UserControl.Resources>
+        <!-- Grupo de ferramentas: rótulo e um painel com uma linha por ferramenta (nome, frase, aviso, risco e botão) -->
+        <DataTemplate x:Key="ToolGroupTemplate" DataType="{x:Type local:ToolGroup}">
+            <StackPanel Margin="0,0,0,16">
+                <TextBlock Text="{Binding Title, Converter={x:Static infra:UpperCaseConverter.Instance}}" Style="{StaticResource Lzn.Text.Overline}" Margin="2,0,0,8" ToolTip="{Binding Description}" />
+                <Border Style="{StaticResource Lzn.Panel}" Padding="0">
+                    <ItemsControl ItemsSource="{Binding Rows}" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:ToolRow}">
+                                <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="16,11">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="280" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Card.Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,16,0" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                            <TextBlock Text="{Binding Card.Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextMuted}"
+                                                       TextTrimming="CharacterEllipsis" ToolTip="{Binding Card.Description}" />
+                                            <TextBlock Text="{Binding Card.Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,2,0,0"
+                                                       Visibility="{Binding Card.Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding Card.StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                                                   VerticalAlignment="Center" Margin="0,0,14,0" />
+                                        <Button Grid.Column="3" Style="{StaticResource Lzn.ToolbarButton}" MinWidth="96" Content="{Binding Card.ButtonText}"
+                                                Command="{Binding Run}" CommandParameter="{Binding Card}" IsEnabled="{Binding Card.CanPrimaryAction}"
+                                                ToolTip="{Binding Card.RiskTooltip}" AutomationProperties.Name="{Binding Card.Title}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="28,22,28,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <controls:PageHeader Title="Ferramentas" Guide="{x:Static shell:CategoryGuides.Tools}" Margin="0,0,0,10" />
+
+        <StackPanel Grid.Row="1" Margin="0,0,0,12">
+            <ItemsControl ItemsSource="{Binding Tabs}" Margin="-4,0,0,0" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:ToolsTab}">
+                        <RadioButton Style="{StaticResource Lzn.Tab}" GroupName="ToolsTabs"
+                                     Command="{Binding DataContext.SelectTabCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding Key}">
+                            <RadioButton.IsChecked>
+                                <MultiBinding Converter="{x:Static local:KeyEqualsConverter.Instance}" Mode="OneWay">
+                                    <Binding Path="Key" />
+                                    <Binding Path="DataContext.SelectedTabKey" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                </MultiBinding>
+                            </RadioButton.IsChecked>
+                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                        </RadioButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="{Binding TabNote}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="2,10,0,0" />
+        </StackPanel>
+
+        <Grid Grid.Row="2">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding IsRepairs, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                <ItemsControl ItemsSource="{Binding Repairs}" ItemTemplate="{StaticResource ToolGroupTemplate}" Focusable="False" Margin="0,0,4,16" />
+            </ScrollViewer>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding IsNetwork, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                <ItemsControl ItemsSource="{Binding Network}" ItemTemplate="{StaticResource ToolGroupTemplate}" Focusable="False" Margin="0,0,4,16" />
+            </ScrollViewer>
+            <!-- Hardware e Programas: as páginas existentes, sem o próprio cabeçalho (o desta página já diz onde você está) -->
+            <ContentPresenter x:Name="HardwareHost" Margin="-28,0,-28,0" Visibility="{Binding IsHardware, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+            <ContentPresenter x:Name="ProgramsHost" Margin="-28,0,-28,0" Visibility="{Binding IsPrograms, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+        </Grid>
+    </Grid>
+</UserControl>

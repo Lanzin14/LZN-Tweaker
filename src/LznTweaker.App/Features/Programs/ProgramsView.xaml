@@ -172,7 +172,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid Margin="28,22,28,0">
+    <Grid x:Name="Root" Margin="28,22,28,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -181,7 +181,7 @@
         </Grid.RowDefinitions>
 
         <!-- Recomendação, não obrigação: o aviso fica na linha de status do cabeçalho -->
-        <controls:PageHeader Title="Programas" Guide="{x:Static shell:CategoryGuides.Programs}"
+        <controls:PageHeader x:Name="Header" Title="Programas" Guide="{x:Static shell:CategoryGuides.Programs}"
                              Status="Todos são opcionais. O LZN Tweaker não baixa, instala nem executa estes programas, e nenhum módulo depende deles. Nada garante mais FPS ou menos latência: meça antes e depois." />
 
         <!-- Filtros por finalidade -->

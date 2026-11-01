@@ -74,9 +74,7 @@ public static class ServiceRegistration
         services.AddSingleton<GeneralPageViewModel>();
         services.AddSingleton<GeneralPageView>();
         services.AddSingleton<NetworkPageViewModel>();
-        services.AddSingleton<NetworkPageView>();
         services.AddSingleton<FixesPageViewModel>();
-        services.AddSingleton<FixesPageView>();
         services.AddSingleton<HardwareViewModel>();
         services.AddSingleton<HardwareView>();
         services.AddSingleton<GpuViewModel>();
@@ -93,6 +91,8 @@ public static class ServiceRegistration
         services.AddSingleton<AppDebloatView>();
         services.AddSingleton<ProgramsViewModel>();
         services.AddSingleton<ProgramsView>();
+        services.AddSingleton<LznTweaker.Features.Tools.ToolsViewModel>();
+        services.AddSingleton<LznTweaker.Features.Tools.ToolsView>();
 
         // Janela principal
         services.AddSingleton<ShellViewModel>();

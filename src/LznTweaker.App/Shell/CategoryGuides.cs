@@ -27,6 +27,12 @@ public static class CategoryGuides
         "Um Windows com menos tarefas em segundo plano, menos coleta de dados e menos interrupções.",
         "Nada é alterado ao mover um interruptor: as mudanças ficam pendentes até você revisar e aplicar. Antes de aplicar, o app cria um ponto de restauração.");
 
+    public static CategoryGuide Tools { get; } = new(
+        "Reparos do Windows, diagnóstico de rede, informações do hardware e programas recomendados.",
+        "Rodar SFC, DISM e CHKDSK, testar a conexão, ver os componentes do PC e conhecer ferramentas externas confiáveis.",
+        "Resolver problemas e investigar o PC sem sair do app; cada execução fica registrada no Histórico.",
+        "Algumas verificações demoram e abrem uma janela do Windows. Não desligue o PC no meio de um reparo.");
+
     public static CategoryGuide Hardware { get; } = new(
         "Os componentes do seu PC, como o Windows informa: processador, placa de vídeo, memória, disco e placa-mãe.",
         "Conferir modelos, uso atual e orientações de diagnóstico para RAM, BIOS e drivers.",

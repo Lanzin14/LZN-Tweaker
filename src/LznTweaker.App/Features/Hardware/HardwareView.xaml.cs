@@ -26,4 +26,15 @@ public partial class HardwareView : UserControl
             await viewModel.Library.InitializeAsync();
         };
     }
+
+    /// <summary>Dentro de Ferramentas: o cabeçalho da página hospedeira substitui o próprio.</summary>
+    public bool IsEmbedded
+    {
+        get => Header.Visibility != System.Windows.Visibility.Visible;
+        set
+        {
+            Header.Visibility = value ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+            Root.Margin = value ? new System.Windows.Thickness(28, 0, 28, 0) : new System.Windows.Thickness(28, 22, 28, 0);
+        }
+    }
 }

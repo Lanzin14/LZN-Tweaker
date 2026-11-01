@@ -83,6 +83,7 @@ public sealed class PageSmokeTests
         errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGpuPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckFortnitePage(provider, shell, window, bindingErrors, output));
+        errors.AddRange(CheckToolsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGeneralList(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckSidebar(shell, window, bindingErrors, output));
 
@@ -261,6 +262,27 @@ public sealed class PageSmokeTests
         return errors;
     }
 
+    /// <summary>Ferramentas: as quatro abas abrem sem erro de binding; navegar para Reparos/Rede/Hardware/Programas cai na aba certa.</summary>
+    private static IEnumerable<string> CheckToolsPage(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var tools = provider.GetRequiredService<LznTweaker.Features.Tools.ToolsViewModel>();
+        var before = bindingErrors.Messages.Count;
+        if (tools.Repairs.Sum(group => group.Rows.Count) != 6 || tools.Network.Sum(group => group.Rows.Count) != 4)
+            errors.Add($"ferramentas: {tools.Repairs.Sum(group => group.Rows.Count)} reparos e {tools.Network.Sum(group => group.Rows.Count)} itens de rede, esperado 6 e 4");
+        foreach (var tab in tools.Tabs)
+        {
+            shell.Navigate(tab.Key);
+            Pump(TimeSpan.FromMilliseconds(600));
+            if (shell.SelectedItem.Key != ShellPages.Tools || tools.SelectedTabKey != tab.Key)
+                errors.Add($"ferramentas: navegar para {tab.Key} não abriu a aba certa");
+            Save(window, Path.Combine(output, $"tools-{tab.Key}.png"));
+        }
+        tools.SelectTabCommand.Execute(ShellPages.Fixes);
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"ferramentas: {message}"));
+        return errors;
+    }
+
     /// <summary>Geral: lista com detalhe fixo na janela larga; na estreita, o detalhe abre por cima. Nada é aplicado.</summary>
     private static IEnumerable<string> CheckGeneralList(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
     {
@@ -325,7 +347,7 @@ public sealed class PageSmokeTests
     {
         var errors = new List<string>();
         var sections = string.Join(",", shell.NavItems.Select(item => item.Section).Distinct());
-        if (sections != "Início,Otimização,Jogos e manutenção,Segurança")
+        if (sections != "Início,Otimização,Jogos e manutenção,Ferramentas e segurança")
             errors.Add("sidebar: seções fora da ordem esperada: " + sections);
         var before = bindingErrors.Messages.Count;
         var sidebar = (FrameworkElement)((System.Windows.Controls.Panel)window.Content).Children[0];
