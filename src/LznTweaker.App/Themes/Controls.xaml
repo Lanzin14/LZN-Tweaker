@@ -57,9 +57,38 @@
     </Style>
 
     <!-- ═══ Cabeçalho de página ═══ -->
-    <!-- Igual em todas as páginas: título = nome no menu, descrição com "Saiba mais", status e ações à direita. -->
+    <!-- Igual em todas as páginas: título = nome no menu com ⓘ ao lado, uma linha de descrição, status e ações à direita.
+         O ⓘ abre o guia da página (o que permite fazer, benefício e cuidados); fechado por padrão. -->
+    <Style x:Key="Lzn.InfoToggle" TargetType="ToggleButton">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisual}" />
+        <Setter Property="ToolTip" Value="Sobre esta página" />
+        <Setter Property="AutomationProperties.Name" Value="Sobre esta página" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Ring" Width="20" Height="20" CornerRadius="10" BorderThickness="1" BorderBrush="{StaticResource Lzn.StrokeStrong}" Background="Transparent">
+                        <TextBlock x:Name="Glyph" Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Ring" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Ring" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
+                            <Setter TargetName="Ring" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="controls:PageHeader">
-        <Setter Property="Margin" Value="0,0,0,16" />
+        <Setter Property="Margin" Value="0,0,0,14" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
@@ -70,13 +99,63 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <TextBlock Text="{TemplateBinding Title}" Style="{StaticResource Lzn.Text.Title}" />
-                            <controls:CategoryInfo Guide="{TemplateBinding Guide}" Margin="0,6,0,0" />
-                            <TextBlock Text="{TemplateBinding Status}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,6,0,0"
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{TemplateBinding Title}" Style="{StaticResource Lzn.Text.Title}" VerticalAlignment="Center" />
+                                <ToggleButton x:Name="InfoToggle" Style="{StaticResource Lzn.InfoToggle}" Margin="10,3,0,0" VerticalAlignment="Center"
+                                              Visibility="{Binding Guide, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding Guide.Summary, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource Lzn.Text.Body}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                            <Border Margin="0,10,0,0" Padding="14,10,14,12" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceSunken}"
+                                    DataContext="{Binding Guide, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Visibility="{Binding IsChecked, ElementName=InfoToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                                <controls:AdaptiveGridPanel MinItemWidth="220" MaxColumns="3" Spacing="18">
+                                    <StackPanel>
+                                        <TextBlock Text="O que permite fazer" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,3" />
+                                        <TextBlock Text="{Binding WhatYouCanDo}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="Benefício esperado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,3" />
+                                        <TextBlock Text="{Binding Benefit}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
+                                    </StackPanel>
+                                    <StackPanel Visibility="{Binding Care, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
+                                        <TextBlock Text="Cuidados" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,3" />
+                                        <TextBlock Text="{Binding Care}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
+                                    </StackPanel>
+                                </controls:AdaptiveGridPanel>
+                            </Border>
+                            <TextBlock Text="{TemplateBinding Status}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,4,0,0"
                                        Visibility="{Binding Status, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                         </StackPanel>
                         <ContentPresenter Grid.Column="1" VerticalAlignment="Top" Margin="24,0,0,0" />
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══ Barra de ação ═══ -->
+    <!-- Rodapé fixo das páginas com seleção: "N selecionados · aviso" à esquerda e os botões à direita. -->
+    <Style TargetType="controls:ActionBar">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:ActionBar">
+                    <Border BorderThickness="0,1,0,0" BorderBrush="{StaticResource Lzn.Stroke}" Padding="0,12,0,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,16,0">
+                                <Run Text="{Binding Summary, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" FontWeight="SemiBold"
+                                     FontSize="{StaticResource Lzn.FontSize.Body}" Foreground="{StaticResource Lzn.Text}" />
+                                <Run Text="{Binding Hint, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" FontSize="{StaticResource Lzn.FontSize.Caption}"
+                                     Foreground="{StaticResource Lzn.TextMuted}" />
+                            </TextBlock>
+                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
