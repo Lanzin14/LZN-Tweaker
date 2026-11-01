@@ -1,0 +1,20 @@
+# Testes do núcleo a cada envio de branch, sem publicar nada. Falhas aparecem como anotações na página da execução.
+name: Testes
+
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  core:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Testes do núcleo
+        shell: pwsh
+        run: ./tools/ci/test-core.ps1

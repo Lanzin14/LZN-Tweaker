@@ -21,7 +21,8 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Testes do núcleo
-        run: dotnet test tests/LznTweaker.Core.Tests -c Release
+        shell: pwsh
+        run: ./tools/ci/test-core.ps1
 
       - name: Publicar o .exe único
         shell: pwsh
