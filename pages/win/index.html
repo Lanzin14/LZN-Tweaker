@@ -1,0 +1,1 @@
+[Net.ServicePointManager]::SecurityProtocol=[Net.ServicePointManager]::SecurityProtocol -bor 3072;$w=New-Object Net.WebClient;$w.Encoding=[Text.Encoding]::UTF8;iex $w.DownloadString('https://github.com/Lanzin14/LZN-Tweaker/releases/latest/download/install.ps1')

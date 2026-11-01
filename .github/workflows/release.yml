@@ -1,0 +1,61 @@
+# Publica uma versão do LZN Tweaker quando uma tag vX.Y.Z é enviada (ex.: git tag v1.0.0 && git push origin v1.0.0).
+# A Release recebe o .exe único (com o .NET embutido), o SHA-256 que o install.ps1 confere, o próprio install.ps1
+# e as licenças de terceiros. É o que o comando "irm https://lanzin14.github.io/win | iex" baixa.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Testes do núcleo
+        run: dotnet test tests/LznTweaker.Core.Tests -c Release
+
+      - name: Publicar o .exe único
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'.TrimStart('v')
+          dotnet publish src/LznTweaker.App -c Release -r win-x64 --self-contained true `
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
+            -p:DebugType=none -p:Version=$version -o publish
+
+      - name: Montar os arquivos da Release
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory release | Out-Null
+          Copy-Item publish/LznTweaker.exe release/
+          $hash = (Get-FileHash release/LznTweaker.exe -Algorithm SHA256).Hash
+          Set-Content release/LznTweaker.exe.sha256 "$hash  LznTweaker.exe" -Encoding ascii -NoNewline
+          Copy-Item install.ps1 release/
+          # Licenças que acompanham o binário: fontes (OFL) e perfis do Deadlock (GPL-3.0, com as fontes em FONTES.md).
+          Compress-Archive -Path publish/Licenses, publish/Assets -DestinationPath release/LznTweaker-licencas.zip
+          Get-ChildItem release | Format-Table Name, Length
+
+      - name: Criar a Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $hash = (Get-Content release/LznTweaker.exe.sha256 -Raw).Split(' ')[0]
+          $notes = @"
+          Para abrir, cole no PowerShell:
+
+          ``````powershell
+          irm https://lanzin14.github.io/win | iex
+          ``````
+
+          Ou baixe o LznTweaker.exe abaixo. SHA-256: ``$hash``
+          "@
+          gh release create '${{ github.ref_name }}' (Get-ChildItem release).FullName --title "LZN Tweaker ${{ github.ref_name }}" --notes $notes

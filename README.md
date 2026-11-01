@@ -2,6 +2,19 @@
 
 Otimizador para Windows 10/11 (WPF, .NET 10) com execução coordenada, verificação de resultados e reversão.
 
+## Como abrir
+
+Cole no PowerShell:
+
+```powershell
+irm https://lanzin14.github.io/win | iex
+```
+
+O comando baixa o `LznTweaker.exe` da última [Release](https://github.com/Lanzin14/LZN-Tweaker/releases/latest), confere
+o SHA-256 publicado junto e abre o app (o Windows pede permissão de administrador). O script é o
+[`install.ps1`](install.ps1); leia antes de executar, como em qualquer comando `irm | iex`. Também dá para baixar o
+`.exe` direto na página da Release.
+
 ## Estrutura
 
 | Pasta | Conteúdo |
@@ -28,3 +41,13 @@ Os testes devem rodar **sem** elevação; elevados, os testes que alterariam o s
 ```powershell
 dotnet test
 ```
+
+## Licenças
+
+O código do LZN Tweaker está sob a licença MIT (`LICENSE`). Partes de terceiros mantêm as próprias licenças:
+
+- Perfis de configuração do Deadlock (`src/LznTweaker.Core/GameTuning/Profiles/Deadlock`): GPL-3.0, do projeto
+  OptimizationLock; origem e versões em `FONTES.md` na mesma pasta.
+- Fontes IBM Plex Sans e Space Grotesk (`src/LznTweaker.App/Assets/Fonts`): SIL Open Font License 1.1.
+
+Cada Release inclui esses textos em `LznTweaker-licencas.zip`.
