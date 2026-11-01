@@ -40,6 +40,7 @@ public partial class TweakCardsViewModel : ObservableObject
         Title = page.Title;
         Guide = page.Guide;
         UsesListLayout = page.ListLayout;
+        ShowsPresets = page.Presets;
         foreach (var tab in page.Tabs)
         {
             Tabs.Add(new CardTabViewModel(tab.Key, tab.Title, tab.Glyph, tab.Description, tab.Highlight));
@@ -62,6 +63,7 @@ public partial class TweakCardsViewModel : ObservableObject
                         other.IsSelected = false;
                     SelectedTabDescription = selected.Description;
                     SelectedTabHighlight = selected.Highlight;
+                    OnPropertyChanged(nameof(ShowsPresetBar));
                     RefreshView();
                 }
             };
@@ -95,6 +97,10 @@ public partial class TweakCardsViewModel : ObservableObject
     public CategoryGuide Guide { get; }
     /// <summary>Lista compacta com detalhe fixo (Geral, Network e Fixes); sem a opção, a página usa a grade de cards.</summary>
     public bool UsesListLayout { get; }
+    public bool ShowsPresets { get; }
+
+    /// <summary>Perfis prontos só na aba que tem ajustes (não na do Discord, que é manual).</summary>
+    public bool ShowsPresetBar => ShowsPresets && Cards.OfType<TweakCardViewModel>().Any(card => card.TabKey == _selectedTabKey);
 
     [ObservableProperty]
     private string _selectedTabDescription = "";
@@ -140,8 +146,11 @@ public partial class TweakCardsViewModel : ObservableObject
     private string _countText = string.Empty;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsDetailOverlayOpen))]
+    [NotifyPropertyChangedFor(nameof(IsDetailOverlayOpen), nameof(DetailActionIsPrimary))]
     private CardViewModel? _selectedCard;
+
+    /// <summary>Um só botão roxo por tela: havendo alterações pendentes, "Revisar e aplicar" é o principal e a ação do detalhe vira secundária.</summary>
+    public bool DetailActionIsPrimary => SelectedCard is { IsPending: false } && !HasPending;
 
     /// <summary>
     /// Detalhe fixo ao lado da lista: a view liga quando a página usa lista e há largura para os dois. Em janela
@@ -226,6 +235,22 @@ public partial class TweakCardsViewModel : ObservableObject
             return;
         foreach (var candidate in Tabs)
             candidate.IsSelected = ReferenceEquals(candidate, tab);
+    }
+
+    /// <summary>
+    /// Marca de uma vez os ajustes de um perfil (WinUtil: Standard/Minimal). Só deixa pendente: nada é aplicado até
+    /// "Revisar e aplicar", que mostra o resumo e cria o ponto de restauração. Ajustes já ativos ficam como estão.
+    /// </summary>
+    [RelayCommand]
+    private void ApplyPreset(TweakPreset preset)
+    {
+        var selection = TweakPresetCatalog.GetSelection(preset);
+        foreach (var card in Cards.OfType<TweakCardViewModel>())
+        {
+            if (card.IsToggle && selection.Contains(card.Id) && !card.IsActive && card.IsSwitchEnabled)
+                card.IsOn = true;
+        }
+        OnPendingChanged();
     }
 
     [RelayCommand]
@@ -373,6 +398,7 @@ public partial class TweakCardsViewModel : ObservableObject
         OnPropertyChanged(nameof(PendingCount));
         OnPropertyChanged(nameof(HasPending));
         OnPropertyChanged(nameof(PendingSummary));
+        OnPropertyChanged(nameof(DetailActionIsPrimary));
         ApplyCommand.NotifyCanExecuteChanged();
         DiscardCommand.NotifyCanExecuteChanged();
         if (StateFilter == "Pendentes")

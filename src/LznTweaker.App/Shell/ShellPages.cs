@@ -24,7 +24,6 @@ public static class ShellPages
     public const string Gpu = "gpu";
     public const string Debloat = "debloat";
     public const string Network = "network";
-    public const string Advanced = "advanced";
     public const string Games = "games";
     public const string Cleanup = "cleanup";
     public const string Startup = "startup";
@@ -33,12 +32,11 @@ public static class ShellPages
     public static IReadOnlyList<NavItem> All { get; } =
     [
         new(Home, "Home", "", "Início", typeof(HomeView)),
-        new(General, "Geral", "", "Otimização", typeof(GeneralPageView)),
+        new(General, "Ajustes", "", "Otimização", typeof(GeneralPageView)),
         new(Hardware, "Hardware", "", "Otimização", typeof(HardwareView)),
         new(Gpu, "Placa de Vídeo", "", "Otimização", typeof(GpuView)),
         new(Debloat, "Remover apps", "", "Otimização", typeof(AppDebloatView)),
         new(Network, "Rede", "", "Otimização", typeof(NetworkPageView)),
-        new(Advanced, "Avançado", "", "Otimização", typeof(TweaksView)),
         new(Games, "Jogos", "", "Jogos e manutenção", typeof(GameLibraryView)),
         new(Cleanup, "Limpeza", "", "Jogos e manutenção", typeof(CleanupView)),
         new(Startup, "Inicialização", "", "Jogos e manutenção", typeof(StartupView)),

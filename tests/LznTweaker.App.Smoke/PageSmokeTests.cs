@@ -151,16 +151,26 @@ public sealed class PageSmokeTests
         general.SelectTabCommand.Execute(general.Tabs[0]);
         Pump(TimeSpan.FromMilliseconds(300));
         var categorized = general.Cards.Where(card => card.Category is not null).ToList();
-        if (general.VisibleCount != categorized.Count || categorized.Select(card => card.Category).Distinct().Count() != 5)
-            errors.Add($"geral: mostra {general.VisibleCount} de {categorized.Count} cards em {categorized.Select(card => card.Category).Distinct().Count()} categorias, esperado 5");
-        if (general.CardsView.Groups?.Count != 5)
-            errors.Add($"geral: {general.CardsView.Groups?.Count ?? 0} grupos na lista, esperado 5");
+        if (general.VisibleCount != categorized.Count || categorized.Select(card => card.Category).Distinct().Count() != 6)
+            errors.Add($"geral: mostra {general.VisibleCount} de {categorized.Count} cards em {categorized.Select(card => card.Category).Distinct().Count()} categorias, esperado 6");
+        if (general.CardsView.Groups?.Count != 6)
+            errors.Add($"geral: {general.CardsView.Groups?.Count ?? 0} grupos na lista, esperado 6");
         general.RiskFilter = "Alto risco";
         Pump(TimeSpan.FromMilliseconds(200));
         if (general.VisibleCount != categorized.Count(card => card.RiskText == "Alto risco"))
             errors.Add("geral: filtro de risco não corresponde aos cards");
         general.ClearFiltersCommand.Execute(null);
         Pump(TimeSpan.FromMilliseconds(300));
+        // Perfil pronto só marca (fica pendente) e "Limpar" desfaz a marcação; nada é aplicado.
+        if (!general.ShowsPresetBar)
+            errors.Add("geral: perfis prontos ausentes na aba Windows");
+        general.ApplyPresetCommand.Execute(LznTweaker.Core.Tweaks.TweakPreset.Advanced);
+        Pump(TimeSpan.FromMilliseconds(300));
+        Save(window, Path.Combine(output, "general-preset.png"));
+        general.DiscardCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(200));
+        if (general.HasPending)
+            errors.Add("geral: Limpar deveria descartar o perfil marcado");
         Save(window, Path.Combine(output, "general-all.png"));
 
         // Como o RadioButton faz: marca a aba nova com a antiga ainda marcada. A lista precisa trocar sem atualizar.

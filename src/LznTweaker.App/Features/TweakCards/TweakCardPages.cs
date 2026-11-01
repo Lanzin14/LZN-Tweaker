@@ -16,7 +16,8 @@ public sealed record CardTab(string Key, string Title, string Glyph, IReadOnlyLi
 public sealed record CardCategory(string Key, string Title, string Glyph, IReadOnlyList<string> TweakIds, IReadOnlyList<QuickActionDefinition> Actions, string Description = "");
 
 /// <param name="ListLayout">Lista compacta com o detalhe do item selecionado fixo à direita, em vez da grade de cards.</param>
-public sealed record TweakCardsPage(string Title, CategoryGuide Guide, IReadOnlyList<CardTab> Tabs, bool ListLayout = false);
+/// <param name="Presets">Mostra os perfis prontos (Recomendado, Mínimo, Avançado), que marcam vários ajustes de uma vez.</param>
+public sealed record TweakCardsPage(string Title, CategoryGuide Guide, IReadOnlyList<CardTab> Tabs, bool ListLayout = false, bool Presets = false);
 
 /// <summary>
 /// Organização das páginas de cards. Cada id aparece em uma única aba. O ponto de restauração (automático em todo lote)
@@ -52,9 +53,9 @@ public static class TweakCardPages
 
     public static string GlyphFor(string tweakId, string fallback) => Glyphs.GetValueOrDefault(tweakId, fallback);
 
-    public static TweakCardsPage General { get; } = new("Geral", CategoryGuides.General,
+    public static TweakCardsPage General { get; } = new("Ajustes do Windows", CategoryGuides.General,
     [
-        new("windows", "Ajustes do Windows", "\uE713", [], [],
+        new("windows", "Windows", "\uE713", [], [],
             Description: "Todos os ajustes do Windows em uma lista, separados por categoria. A busca e os filtros valem para todos.",
             Categories:
             [
@@ -91,13 +92,16 @@ public static class TweakCardPages
                     [new("power-options", "", "Opções de Energia do Windows",
                         "Abre o painel do Windows para conferir o plano de energia ativo e a Inicialização Rápida.",
                         RiskLevel.Low, "Abrir", Tool: SystemTool.OpenPowerOptions)],
-                    Description: "Como o PC usa energia: o plano de energia define o ritmo do processador; a hibernação reserva espaço em disco.")
+                    Description: "Como o PC usa energia: o plano de energia define o ritmo do processador; a hibernação reserva espaço em disco."),
+                new("network", "Rede", "",
+                    [TweakCatalog.SetIpv4PriorityId, TweakCatalog.DisableIpv6Id, TweakCatalog.DisableTeredoId], [],
+                    Description: "Preferência entre IPv4 e IPv6 e o túnel Teredo. Ajudam em redes com problemas de IPv6; não reduzem o ping.")
             ]),
         new("discord", "Discord", "", [], [],
             Description: "Ajustes feitos por você dentro do aplicativo do Discord. O LZN Tweaker não altera o Discord: cada card mostra o caminho e o passo a passo.",
             Guides: DiscordGuides.All,
             Highlight: "IMPORTANTE SE VOCÊ USA DISCORD.")
-    ], ListLayout: true);
+    ], ListLayout: true, Presets: true);
 
     public static TweakCardsPage Network { get; } = new("Rede", CategoryGuides.Network,
     [
@@ -112,9 +116,6 @@ public static class TweakCardPages
                 "Apaga a lista de endereços de sites guardada pelo Windows (ipconfig /flushdns). Ajuda quando um site não abre ou mudou de endereço; não melhora o ping.",
                 RiskLevel.Low, "Limpar", Tool: SystemTool.FlushDns)],
             Description: "Testes que só leem a conexão; nada é alterado."),
-        new("tweaks", "Ajustes", "",
-            [TweakCatalog.SetIpv4PriorityId, TweakCatalog.DisableIpv6Id, TweakCatalog.DisableTeredoId], [],
-            Description: "Preferência entre IPv4 e IPv6 e o túnel Teredo. Ajudam em redes com problemas de IPv6; não reduzem o ping."),
         new("repair", "Reparo", "", [],
             [new("winsock", "", "Redefinir Winsock",
                 "Volta a configuração de rede do Windows ao padrão (netsh winsock reset). Corrige falhas deixadas por VPNs ou antivírus antigos.",

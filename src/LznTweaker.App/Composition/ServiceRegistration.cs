@@ -81,8 +81,6 @@ public static class ServiceRegistration
         services.AddSingleton<HardwareView>();
         services.AddSingleton<GpuViewModel>();
         services.AddSingleton<GpuView>();
-        services.AddSingleton<TweaksViewModel>();
-        services.AddSingleton<TweaksView>();
         services.AddSingleton<CleanupViewModel>();
         services.AddSingleton<CleanupView>();
         services.AddSingleton<StartupViewModel>();

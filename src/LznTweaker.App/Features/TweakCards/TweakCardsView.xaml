@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.TweakCards"
+             xmlns:tweaks="clr-namespace:LznTweaker.Core.Tweaks;assembly=LznTweaker.Core"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
              Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
@@ -313,7 +314,30 @@
             </Grid>
         </DataTemplate>
 
-        <local:FocusRowSelector x:Key="FocusRowSelector" Card="{StaticResource FocusRow}" Guide="{StaticResource FocusGuideRow}" />
+        <!-- Linha de ajuste: o interruptor muda o estado desejado ali mesmo (fica pendente até "Revisar e aplicar");
+             ações de uma vez usam caixa de seleção (entram na fila). -->
+        <DataTemplate x:Key="FocusTweakRow" DataType="{x:Type local:TweakCardViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid Width="40" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <CheckBox Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding IsOn}" IsEnabled="{Binding IsSwitchEnabled}" ToolTip="{Binding SwitchTooltip}"
+                              ToolTipService.ShowOnDisabled="True" AutomationProperties.Name="{Binding Title}" HorizontalAlignment="Left"
+                              Visibility="{Binding IsToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+                    <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsQueued}" ToolTip="Marcar para executar no próximo lote"
+                              AutomationProperties.Name="{Binding Title}" HorizontalAlignment="Left"
+                              Visibility="{Binding IsAction, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+                </Grid>
+                <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="14" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding Title}" />
+                <TextBlock Grid.Column="2" Text="{Binding StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding StateBrush}"
+                           Margin="12,0,0,0" VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+
+        <local:FocusRowSelector x:Key="FocusRowSelector" Card="{StaticResource FocusRow}" Tweak="{StaticResource FocusTweakRow}" Guide="{StaticResource FocusGuideRow}" />
 
         <!-- Rótulo de grupo: ícone da categoria e nome em maiúsculas -->
         <DataTemplate x:Key="FocusGroupHeader">
@@ -358,36 +382,18 @@
                 <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Display}" TextWrapping="Wrap" Margin="0,14,0,0" />
                 <TextBlock Text="{Binding Description}" FontSize="16" LineHeight="25" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left" />
 
-                <controls:AdaptiveGridPanel MinItemWidth="260" MaxColumns="2" Spacing="14" Margin="0,26,0,0">
-                    <Border Style="{StaticResource FocusCard}">
-                        <StackPanel>
-                            <TextBlock Text="Compatibilidade" Style="{StaticResource FocusCardLabel}" />
-                            <TextBlock Text="{Binding Definition.Compatibility}" Style="{StaticResource FocusCardText}" />
-                        </StackPanel>
-                    </Border>
-                    <Border Style="{StaticResource FocusCard}">
-                        <StackPanel>
-                            <TextBlock Text="Como desfazer" Style="{StaticResource FocusCardLabel}" />
-                            <TextBlock Text="{Binding RollbackText}" Style="{StaticResource FocusCardText}" />
-                            <TextBlock Text="{Binding AdministratorText}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,6,0,0" />
-                        </StackPanel>
-                    </Border>
-                </controls:AdaptiveGridPanel>
+                <StackPanel Margin="0,18,0,0">
+                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" LineHeight="18">
+                        <Run Text="{Binding Definition.Compatibility, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding RollbackText, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding AdministratorText, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
 
-                <Border Style="{StaticResource FocusCard}" Margin="0,14,0,0">
-                    <StackPanel>
-                        <TextBlock Text="O que será alterado" Style="{StaticResource FocusCardLabel}" />
-                        <TextBox Text="{Binding ChangesText, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" Padding="0"
-                                 FontFamily="{StaticResource Lzn.MonoFont}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" AutomationProperties.Name="O que será alterado" />
-                    </StackPanel>
-                </Border>
-
-                <ToggleButton x:Name="HowToggle" HorizontalAlignment="Left" Margin="2,18,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
-                              AutomationProperties.Name="Como funciona">
+                <ToggleButton x:Name="HowToggle" HorizontalAlignment="Left" Margin="0,18,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
+                              AutomationProperties.Name="Detalhes técnicos">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
                             <StackPanel Orientation="Horizontal" Background="Transparent">
-                                <TextBlock Text="Como funciona" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
+                                <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
                                 <TextBlock x:Name="Chevron" Text="{StaticResource Lzn.Glyph.ChevronDown}" Style="{StaticResource Lzn.Icon}" FontSize="10" Foreground="{StaticResource Lzn.AccentHover}" Margin="6,2,0,0" />
                             </StackPanel>
                             <ControlTemplate.Triggers>
@@ -398,13 +404,21 @@
                         </ControlTemplate>
                     </ToggleButton.Template>
                 </ToggleButton>
-                <TextBlock Text="{Binding Definition.TechnicalReason}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" Margin="2,8,0,0" MaxWidth="820" HorizontalAlignment="Left"
-                           Visibility="{Binding IsChecked, ElementName=HowToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
-
-                <TextBlock Text="Estado detectado" Style="{StaticResource Lzn.DetailLabel}" Margin="2,22,0,6" />
-                <TextBlock Text="{Binding Detail}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" Margin="2,0,0,0" />
-                <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="2,14,0,0"
-                           Visibility="{Binding Definition.SourceUrl, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                <StackPanel Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left"
+                            Visibility="{Binding IsChecked, ElementName=HowToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                    <TextBlock Text="{Binding Definition.TechnicalReason}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" />
+                    <Border Style="{StaticResource FocusCard}" Margin="0,12,0,0">
+                        <StackPanel>
+                            <TextBlock Text="O que será alterado" Style="{StaticResource FocusCardLabel}" />
+                            <TextBox Text="{Binding ChangesText, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" Padding="0"
+                                     FontFamily="{StaticResource Lzn.MonoFont}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" AutomationProperties.Name="O que será alterado" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="Estado detectado" Style="{StaticResource Lzn.DetailLabel}" Margin="0,16,0,6" />
+                    <TextBlock Text="{Binding Detail}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,12,0,0"
+                               Visibility="{Binding Definition.SourceUrl, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                </StackPanel>
             </StackPanel>
         </DataTemplate>
 
@@ -496,11 +510,11 @@
                             <Button Style="{StaticResource Lzn.PrimaryButton}" Padding="22,11" FontSize="15" Margin="0,0,10,0"
                                     Content="{Binding SelectedCard.PrimaryActionText}" Command="{Binding PrimaryActionCommand}" CommandParameter="{Binding SelectedCard}"
                                     IsEnabled="{Binding SelectedCard.CanPrimaryAction}" ToolTip="{Binding SelectedCard.PrimaryActionTooltip}" ToolTipService.ShowOnDisabled="True"
-                                    Visibility="{Binding SelectedCard.IsPending, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
+                                    Visibility="{Binding DetailActionIsPrimary, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                             <Button Style="{StaticResource Lzn.ToolbarButton}" Padding="20,10" FontSize="15" Margin="0,0,10,0"
                                     Content="{Binding SelectedCard.PrimaryActionText}" Command="{Binding PrimaryActionCommand}" CommandParameter="{Binding SelectedCard}"
-                                    ToolTip="{Binding SelectedCard.PrimaryActionTooltip}"
-                                    Visibility="{Binding SelectedCard.IsPending, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
+                                    IsEnabled="{Binding SelectedCard.CanPrimaryAction}" ToolTip="{Binding SelectedCard.PrimaryActionTooltip}" ToolTipService.ShowOnDisabled="True"
+                                    Visibility="{Binding DetailActionIsPrimary, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
                         </StackPanel>
                         <Button Grid.Column="1" Style="{StaticResource Lzn.ToolbarButton}" Padding="16,10" Command="{Binding RefreshCommand}"
                                 ToolTip="Ler novamente o estado real dos ajustes" Visibility="{Binding HasTweaks, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
@@ -517,24 +531,18 @@
 
         <!-- Barra de alterações pendentes (mesma nos dois layouts) -->
         <DataTemplate x:Key="PendingBar">
-            <Border Background="{StaticResource Lzn.AccentSoft}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16,12"
-                    Visibility="{Binding HasPending, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                <Grid>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,280,0">
-                        <TextBlock Text="{StaticResource Lzn.Glyph.Warning}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,10,0" />
-                        <TextBlock Text="{Binding PendingSummary}" FontSize="{StaticResource Lzn.FontSize.Body}" TextWrapping="Wrap" VerticalAlignment="Center" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Descartar" FontSize="12" Margin="0,0,8,0" Command="{Binding DiscardCommand}" />
-                        <Button Style="{StaticResource Lzn.PrimaryButton}" Command="{Binding ApplyCommand}" ToolTip="Mostra o resumo e pede confirmação; cria o ponto de restauração antes de aplicar.">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{StaticResource Lzn.Glyph.Check}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
-                                <TextBlock Text="Revisar e aplicar" FontSize="12" />
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </Border>
+            <controls:ActionBar Summary="{Binding PendingSummary}" Hint="  ·  revisão e ponto de restauração antes de aplicar"
+                                Visibility="{Binding HasPending, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Descartar" Margin="0,0,8,0" Command="{Binding DiscardCommand}" />
+                    <Button Style="{StaticResource Lzn.PrimaryButton}" Command="{Binding ApplyCommand}" ToolTip="Mostra o resumo e pede confirmação; cria o ponto de restauração antes de aplicar.">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{StaticResource Lzn.Glyph.Check}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
+                            <TextBlock Text="Revisar e aplicar" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </controls:ActionBar>
         </DataTemplate>
 
         <local:DetailsTemplateSelector x:Key="DetailsSelector" Tweak="{StaticResource TweakDetails}" Action="{StaticResource ActionDetails}" Guide="{StaticResource GuideDetails}" />
@@ -617,6 +625,26 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
+                    <!-- Perfis prontos (marcam vários ajustes; nada é aplicado sem revisão) -->
+                    <WrapPanel DockPanel.Dock="Top" Margin="0,12,0,0" Visibility="{Binding ShowsPresetBar, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                        <TextBlock Text="Perfis" Style="{StaticResource Lzn.Text.Caption}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <Button Style="{StaticResource Lzn.ToolbarButton}" Padding="10,6" Margin="0,0,6,0" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Standard}"
+                                ToolTip="Marca a seleção recomendada: telemetria, histórico de atividades, localização, Consumer Features e Finalizar tarefa. Só marca: nada é aplicado sem revisão.">
+                            <TextBlock Text="Recomendado" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+                        </Button>
+                        <Button Style="{StaticResource Lzn.ToolbarButton}" Padding="10,6" Margin="0,0,6,0" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Minimal}"
+                                ToolTip="Marca só Telemetria e Consumer Features.">
+                            <TextBlock Text="Mínimo" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+                        </Button>
+                        <Button Style="{StaticResource Lzn.ToolbarButton}" Padding="10,6" Margin="0,0,6,0" Command="{Binding ApplyPresetCommand}" CommandParameter="{x:Static tweaks:TweakPreset.Advanced}"
+                                ToolTip="Recomendado mais Recall e Copilot desativados.">
+                            <TextBlock Text="Avançado" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+                        </Button>
+                        <Button Style="{StaticResource Lzn.GhostButton}" Padding="8,6" Command="{Binding DiscardCommand}" ToolTip="Desmarca tudo o que está pendente">
+                            <TextBlock Text="Limpar" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+                        </Button>
+                    </WrapPanel>
 
                     <!-- Aviso em destaque da aba (Discord) -->
                     <Border DockPanel.Dock="Top" Margin="0,12,0,0" Background="{StaticResource Lzn.DiscordSoft}" BorderBrush="{StaticResource Lzn.DiscordStroke}" BorderThickness="1"
@@ -707,7 +735,7 @@
             </Grid>
 
             <!-- Alterações pendentes -->
-            <ContentControl Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding}" ContentTemplate="{StaticResource PendingBar}" Margin="28,0,28,16" Focusable="False" />
+            <ContentControl Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding}" ContentTemplate="{StaticResource PendingBar}" Margin="28,0,28,0" Focusable="False" />
         </Grid>
 
         <!-- Grade de cards (páginas sem ListLayout) -->
