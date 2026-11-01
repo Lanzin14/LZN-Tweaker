@@ -223,7 +223,7 @@ public sealed partial class BackupsViewModel : ObservableObject
         };
     }
 
-    private static string AreaOf(string tweakId) => tweakId switch
+    internal static string AreaOf(string tweakId) => tweakId switch
     {
         _ when tweakId.StartsWith(AppxDebloatService.OperationPrefix, StringComparison.Ordinal) => "Remover apps",
         _ when tweakId.StartsWith(SteamFolderBackupService.OperationPrefix, StringComparison.Ordinal) => "Jogos · Steam",

@@ -27,6 +27,12 @@ public static class CategoryGuides
         "Um Windows com menos tarefas em segundo plano, menos coleta de dados e menos interrupções.",
         "Nada é alterado ao mover um interruptor: as mudanças ficam pendentes até você revisar e aplicar. Antes de aplicar, o app cria um ponto de restauração.");
 
+    public static CategoryGuide Home { get; } = new(
+        "Estado do seu PC e o que vale fazer agora.",
+        "Ver processador, placa de vídeo, memória e disco, ir direto aos ajustes recomendados, à limpeza e à inicialização, e conferir as últimas alterações.",
+        "Saber em segundos o que já está em dia e o que ainda pode ser feito, sem abrir cada página.",
+        null);
+
     public static CategoryGuide Tools { get; } = new(
         "Reparos do Windows, diagnóstico de rede, informações do hardware e programas recomendados.",
         "Rodar SFC, DISM e CHKDSK, testar a conexão, ver os componentes do PC e conhecer ferramentas externas confiáveis.",
