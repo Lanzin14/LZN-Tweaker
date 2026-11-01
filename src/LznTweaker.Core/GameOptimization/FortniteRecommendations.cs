@@ -25,6 +25,9 @@ public sealed record RecommendedSetting(string Name, string Value, string Purpos
 /// </summary>
 public static class FortniteRecommendations
 {
+    /// <summary>Última atualização deste conteúdo; aparece na aba Configurações porque patches mudam menus e opções.</summary>
+    public static DateOnly UpdatedOn { get; } = new(2026, 10, 31);
+
     public const string VideoMenuPath = "Fortnite > ícone do jogador > Configurações (engrenagem) > Vídeo";
     public const string NvidiaMenuPath = "Painel de Controle NVIDIA > Gerenciar as configurações em 3D > Configurações de programa > Fortnite (FortniteClient-Win64-Shipping.exe)";
     public const string AmdMenuPath = "AMD Software: Adrenalin Edition > Jogos > Jogos > Fortnite (perfil do jogo; adicione o jogo se ele não aparecer)";

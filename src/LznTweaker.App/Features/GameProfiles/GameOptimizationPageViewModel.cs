@@ -220,6 +220,11 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
     public IReadOnlyList<string> RecommendationNotes => HasRecommendations ? Cs2Recommendations.Notes : [];
     public string VideoMenuPath => Cs2Recommendations.VideoMenuPath;
 
+    /// <summary>Data das recomendações do jogo: menus e opções mudam com patches, então o usuário vê quando foram escritas.</summary>
+    public string RecommendationsUpdatedText => (IsFortnite ? FortniteRecommendations.UpdatedOn : HasRecommendations ? Cs2Recommendations.UpdatedOn : (DateOnly?)null) is { } date
+        ? $"Atualizado em {date:dd/MM/yyyy}. Patches podem mudar nomes e opções; se algo não bater, siga o que o jogo mostra."
+        : string.Empty;
+
     // Fortnite: perfil de vídeo e fabricante escolhidos pelo usuário. A placa de vídeo nunca é detectada aqui.
     public bool IsFortnite => _area == OptimizationArea.Fortnite;
     public string FortniteVideoMenuPath => FortniteRecommendations.VideoMenuPath;

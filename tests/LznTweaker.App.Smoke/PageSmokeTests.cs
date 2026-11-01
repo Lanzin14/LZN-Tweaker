@@ -145,6 +145,8 @@ public sealed class PageSmokeTests
                 Pump(TimeSpan.FromMilliseconds(150));
                 if (page.SelectedTab != tab.Key)
                     errors.Add($"jogos: {section.Title}, aba {tab.Title} não ficou ativa");
+                if (tab.Key == LznTweaker.Features.GameProfiles.GameOptimizationPageViewModel.SettingsTab && page.RecommendationsUpdatedText.Length == 0)
+                    errors.Add($"jogos: {section.Title} sem a data das recomendações");
                 var expectsBar = tab.Key == LznTweaker.Features.GameProfiles.GameOptimizationPageViewModel.ActionsTab && page.HasActions;
                 if (page.ShowsActionBar != expectsBar)
                     errors.Add($"jogos: {section.Title}, aba {tab.Title}: barra de ação {page.ShowsActionBar}, esperado {expectsBar}");

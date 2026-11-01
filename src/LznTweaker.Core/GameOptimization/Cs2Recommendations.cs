@@ -12,6 +12,9 @@ public sealed record InGameSetting(string Name, string Value, string Purpose, st
 /// </summary>
 public static class Cs2Recommendations
 {
+    /// <summary>Última atualização deste conteúdo; aparece na aba Configurações porque patches mudam menus e opções.</summary>
+    public static DateOnly UpdatedOn { get; } = new(2026, 10, 30);
+
     public const string VideoMenuPath = "Settings (engrenagem) > Video > Advanced Video";
 
     public static IReadOnlyList<ManualProcedure> TaskManager { get; } =
