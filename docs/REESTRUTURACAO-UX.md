@@ -1,7 +1,7 @@
 # Reestruturação de UX/UI — auditoria e plano
 
 Data: 31/10/2026. Base: as 13 páginas atuais (prints do teste de interface em `%TEMP%\lzn-smoke`) e os princípios do
-Razer Cortex e do WinUtil. Nada aqui foi implementado: este documento espera aprovação (Etapa 4).
+Razer Cortex e do WinUtil. Plano aprovado e implementado em 01/11/2026, em seis commits (fases 1 a 6). Diferenças em relação ao plano estão no fim do documento.
 
 Objetivo: menos telas, menos texto e menos cliques, sem perder recursos úteis e mantendo a identidade Obsidian
 (fundo escuro, sidebar Índigo, Space Grotesk/IBM Plex Sans, violeta como destaque).
@@ -162,3 +162,20 @@ Decisões para o usuário antes de começar:
 ## Mockups
 
 Imagens da proposta (dados de exemplo) em `docs/mockups-ux/`: `1-inicio.png`, `2-ajustes.png`, `3-ferramentas.png` e `4-jogos.png`.
+
+## Implementação (01/11/2026)
+
+| Fase | O que entrou |
+|---|---|
+| 1 | Cabeçalho com ⓘ (guia da página recolhido) e `ActionBar` (rodapé com resumo e botões). |
+| 2 | Ajustes do Windows = Geral + Avançado + Rede › Ajustes: interruptor na linha, perfis Recomendado/Mínimo/Avançado, categoria Rede, detalhe curto com "Detalhes técnicos"; a página Avançado saiu. |
+| 3 | Ferramentas com abas Reparos, Rede, Hardware e Programas; menu com 9 itens; chaves antigas abrem a aba certa. |
+| 4 | Início como painel: PC, ações rápidas com números, últimas alterações e jogos encontrados. |
+| 5 | Jogos: abas Ações/Configurações/Orientações/Diagnóstico, linhas compactas, Hardware fora da lista. Placa de Vídeo: aviso de configuração manual uma vez por aba. |
+| 6 | Limpeza em linhas com barra de ação; Inicialização com interruptor na linha; Histórico com restauração na barra de ação. |
+
+Diferenças em relação ao plano:
+- Ajustes do Windows usa interruptor (estado desejado) em vez de caixa de seleção: o modelo de "pendente até revisar" já existia e mostra melhor o que está ativo. Ações de uma vez usam caixa.
+- O Início não tem "Desfazer" direto nas últimas alterações: o atalho leva ao Histórico, que já faz a restauração com as verificações de segurança.
+- Placa de Vídeo › Perfis por jogo foi mantida como está (a remoção ficou para depois, para não perder conteúdo).
+- "Removidos pelo LZN Tweaker" continua em Remover apps.
