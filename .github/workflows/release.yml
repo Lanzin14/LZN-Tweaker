@@ -8,7 +8,9 @@ on:
     tags: ['v*.*.*']
 
 permissions:
-  contents: write
+  contents: write      # criar a Release
+  id-token: write      # identidade OIDC do workflow para assinar a atestação
+  attestations: write  # gravar a atestação de origem do .exe
 
 jobs:
   release:
@@ -51,6 +53,14 @@ jobs:
           Compress-Archive -Path publish/Licenses, publish/Assets -DestinationPath release/LznTweaker-licencas.zip
           Get-ChildItem release | Format-Table Name, Length
 
+      # Prova assinada (Sigstore) de que este .exe foi gerado por este workflow, a partir deste commit do repositório.
+      # O SHA-256 publicado só detecta arquivo corrompido; a atestação também detecta um .exe trocado na Release.
+      # Verificar: gh attestation verify LznTweaker.exe --repo Lanzin14/LZN-Tweaker
+      - name: Atestar a origem do .exe
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: release/LznTweaker.exe
+
       - name: Criar a Release
         shell: pwsh
         env:
@@ -65,5 +75,11 @@ jobs:
           ``````
 
           Ou baixe o LznTweaker.exe abaixo. SHA-256: ``$hash``
+
+          Para confirmar que o .exe saiu deste repositório pelo GitHub Actions (com a [CLI do GitHub](https://cli.github.com)):
+
+          ``````powershell
+          gh attestation verify LznTweaker.exe --repo Lanzin14/LZN-Tweaker
+          ``````
           "@
           gh release create '${{ github.ref_name }}' (Get-ChildItem release).FullName --title "LZN Tweaker ${{ github.ref_name }}" --notes $notes

@@ -15,6 +15,14 @@ o SHA-256 publicado junto e abre o app (o Windows pede permissão de administrad
 [`install.ps1`](install.ps1); leia antes de executar, como em qualquer comando `irm | iex`. Também dá para baixar o
 `.exe` direto na página da Release.
 
+Cada Release tem uma atestação assinada de que o `.exe` foi gerado pelo GitHub Actions a partir deste repositório. O
+SHA-256 só detecta um arquivo corrompido; a atestação também detecta um `.exe` trocado na Release. Para conferir, com a
+[CLI do GitHub](https://cli.github.com):
+
+```powershell
+gh attestation verify LznTweaker.exe --repo Lanzin14/LZN-Tweaker
+```
+
 ## Estrutura
 
 | Pasta | Conteúdo |
