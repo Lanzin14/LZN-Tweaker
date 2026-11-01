@@ -1,0 +1,20 @@
+# Pull requests semanais com atualizações de dependências; atualizações de segurança chegam assim que publicadas.
+# As actions ficam fixadas por hash de commit nos workflows: o Dependabot atualiza o hash e o comentário da versão.
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      nuget:
+        patterns: ['*']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

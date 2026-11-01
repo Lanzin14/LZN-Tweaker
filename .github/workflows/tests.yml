@@ -18,3 +18,7 @@ jobs:
       - name: Testes do núcleo
         shell: pwsh
         run: ./tools/ci/test-core.ps1
+
+      - name: Dependências com vulnerabilidade conhecida
+        shell: pwsh
+        run: ./tools/ci/check-vulnerable.ps1
