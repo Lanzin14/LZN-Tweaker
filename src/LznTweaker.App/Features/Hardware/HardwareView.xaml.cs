@@ -8,7 +8,7 @@ namespace LznTweaker.Features.Hardware;
 public sealed class HardwareViewModel(DashboardViewModel dashboard, GameLibraryViewModel library)
 {
     public DashboardViewModel Dashboard { get; } = dashboard;
-    public GameOptimizationPageViewModel Diagnostics { get; } = library.Sections.First(section => section.Page.Area == OptimizationArea.Hardware).Page;
+    public GameOptimizationPageViewModel Diagnostics { get; } = library.HardwareSection.Page;
     public GameLibraryViewModel Library { get; } = library;
 }
 

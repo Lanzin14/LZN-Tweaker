@@ -58,6 +58,7 @@ public sealed partial class DriverSettingViewModel : ObservableObject
     public string MethodText => GpuStateText.MethodText(Setting.Method);
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowsState))]
     private string _stateText = "";
 
     [ObservableProperty]
@@ -65,6 +66,9 @@ public sealed partial class DriverSettingViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isExpanded;
+
+    /// <summary>"Requer configuração manual" vale para a aba inteira e aparece uma vez no topo, não em cada linha.</summary>
+    public bool ShowsState => StateText != GpuStateText.For(GpuItemState.ManualRequired).Text;
 
     /// <summary>O app não lê o valor atual do driver; diz isso em vez de supor.</summary>
     public string CurrentValueText => "Não detectado: o LZN Tweaker não lê as configurações do driver";

@@ -49,6 +49,12 @@ public sealed partial class OptimizationActionViewModel : ObservableObject
     public string GamesAffected { get; }
     public string Reversibility { get; }
     public string State { get; }
+
+    /// <summary>Tamanho ocupado (o começo do estado, "1,1 MB em 26 arquivo(s) · …").</summary>
+    public string SizeText => State.Split(" em ", 2)[0];
+
+    /// <summary>Risco, alcance, pré-requisito e reversão numa dica, para a linha ficar curta.</summary>
+    public string Tooltip => $"Risco {Risk} · afeta: {GamesAffected}\nAntes: {Prerequisites}\n{Reversibility}\n{State}";
     public ShaderCacheLocation? ShaderCache { get; private init; }
     public SteamFolderTarget? SteamFolder { get; private init; }
 
@@ -116,6 +122,9 @@ public sealed class GuidanceItemViewModel(GuidanceItem item)
 }
 
 public sealed record NumberedStep(int Number, string Text);
+
+/// <summary>Aba da página de um jogo, com a quantidade de itens.</summary>
+public sealed record GamePageTab(string Key, string Title);
 
 /// <summary>Procedimento manual com passos numerados para a tela.</summary>
 public sealed record ProcedureView(string Title, IReadOnlyList<NumberedStep> Steps, string? Warning)
@@ -185,9 +194,10 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
         _dialogs = dialogs;
         foreach (var guidance in GuidanceCatalog.All.Where(item => item.Area == area))
             Guidance.Add(new GuidanceItemViewModel(guidance));
-        Actions.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasActions));
-        Backups.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasBackups));
-        Diagnostics.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasDiagnostics));
+        Actions.CollectionChanged += (_, _) => { OnPropertyChanged(nameof(HasActions)); OnTabsChanged(); };
+        Backups.CollectionChanged += (_, _) => { OnPropertyChanged(nameof(HasBackups)); OnTabsChanged(); };
+        Diagnostics.CollectionChanged += (_, _) => { OnPropertyChanged(nameof(HasDiagnostics)); OnTabsChanged(); };
+        OnTabsChanged();
     }
 
     public OptimizationArea Area => _area;
@@ -258,6 +268,62 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
         _ => []
     };
 
+    // ── Abas: Ações, Configurações, Orientações e Diagnóstico (só as que têm conteúdo) ──
+    public const string ActionsTab = "actions";
+    public const string SettingsTab = "settings";
+    public const string GuidanceTab = "guidance";
+    public const string DiagnosticsTab = "diagnostics";
+
+    public IReadOnlyList<GamePageTab> Tabs { get; private set; } = [];
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActionsTab), nameof(IsSettingsTab), nameof(IsGuidanceTab), nameof(IsDiagnosticsTab), nameof(ShowsActionBar))]
+    private string _selectedTab = GuidanceTab;
+
+    public bool IsActionsTab => SelectedTab == ActionsTab;
+    public bool IsSettingsTab => SelectedTab == SettingsTab;
+    public bool IsGuidanceTab => SelectedTab == GuidanceTab;
+    public bool IsDiagnosticsTab => SelectedTab == DiagnosticsTab;
+    public bool ShowsActionBar => IsActionsTab && HasActions;
+
+    public int SelectedActionsCount => Actions.Count(action => action.IsSelected);
+    public string SelectedActionsText => SelectedActionsCount switch
+    {
+        0 => "Nenhuma ação marcada",
+        1 => "1 ação marcada",
+        var count => $"{count} ações marcadas"
+    };
+
+    private bool _tabChosenByUser;
+
+    [RelayCommand]
+    private void SelectTab(string? key)
+    {
+        if (key is null)
+            return;
+        _tabChosenByUser = true;
+        SelectedTab = key;
+    }
+
+    private void OnTabsChanged()
+    {
+        var tabs = new List<GamePageTab>();
+        if (HasActions || HasBackups)
+            tabs.Add(new(ActionsTab, $"Ações {Actions.Count}"));
+        if (HasRecommendations || IsFortnite)
+            tabs.Add(new(SettingsTab, "Configurações"));
+        tabs.Add(new(GuidanceTab, $"Orientações {Guidance.Count}"));
+        if (HasDiagnostics)
+            tabs.Add(new(DiagnosticsTab, $"Diagnóstico {Diagnostics.Count}"));
+        // Até o usuário escolher, abre a primeira aba com conteúdo (as ações chegam depois da leitura do sistema).
+        var keepSelection = _tabChosenByUser && tabs.Any(tab => tab.Key == SelectedTab);
+        Tabs = tabs;
+        OnPropertyChanged(nameof(Tabs));
+        if (!keepSelection)
+            SelectedTab = tabs[0].Key;
+        OnPropertyChanged(nameof(ShowsActionBar));
+    }
+
     /// <summary>Jogo desta página, quando é uma página de jogo.</summary>
     public DetectedGame? Game { get; private set; }
 
@@ -269,7 +335,11 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
     private bool _isBusy;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RunHint))]
     private string _runSummary = string.Empty;
+
+    /// <summary>Aviso ao lado do resumo na barra de ação: o andamento da execução ou o lembrete do ponto de restauração.</summary>
+    public string RunHint => string.IsNullOrEmpty(RunSummary) ? "  ·  ponto de restauração antes de executar" : $"  ·  {RunSummary}";
 
     public void SetDiagnostics(IEnumerable<DiagnosticItem> items)
     {
@@ -287,17 +357,31 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
         if (_area == OptimizationArea.Windows)
         {
             foreach (var location in await _shaderCache.ScanAsync())
-                Actions.Add(OptimizationActionViewModel.ForShaderCache(location));
+                AddAction(OptimizationActionViewModel.ForShaderCache(location));
         }
         if (game is { IsInstalled: true })
         {
             // A redefinição das configurações locais do CS2 (userdata) não é oferecida; backups antigos dela continuam restauráveis abaixo.
             var targets = await Task.Run(() => _steamFolders.GetTargets(game, steamRoot));
             foreach (var target in targets.Where(target => target.Kind != SteamFolderKind.UserConfig))
-                Actions.Add(OptimizationActionViewModel.ForSteamFolder(target));
+                AddAction(OptimizationActionViewModel.ForSteamFolder(target));
         }
         await LoadBackupsAsync();
         RunCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(SelectedActionsText));
+    }
+
+    private void AddAction(OptimizationActionViewModel action)
+    {
+        action.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(OptimizationActionViewModel.IsSelected))
+            {
+                OnPropertyChanged(nameof(SelectedActionsCount));
+                OnPropertyChanged(nameof(SelectedActionsText));
+            }
+        };
+        Actions.Add(action);
     }
 
     private async Task LoadBackupsAsync()

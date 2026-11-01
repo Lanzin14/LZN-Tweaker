@@ -90,15 +90,21 @@ public sealed partial class GameLibraryViewModel : ObservableObject
                 [LibraryPlatform.Windows, LibraryPlatform.Steam], SupportedGames.Deadlock, "DL"),
             new(SupportedGames.Fortnite.Name, Page(OptimizationArea.Fortnite, "Fortnite",
                 "Configurações de vídeo, da placa de vídeo (NVIDIA ou AMD, à sua escolha) e orientações. Tudo manual: o app não edita arquivos do jogo nem toca no Easy Anti-Cheat."),
-                [LibraryPlatform.Windows, LibraryPlatform.Epic], SupportedGames.Fortnite, "FN"),
-            new("Hardware e diagnóstico", Page(OptimizationArea.Hardware, "Hardware — somente diagnóstico",
-                "Orientações sobre memória RAM, XMP/EXPO, BIOS, chipset e Resizable BAR. Só diagnóstico: o app nunca altera BIOS, XMP, overclock ou undervolt."),
-                [], glyph: "\uE950")
+                [LibraryPlatform.Windows, LibraryPlatform.Epic], SupportedGames.Fortnite, "FN")
         ];
+        // Hardware fica em Ferramentas › Hardware; a página continua aqui para receber o mesmo diagnóstico.
+        HardwareSection = new("Hardware e diagnóstico", Page(OptimizationArea.Hardware, "Hardware — somente diagnóstico",
+            "Orientações sobre memória RAM, XMP/EXPO, BIOS, chipset e Resizable BAR. Só diagnóstico: o app nunca altera BIOS, XMP, overclock ou undervolt."),
+            [], glyph: "\uE950");
         SelectedSection = Sections[0];
     }
 
     public ObservableCollection<LibrarySection> Sections { get; }
+
+    /// <summary>Diagnóstico de hardware, mostrado em Ferramentas › Hardware (não aparece na lista de jogos).</summary>
+    public LibrarySection HardwareSection { get; }
+
+    private IEnumerable<LibrarySection> AllSections => Sections.Append(HardwareSection);
 
     /// <summary>Falha de leitura em linguagem simples, mostrada no Banner da página (nulo quando está tudo certo).</summary>
     [ObservableProperty]
@@ -132,7 +138,7 @@ public sealed partial class GameLibraryViewModel : ObservableObject
             var games = await Task.Run(() => SupportedGames.All.Select(_locator.Locate).ToArray());
             var steamRoot = _locator.Steam.SteamRoot;
             LoadArtwork(steamRoot, games);
-            foreach (var section in Sections)
+            foreach (var section in AllSections)
             {
                 var detected = section.Game is null ? null : games.First(game => game.Game.Id == section.Game.Id);
                 section.Subtitle = detected is null
@@ -158,7 +164,7 @@ public sealed partial class GameLibraryViewModel : ObservableObject
 
             StatusText = "Lendo o estado do Windows, dos discos e do hardware (somente leitura)…";
             var items = await _diagnostics.RunAsync(games, enabledStartup);
-            foreach (var section in Sections)
+            foreach (var section in AllSections)
                 section.Page.SetDiagnostics(items);
             var attention = items.Count(item => item.Status == DiagnosticStatus.Attention);
             StatusText = $"{games.Count(game => game.IsInstalled)} de {games.Length} jogos encontrados · {attention} ponto(s) de atenção. " +

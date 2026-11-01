@@ -36,18 +36,17 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="190" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
-                            <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                            <TextBlock Text="{Binding ManualPath}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0" />
-                        </StackPanel>
+                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0"
+                                   ToolTip="{Binding ManualPath}" />
                         <!-- Valor recomendado -->
                         <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,14,0" MaxWidth="240" ToolTip="{Binding RecommendedValue}">
                             <TextBlock Text="{Binding RecommendedValue}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextTrimming="CharacterEllipsis" />
                         </Border>
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Visibility="{Binding ShowsState, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                             <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding StateBrush}" Margin="0,0,6,0" />
                             <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" MaxWidth="170" />
                         </StackPanel>
@@ -210,7 +209,8 @@
 
             <!-- NVIDIA -->
             <StackPanel Style="{StaticResource Section}" Visibility="{Binding IsNvidiaTab, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                <TextBlock Text="{Binding NvidiaBanner}" Style="{StaticResource Lzn.Text.Body}" Margin="0,0,0,10" />
+                <TextBlock Text="{Binding NvidiaBanner}" Style="{StaticResource Lzn.Text.Body}" Margin="0,0,0,4" />
+                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,10" TextWrapping="Wrap" Text="Todas pedem configuração manual no painel do driver: passe o mouse no nome para ver o caminho, ou clique em ⓘ para o detalhe." />
                 <Border Style="{StaticResource Lzn.Panel}" Padding="18,4">
                     <ItemsControl ItemsSource="{Binding NvidiaSettings}" Focusable="False" />
                 </Border>
@@ -218,7 +218,8 @@
 
             <!-- AMD -->
             <StackPanel Style="{StaticResource Section}" Visibility="{Binding IsAmdTab, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                <TextBlock Text="{Binding AmdBanner}" Style="{StaticResource Lzn.Text.Body}" Margin="0,0,0,10" />
+                <TextBlock Text="{Binding AmdBanner}" Style="{StaticResource Lzn.Text.Body}" Margin="0,0,0,4" />
+                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,10" TextWrapping="Wrap" Text="Todas pedem configuração manual no painel do driver: passe o mouse no nome para ver o caminho, ou clique em ⓘ para o detalhe." />
                 <Border Style="{StaticResource Lzn.Panel}" Padding="18,4">
                     <ItemsControl ItemsSource="{Binding AmdSettings}" Focusable="False" />
                 </Border>
