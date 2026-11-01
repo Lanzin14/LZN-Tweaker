@@ -77,12 +77,16 @@ public sealed class PageSmokeTests
             Pump(TimeSpan.FromSeconds(2));
             Save(window, Path.Combine(output, $"{item.Key}.png"));
             errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"{item.Key}: {message}"));
+            // O Início vem primeiro: confere antes que a página Limpeza seja aberta e faça a varredura.
+            if (item.Key == ShellPages.Home)
+                errors.AddRange(CheckHomePage(provider, shell));
         }
 
         errors.AddRange(CheckProgramsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGpuPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckFortnitePage(provider, shell, window, bindingErrors, output));
+        errors.AddRange(CheckGameTabs(provider, shell, bindingErrors));
         errors.AddRange(CheckToolsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGeneralList(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckSidebar(shell, window, bindingErrors, output));
@@ -90,6 +94,64 @@ public sealed class PageSmokeTests
         window.Close();
         PresentationTraceSources.DataBindingSource.Listeners.Remove(bindingErrors);
         app.Shutdown();
+        return errors;
+    }
+
+    /// <summary>
+    /// Início: não varre a Limpeza sozinho (deixaria a abertura lenta) e "Revisar recomendados" só marca a seleção
+    /// recomendada e abre Ajustes. O teste descarta a marcação; nada é aplicado.
+    /// </summary>
+    private static IEnumerable<string> CheckHomePage(ServiceProvider provider, ShellViewModel shell)
+    {
+        var errors = new List<string>();
+        var home = provider.GetRequiredService<LznTweaker.Features.Home.HomeViewModel>();
+        var general = provider.GetRequiredService<LznTweaker.Features.TweakCards.GeneralPageViewModel>();
+        for (var waited = 0; home.TweaksBadge == "lendo…" && waited < 50; waited++)
+            Pump(TimeSpan.FromMilliseconds(100));
+        if (home.CleanupBadge != "não verificado")
+            errors.Add($"início: a Limpeza não deveria ser varrida ao abrir o app (selo: {home.CleanupBadge})");
+        var missing = home.RecommendedMissing;
+        home.ReviewRecommendedCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(500));
+        if (shell.SelectedItem.Key != ShellPages.General)
+            errors.Add($"início: Revisar recomendados abriu {shell.SelectedItem.Key}, esperado {ShellPages.General}");
+        if (general.HasPending != missing > 0)
+            errors.Add($"início: {missing} recomendado(s) faltando, mas pendências em Ajustes = {general.HasPending}");
+        general.DiscardCommand.Execute(null);
+        Pump(TimeSpan.FromMilliseconds(200));
+        if (general.HasPending)
+            errors.Add("início: a marcação dos recomendados não foi descartada");
+        return errors;
+    }
+
+    /// <summary>Jogos: cada aba de cada jogo abre sem erro de binding; a barra "Executar marcadas" só aparece em Ações.</summary>
+    private static IEnumerable<string> CheckGameTabs(ServiceProvider provider, ShellViewModel shell, BindingErrorListener bindingErrors)
+    {
+        var errors = new List<string>();
+        var library = provider.GetRequiredService<LznTweaker.Features.GameProfiles.GameLibraryViewModel>();
+        shell.Navigate(ShellPages.Games);
+        Pump(TimeSpan.FromMilliseconds(500));
+        var before = bindingErrors.Messages.Count;
+        foreach (var section in library.Sections)
+        {
+            library.SelectedSection = section;
+            Pump(TimeSpan.FromMilliseconds(300));
+            var page = section.Page;
+            if (page.Tabs.Count == 0 || page.Tabs.All(tab => tab.Key != LznTweaker.Features.GameProfiles.GameOptimizationPageViewModel.GuidanceTab))
+                errors.Add($"jogos: {section.Title} sem a aba Orientações");
+            foreach (var tab in page.Tabs)
+            {
+                page.SelectTabCommand.Execute(tab.Key);
+                Pump(TimeSpan.FromMilliseconds(150));
+                if (page.SelectedTab != tab.Key)
+                    errors.Add($"jogos: {section.Title}, aba {tab.Title} não ficou ativa");
+                var expectsBar = tab.Key == LznTweaker.Features.GameProfiles.GameOptimizationPageViewModel.ActionsTab && page.HasActions;
+                if (page.ShowsActionBar != expectsBar)
+                    errors.Add($"jogos: {section.Title}, aba {tab.Title}: barra de ação {page.ShowsActionBar}, esperado {expectsBar}");
+            }
+        }
+        library.SelectedSection = library.Sections[0];
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"jogos (abas): {message}"));
         return errors;
     }
 
