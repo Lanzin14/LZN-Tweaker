@@ -14,7 +14,7 @@
             </Border>
         </DataTemplate>
 
-        <!-- Linha: ícone da categoria, nome amigável, fabricante, impacto e estado (o interruptor fica no detalhe) -->
+        <!-- Linha: ícone da categoria, nome amigável, fabricante, impacto e o interruptor (um clique por item) -->
         <DataTemplate x:Key="StartupRow" DataType="{x:Type vm:StartupItemViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -32,10 +32,8 @@
                     <TextBlock Text="{Binding Publisher}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
                 </StackPanel>
                 <ContentPresenter Grid.Column="2" Content="{Binding}" ContentTemplate="{StaticResource ImpactBadge}" Margin="12,0,0,0" />
-                <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="14,0" VerticalAlignment="Center" Width="92">
-                    <Ellipse Style="{StaticResource Lzn.StatusDot}" Width="6" Height="6" Fill="{Binding StateBrush}" Margin="0,0,6,0" />
-                    <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" VerticalAlignment="Center" />
-                </StackPanel>
+                <CheckBox Grid.Column="3" Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding IsEnabled, Mode=TwoWay}" VerticalAlignment="Center" Margin="14,0,4,0"
+                          ToolTip="{Binding StateText, StringFormat={}{0} na inicialização}" AutomationProperties.Name="{Binding Title}" />
             </Grid>
         </DataTemplate>
 
@@ -57,18 +55,23 @@
                 <TextBlock Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap"
                            Text="O programa deixa de abrir sozinho com o Windows. Ele continua instalado e funciona normalmente quando você o abre. A mudança vale na hora; para voltar, ligue de novo aqui ou no Gerenciador de Tarefas." />
 
-                <TextBlock Text="Comando executado" Style="{StaticResource Lzn.DetailLabel}" />
-                <TextBox Text="{Binding Command, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
-                         Foreground="{StaticResource Lzn.TextSecondary}" Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
-                         AutomationProperties.Name="Comando executado" />
-
-                <TextBlock Text="Origem" Style="{StaticResource Lzn.DetailLabel}" />
-                <TextBlock Text="{Binding LocationDisplay}" Style="{StaticResource Lzn.Text.Body}" />
-
-                <StackPanel Visibility="{Binding ShowsTechnicalName, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                    <TextBlock Text="Nome no registro" Style="{StaticResource Lzn.DetailLabel}" />
-                    <TextBlock Text="{Binding Name}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
-                </StackPanel>
+                <Expander Margin="0,16,0,0" Foreground="{StaticResource Lzn.TextSecondary}">
+                    <Expander.Header>
+                        <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
+                    </Expander.Header>
+                    <StackPanel>
+                        <TextBlock Text="Comando executado" Style="{StaticResource Lzn.DetailLabel}" />
+                        <TextBox Text="{Binding Command, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
+                                 Foreground="{StaticResource Lzn.TextSecondary}" Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
+                                 AutomationProperties.Name="Comando executado" />
+                        <TextBlock Text="Origem" Style="{StaticResource Lzn.DetailLabel}" />
+                        <TextBlock Text="{Binding LocationDisplay}" Style="{StaticResource Lzn.Text.Body}" />
+                        <StackPanel Visibility="{Binding ShowsTechnicalName, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                            <TextBlock Text="Nome no registro" Style="{StaticResource Lzn.DetailLabel}" />
+                            <TextBlock Text="{Binding Name}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
 
                 <Border BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,18,0,0">
                     <Grid>

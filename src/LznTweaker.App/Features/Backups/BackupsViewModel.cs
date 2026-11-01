@@ -117,7 +117,10 @@ public sealed partial class BackupsViewModel : ObservableObject
                 row.PropertyChanged += (_, e) =>
                 {
                     if (e.PropertyName == nameof(HistoryEntryViewModel.IsSelected))
+                    {
                         RestoreSelectedCommand.NotifyCanExecuteChanged();
+                        OnPropertyChanged(nameof(SelectedRestoreText));
+                    }
                 };
                 Entries.Add(row);
             }
@@ -190,6 +193,14 @@ public sealed partial class BackupsViewModel : ObservableObject
     private bool CanWork() => !IsBusy;
 
     /// <summary>Só há o que restaurar em lote quando algum item com valor anterior registrado está marcado.</summary>
+    /// <summary>Resumo da barra de ação: quantos registros marcados podem ser restaurados aqui.</summary>
+    public string SelectedRestoreText => Entries.Count(entry => entry.IsSelected && entry.CanRestoreHere) switch
+    {
+        0 => "Marque os registros que quer restaurar",
+        1 => "1 registro para restaurar",
+        var count => $"{count} registros para restaurar"
+    };
+
     private bool CanRestoreSelected() => !IsBusy && Entries.Any(entry => entry.IsSelected && entry.CanRestoreHere);
 
     private void RefreshView()
