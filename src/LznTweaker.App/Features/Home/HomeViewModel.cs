@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Diagnostics;
 using LznTweaker.Core.GameOptimization;
+using LznTweaker.Core.GameTuning;
 using LznTweaker.Core.Tweaks;
 using LznTweaker.Features.Backups;
 using LznTweaker.Features.TweakCards;
@@ -52,13 +53,20 @@ public sealed partial class HomeViewModel : ObservableObject
     public int RecommendedMissing => _tweaks.Cards.OfType<TweakCardViewModel>()
         .Count(card => card.IsToggle && card.IsRecommended && !card.IsActive && card.IsSwitchEnabled);
 
-    public string TweaksBadge => _tweaks.IsLoading ? "lendo…" : RecommendedMissing == 0 ? "em dia" : $"{RecommendedMissing} pendente(s)";
+    public string TweaksBadge => _tweaks.IsLoading ? "lendo…" : RecommendedMissing switch
+    {
+        0 => "em dia",
+        1 => "1 pendente",
+        var count => $"{count} pendentes"
+    };
     public string TweaksText => RecommendedMissing == 0 && !_tweaks.IsLoading
         ? "A seleção recomendada já está ativa. Veja os demais ajustes por categoria."
         : "Marca a seleção recomendada para você revisar; nada muda sem confirmação e ponto de restauração.";
 
-    public string CleanupBadge => _cleanup.IsBusy ? "verificando…" : _cleanup.TotalFoundText;
-    public string StartupBadge => _startup.TotalCount == 0 ? "lendo…" : $"{_startup.EnabledCount} ativado(s)";
+    // A varredura da Limpeza só roda ao abrir a página: no Início ela deixaria a abertura do app lenta.
+    public string CleanupBadge => _cleanup.IsBusy ? "verificando…"
+        : _cleanup.Categories.All(category => category.ScanResult is null) ? "não verificado" : _cleanup.TotalFoundText;
+    public string StartupBadge => _startup.TotalCount == 0 ? "lendo…" : _startup.EnabledCount == 1 ? "1 ativado" : $"{_startup.EnabledCount} ativados";
 
     public IReadOnlyList<RecentChange> RecentChanges { get; private set; } = [];
     public bool HasRecentChanges => RecentChanges.Count > 0;
@@ -75,7 +83,6 @@ public sealed partial class HomeViewModel : ObservableObject
         // Leituras mais lentas por último; cada cartão mostra "lendo…" até terminar.
         await _tweaks.InitializeAsync();
         await _startup.OnShownAsync();
-        await _cleanup.OnShownAsync();
     }
 
     [RelayCommand]
@@ -101,7 +108,7 @@ public sealed partial class HomeViewModel : ObservableObject
         {
             var entries = await _history.ReadAsync();
             RecentChanges = entries.OrderByDescending(entry => entry.StartedAt).Take(4)
-                .Select(entry => new RecentChange(entry.RequestedState, BackupsViewModel.AreaOf(entry.TweakId), entry.StartedAt.LocalDateTime.ToString("dd/MM HH:mm"),
+                .Select(entry => new RecentChange(TitleOf(entry), BackupsViewModel.AreaOf(entry.TweakId), entry.StartedAt.LocalDateTime.ToString("dd/MM HH:mm"),
                     entry.Outcome, entry.Outcome is "Sucesso verificado" or "Reversão verificada" or "Executado sem verificação"))
                 .ToArray();
         }
@@ -112,6 +119,17 @@ public sealed partial class HomeViewModel : ObservableObject
         }
         OnPropertyChanged(nameof(RecentChanges));
         OnPropertyChanged(nameof(HasRecentChanges));
+    }
+
+    /// <summary>Reversões e perfis de jogo guardam só "Desfazer" ou o nome do perfil; aqui ganham o nome do ajuste ou do jogo.</summary>
+    internal static string TitleOf(TweakOperationResult entry)
+    {
+        if (entry.RequestedState == "Desfazer")
+        {
+            var name = TweakCatalog.All.FirstOrDefault(definition => definition.Id == entry.TweakId)?.Name;
+            return name is null ? "Desfazer" : $"Desfazer: {name}";
+        }
+        return entry.TweakId == GameTuningService.DeadlockOperationId ? $"Deadlock: perfil {entry.RequestedState}" : entry.RequestedState;
     }
 
     private async Task LoadGamesAsync()
