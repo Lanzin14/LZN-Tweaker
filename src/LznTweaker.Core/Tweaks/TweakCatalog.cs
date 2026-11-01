@@ -298,7 +298,11 @@ $ultimatePlans = @(powercfg /list | ForEach-Object {
             null,
             InvokeScript: "powercfg /h off",
             UndoScript: "powercfg /h on",
-            VerifyScript: "(Get-ItemProperty -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power' -Name HibernateEnabled -ErrorAction Stop).HibernateEnabled -eq 0"),
+            // Sem HibernateEnabled (máquinas virtuais, PCs onde a hibernação nunca foi configurada), o Windows segue
+            // HibernateEnabledDefault; sem nenhum dos dois, a hibernação só está ativa se o hiberfil.sys existir.
+            VerifyScript: "$power = Get-ItemProperty -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power' -ErrorAction Stop; " +
+                "$value = if ($null -ne $power.HibernateEnabled) { $power.HibernateEnabled } else { $power.HibernateEnabledDefault }; " +
+                "if ($null -ne $value) { $value -eq 0 } else { -not (Test-Path -LiteralPath \"$env:SystemDrive\\hiberfil.sys\") }"),
 
         new(
             SetIpv4PriorityId,
