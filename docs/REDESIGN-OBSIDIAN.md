@@ -80,7 +80,7 @@ A skill `ui-ux-pro-max --design-system` sugeriu, para "ferramenta desktop gamer 
 | Text | Branco frio | `#E9E8F0` | Títulos, textos principais, valores. |
 | Muted | Cinza | `#858594` | Descrições, metadados, rótulos. |
 | Danger | Vermelho suave | `#E47777` | Erros, risco alto, ações destrutivas. |
-| Sidebar | Índigo | `#4B0082` | Fundo da barra lateral (escolha do usuário em 31/10/2026; antes Eminência `#6C3082`). Hover `#5E1A9A`, ativo `#33005C`, traço `#6A2DA6`, texto `#E9E8F0` e secundário `#E2D3EC` (todos AA, conferidos no teste de guarda). |
+| Sidebar | Grafite | `#1C1C24` | Fundo da barra lateral (escolha do usuário em 01/11/2026; antes Índigo `#4B0082`). Hover `#26262F`, ativo `#2E2A45` com traço lilás, borda `#2E2E38`, texto `#E9E8F0` e secundário `#A9A9B8` (todos AA, conferidos no teste de guarda). |
 
 ### 3.2 Cores de estado (complementares, já em uso)
 

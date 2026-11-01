@@ -398,7 +398,7 @@
                             <ContentPresenter />
                         </Border>
                         <Border x:Name="Indicator" Width="3" Height="18" CornerRadius="2" HorizontalAlignment="Left"
-                                Background="{StaticResource Lzn.Sidebar.Text}" Visibility="Collapsed" />
+                                Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
