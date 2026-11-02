@@ -21,12 +21,13 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
     </Style>
+    <!-- Título do painel de detalhe (Ajustes, Histórico, Inicialização, Programas, Remover apps): 18, sem título gigante. -->
     <Style x:Key="Lzn.Text.Display" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Display}" />
+        <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Section}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="LineHeight" Value="48" />
+        <Setter Property="LineHeight" Value="24" />
     </Style>
     <Style x:Key="Lzn.Text.Section" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Section}" />
@@ -775,19 +776,19 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:MasterDetailLayout">
                     <Grid>
-                        <!-- Layout Foco: lista de largura fixa com traço à direita; o detalhe, sem moldura, ocupa o resto. -->
+                        <!-- A lista ocupa o espaço livre, com traço à direita; o detalhe tem largura fixa e não sobra área vazia. -->
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border x:Name="MasterPane" Width="{StaticResource Lzn.Layout.ListWidth}" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,1,0" Padding="0,0,14,0">
+                        <Border x:Name="MasterPane" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,1,0" Padding="0,0,14,0">
                             <ContentPresenter Content="{TemplateBinding Master}" />
                         </Border>
 
                         <!-- Detalhe fixo -->
-                        <Border x:Name="Docked" Grid.Column="1" Background="Transparent">
+                        <Border x:Name="Docked" Grid.Column="1" Width="{StaticResource Lzn.Layout.DockedDetailWidth}" Background="Transparent">
                             <Grid>
-                                <ScrollViewer x:Name="DockedContent" VerticalScrollBarVisibility="Auto" Padding="36,4,24,20" Focusable="False">
+                                <ScrollViewer x:Name="DockedContent" VerticalScrollBarVisibility="Auto" Padding="28,4,8,20" Focusable="False">
                                     <ContentPresenter Content="{TemplateBinding Selected}" ContentTemplate="{TemplateBinding DetailTemplate}" ContentTemplateSelector="{TemplateBinding DetailTemplateSelector}" />
                                 </ScrollViewer>
                                 <StackPanel x:Name="DockedEmpty" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Visibility="Collapsed">

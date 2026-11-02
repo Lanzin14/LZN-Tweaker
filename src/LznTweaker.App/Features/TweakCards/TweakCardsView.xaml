@@ -348,13 +348,21 @@
             </StackPanel>
         </DataTemplate>
 
-        <!-- Selo de categoria em roxo suave -->
+        <!-- Categoria como rótulo acima do título (o violeta fica para ação e seleção) -->
         <DataTemplate x:Key="FocusCategoryChip" DataType="{x:Type local:CardViewModel}">
-            <Border Background="{StaticResource Lzn.AccentSoft}" BorderBrush="{StaticResource Lzn.AccentStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Sm}"
-                    Padding="10,4" Margin="0,0,8,6" Visibility="{Binding Category, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
-                <TextBlock Text="{Binding Category.Title, FallbackValue=''}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
-            </Border>
+            <TextBlock Text="{Binding Category.Title, FallbackValue='', Converter={x:Static infra:UpperCaseConverter.Instance}}" Style="{StaticResource Lzn.Text.Overline}"
+                       Margin="0,0,0,6" Visibility="{Binding Category, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
         </DataTemplate>
+        <Style x:Key="FactLabel" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Text.Caption}">
+            <Setter Property="Margin" Value="0,0,12,8" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style x:Key="FactValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+            <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
 
         <!-- Quadro do detalhe: rótulo e texto -->
         <Style x:Key="FocusCard" TargetType="Border" BasedOn="{StaticResource Lzn.Panel}">
@@ -372,23 +380,42 @@
         <!-- Detalhe de ajuste: selos, título grande, descrição, quadros e "O que será alterado" -->
         <DataTemplate x:Key="FocusTweakDetail" DataType="{x:Type local:TweakCardViewModel}">
             <StackPanel>
-                <WrapPanel>
-                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource FocusCategoryChip}" />
+                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource FocusCategoryChip}" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Section}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <WrapPanel Margin="0,12,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" Margin="0,0,8,6" />
                     <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,8,6">
                         <TextBlock Text="{Binding RestartText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
                     </Border>
                 </WrapPanel>
-                <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Display}" TextWrapping="Wrap" Margin="0,14,0,0" />
-                <TextBlock Text="{Binding Description}" FontSize="16" LineHeight="25" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding Description}" Style="{StaticResource FocusCardText}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,8,0,0" />
 
-                <StackPanel Margin="0,18,0,0">
-                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" LineHeight="18">
-                        <Run Text="{Binding Definition.Compatibility, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding RollbackText, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding AdministratorText, Mode=OneWay}" />
-                    </TextBlock>
-                </StackPanel>
+                <!-- O que importa antes de decidir: estado agora, como voltar, permissão e compatibilidade -->
+                <Grid Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="104" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Agora" Style="{StaticResource FactLabel}" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,8">
+                        <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{Binding StateBrush}" Margin="0,0,8,0" />
+                        <TextBlock Text="{Binding StateText}" Foreground="{Binding StateBrush}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" Text="Para voltar" Style="{StaticResource FactLabel}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding RollbackText}" Style="{StaticResource FactValue}" />
+                    <TextBlock Grid.Row="2" Text="Permissão" Style="{StaticResource FactLabel}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding AdministratorText}" Style="{StaticResource FactValue}" />
+                    <TextBlock Grid.Row="3" Text="Compatível" Style="{StaticResource FactLabel}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Definition.Compatibility}" Style="{StaticResource FactValue}" />
+                </Grid>
 
-                <ToggleButton x:Name="HowToggle" HorizontalAlignment="Left" Margin="0,18,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
+                <ToggleButton x:Name="HowToggle" HorizontalAlignment="Left" Margin="0,10,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
                               AutomationProperties.Name="Detalhes técnicos">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
@@ -404,7 +431,7 @@
                         </ControlTemplate>
                     </ToggleButton.Template>
                 </ToggleButton>
-                <StackPanel Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left"
+                <StackPanel Margin="0,10,0,0"
                             Visibility="{Binding IsChecked, ElementName=HowToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                     <TextBlock Text="{Binding Definition.TechnicalReason}" Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap" />
                     <Border Style="{StaticResource FocusCard}" Margin="0,12,0,0">
@@ -495,10 +522,10 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="40,30,32,16" Focusable="False">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="28,24,24,16" Focusable="False">
                     <ContentControl Content="{Binding SelectedCard}" ContentTemplateSelector="{StaticResource FocusDetailsSelector}" Focusable="False" />
                 </ScrollViewer>
-                <Border Grid.Row="1" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Padding="40,16,32,20">
+                <Border Grid.Row="1" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Padding="28,14,24,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -515,10 +542,6 @@
                                 ToolTip="Ler novamente o estado real dos ajustes" Visibility="{Binding HasTweaks, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                             <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Verificar estado" FontSize="{StaticResource Lzn.FontSize.BodySmall}" /></StackPanel>
                         </Button>
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12,0,0,0">
-                            <Ellipse Width="7" Height="7" Fill="{Binding SelectedCard.StateBrush}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                            <TextBlock Text="{Binding SelectedCard.StateText}" Foreground="{Binding SelectedCard.StateBrush}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" VerticalAlignment="Center" />
-                        </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
@@ -544,26 +567,24 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- Layout Foco: lista limpa à esquerda, detalhe grande à direita (em janela estreita, o detalhe abre por cima) -->
+        <!-- Lista ocupa o espaço livre; detalhe com largura fixa à direita (em janela estreita, abre por cima) -->
         <Grid Visibility="{Binding UsesListLayout, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <!-- Lista -->
             <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Width" Value="420" />
                         <Setter Property="BorderThickness" Value="0,0,1,0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsDetailDocked}" Value="False">
-                                <Setter Property="Width" Value="NaN" />
                                 <Setter Property="Grid.ColumnSpan" Value="2" />
                                 <Setter Property="BorderThickness" Value="0" />
                             </DataTrigger>
@@ -722,7 +743,7 @@
             </Border>
 
             <!-- Detalhe fixo -->
-            <Grid Grid.Column="1" Visibility="{Binding IsDetailDocked, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+            <Grid Grid.Column="1" Width="{StaticResource Lzn.Layout.DockedDetailWidth}" Visibility="{Binding IsDetailDocked, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                 <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FocusDetailPanel}" Focusable="False"
                                 Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                 <controls:EmptyState Glyph="{StaticResource Lzn.Glyph.Select}" Message="Selecione um item da lista para ver o que ele faz, o que muda no sistema e como desfazer."

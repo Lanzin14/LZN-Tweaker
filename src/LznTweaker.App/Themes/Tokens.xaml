@@ -139,8 +139,8 @@
     <sys:Double x:Key="Lzn.Space.8">32</sys:Double>
     <!-- Largura mínima do conteúdo para lista e detalhe lado a lado (abaixo disso, o detalhe abre por cima). -->
     <sys:Double x:Key="Lzn.Layout.DetailWidth">420</sys:Double>
-    <!-- Layout Foco: largura da lista; o detalhe ocupa o resto. -->
-    <sys:Double x:Key="Lzn.Layout.ListWidth">460</sys:Double>
+    <!-- Lista e detalhe lado a lado: a lista ocupa o espaço livre e o detalhe tem esta largura (sem área vazia). -->
+    <sys:Double x:Key="Lzn.Layout.DockedDetailWidth">440</sys:Double>
     <Thickness x:Key="Lzn.Padding.Page">28,22,28,16</Thickness>
 
     <!-- Fontes embutidas (Assets/Fonts, SIL OFL 1.1): Geist no app inteiro e Geist Mono em textos técnicos; Segoe UI e Cascadia como reserva. -->
