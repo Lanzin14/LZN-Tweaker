@@ -25,6 +25,35 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <!-- Item do menu: ícone (violeta quando é a página aberta) e nome; recolhida, só o ícone. -->
+        <DataTemplate x:Key="NavItemTemplate" DataType="{x:Type shell:NavItem}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Glyph}" FontSize="15" Width="26">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
+                            <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.TextMuted}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource Lzn.AccentHover}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="{Binding Title}" FontSize="13" VerticalAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                           Style="{StaticResource ExpandedOnly}" />
+            </StackPanel>
+        </DataTemplate>
+        <!-- Ponto de privilégio: verde como administrador, âmbar sem (o app pede administrador para aplicar). -->
+        <Style x:Key="PrivilegeDot" TargetType="Ellipse">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Fill" Value="{StaticResource Lzn.RiskWarn}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsElevated}" Value="True">
+                    <Setter Property="Fill" Value="{StaticResource Lzn.RiskLow}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <!-- Recolhida, cada página mostra o nome na dica ao lado do ícone. -->
         <Style x:Key="SidebarNavItem" TargetType="ListBoxItem" BasedOn="{StaticResource Lzn.NavItem}">
             <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
@@ -59,19 +88,18 @@
             <DockPanel Margin="12,18,12,12">
                 <!-- Cabeçalho: logo oficial (símbolo + LZN; o "Tweaker" escuro da arte não aparece sobre fundo escuro) e versão.
                      Recolhida, só o símbolo: a mesma arte, menor e cortada à esquerda. -->
-                <StackPanel DockPanel.Dock="Top" Margin="6,2,0,12" Style="{StaticResource ExpandedOnly}">
-                    <Image Source="pack://application:,,,/LznTweaker;component/Assets/Brand/lzn-logo-mark.png" Height="42" Stretch="Uniform" HorizontalAlignment="Left"
+                <DockPanel DockPanel.Dock="Top" Margin="6,0,0,14" Style="{StaticResource ExpandedOnly}">
+                    <Button DockPanel.Dock="Right" Style="{StaticResource Lzn.GhostButton}" Padding="7,5" Command="{Binding ToggleSidebarCommand}"
+                            ToolTip="{Binding SidebarToggleText}" AutomationProperties.Name="{Binding SidebarToggleText}">
+                        <TextBlock Text="{Binding SidebarToggleGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" />
+                    </Button>
+                    <Image Source="pack://application:,,,/LznTweaker;component/Assets/Brand/lzn-logo-mark.png" Height="22" Stretch="Uniform" VerticalAlignment="Center"
                            RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="LZN Tweaker" ToolTip="LZN Tweaker" />
-                    <DockPanel Margin="2,4,0,0">
-                        <Button DockPanel.Dock="Right" Style="{StaticResource Lzn.GhostButton}" Padding="7,5" Command="{Binding ToggleSidebarCommand}"
-                                ToolTip="{Binding SidebarToggleText}" AutomationProperties.Name="{Binding SidebarToggleText}">
-                            <TextBlock Text="{Binding SidebarToggleGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" />
-                        </Button>
-                        <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" VerticalAlignment="Center">
-                            <Run Text="Tweaker" Foreground="{StaticResource Lzn.Sidebar.Text}" FontWeight="SemiBold" /><Run Text=" · " /><Run Text="{Binding AppVersion, Mode=OneWay}" />
-                        </TextBlock>
-                    </DockPanel>
-                </StackPanel>
+                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" VerticalAlignment="Center" Margin="8,0,0,0"
+                               ToolTip="{Binding AppVersion, StringFormat=LZN Tweaker {0}}">
+                        <Run Text="Tweaker" Foreground="{StaticResource Lzn.Sidebar.Text}" FontWeight="Medium" />
+                    </TextBlock>
+                </DockPanel>
                 <StackPanel DockPanel.Dock="Top" Margin="0,2,0,10" Style="{StaticResource CollapsedOnly}">
                     <Border Width="40" Height="32" ClipToBounds="True" HorizontalAlignment="Center" Background="Transparent"
                             ToolTip="{Binding AppVersion, StringFormat=LZN Tweaker · {0}}" ToolTipService.Placement="Right">
@@ -89,64 +117,26 @@
                 <!-- Rodapé recolhido: só o avatar com o ponto de status; o resumo fica na dica. -->
                 <Grid DockPanel.Dock="Bottom" Margin="0,12,0,0" HorizontalAlignment="Center" Style="{StaticResource CollapsedOnly}"
                       ToolTip="{Binding FooterSummary}" ToolTipService.Placement="Right" AutomationProperties.Name="{Binding FooterSummary}">
-                    <Border Width="32" Height="32" CornerRadius="16" Background="{StaticResource Lzn.Sidebar.Active}" BorderBrush="{StaticResource Lzn.Sidebar.Stroke}" BorderThickness="1">
-                        <TextBlock Text="{Binding UserInitial}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{StaticResource Lzn.RiskLow}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                             Stroke="{StaticResource Lzn.Sidebar}" StrokeThickness="2" Width="11" Height="11" />
+                    <Ellipse Width="9" Height="9" Margin="0,4" Style="{StaticResource PrivilegeDot}" />
                 </Grid>
 
-                <!-- Rodapé: status, usuário, Windows e privilégios -->
-                <Border DockPanel.Dock="Bottom" Padding="12" Margin="0,12,0,0">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Background" Value="{StaticResource Lzn.Sidebar.Active}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource Lzn.Sidebar.Stroke}" />
-                            <Setter Property="BorderThickness" Value="1" />
-                            <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Lg}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSidebarCollapsed}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{StaticResource Lzn.RiskLow}" Margin="0,0,8,0" />
-                            <TextBlock Text="{Binding StatusText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.Sidebar.Text}" TextTrimming="CharacterEllipsis" MaxWidth="150"
-                                       ToolTip="{Binding StatusText}" />
-                        </StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border Width="28" Height="28" CornerRadius="14" Background="{StaticResource Lzn.Sidebar}" BorderBrush="{StaticResource Lzn.Sidebar.Stroke}" BorderThickness="1">
-                                <TextBlock Text="{Binding UserInitial}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                            <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding UserName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding PrivilegeText}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextTrimming="CharacterEllipsis">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="{StaticResource Lzn.RiskWarn}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsElevated}" Value="True">
-                                                    <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.Text}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Text="{Binding WindowsVersion}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" Margin="0,10,0,0" />
-                    </StackPanel>
-                </Border>
+                <!-- Rodapé: privilégio numa linha; usuário, Windows e status ficam na dica. -->
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="10,10,0,0" Style="{StaticResource ExpandedOnly}"
+                            ToolTip="{Binding FooterSummary}" ToolTipService.Placement="Right" AutomationProperties.Name="{Binding FooterSummary}">
+                    <Ellipse Width="7" Height="7" Margin="0,0,10,0" Style="{StaticResource PrivilegeDot}" />
+                    <TextBlock Text="{Binding PrivilegeText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" />
+                </StackPanel>
+
+                <!-- Rodapé: Histórico fixo, separado do menu por uma linha. -->
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Border Height="1" Margin="4,8,4,6" Background="{StaticResource Lzn.Sidebar.Stroke}" />
+                    <ListBox ItemsSource="{Binding FooterNavItems}" SelectedItem="{Binding SelectedFooterItem}" Background="Transparent" BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource SidebarNavItem}"
+                             ItemTemplate="{StaticResource NavItemTemplate}" KeyboardNavigation.TabNavigation="Once" />
+                </StackPanel>
 
                 <!-- Navegação (teclado: setas para cima/baixo) -->
-                <ListBox ItemsSource="{Binding NavView}" SelectedItem="{Binding SelectedItem}" Background="Transparent" BorderThickness="0"
+                <ListBox ItemsSource="{Binding NavView}" SelectedItem="{Binding SelectedMainItem}" Background="Transparent" BorderThickness="0"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource SidebarNavItem}"
                          KeyboardNavigation.TabNavigation="Once">
                     <ListBox.GroupStyle>
@@ -154,6 +144,15 @@
                             <GroupStyle.HeaderTemplate>
                                 <DataTemplate>
                                     <Grid>
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Name}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Border Style="{StaticResource ExpandedOnly}">
                                             <TextBlock Text="{Binding Name}" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" Margin="10,10,0,5" />
                                         </Border>
@@ -165,24 +164,7 @@
                         </GroupStyle>
                     </ListBox.GroupStyle>
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type shell:NavItem}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Glyph}" FontSize="14" Width="24">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
-                                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                    <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.Text}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                                <TextBlock Text="{Binding Title}" FontSize="13" VerticalAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                                           Style="{StaticResource ExpandedOnly}" />
-                            </StackPanel>
-                        </DataTemplate>
+                        <StaticResource ResourceKey="NavItemTemplate" />
                     </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>

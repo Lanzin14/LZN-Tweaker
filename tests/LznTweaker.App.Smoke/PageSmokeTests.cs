@@ -410,9 +410,14 @@ public sealed class PageSmokeTests
     private static IEnumerable<string> CheckSidebar(ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
     {
         var errors = new List<string>();
-        var sections = string.Join(",", shell.NavItems.Select(item => item.Section).Distinct());
-        if (sections != "Início,Otimização,Jogos e manutenção,Ferramentas e segurança")
+        var sections = string.Join(",", shell.NavItems.Select(item => item.Section).Where(section => section.Length > 0).Distinct());
+        if (sections != "Windows,Jogos,Ferramentas")
             errors.Add("sidebar: seções fora da ordem esperada: " + sections);
+        if (shell.NavView.Cast<LznTweaker.Shell.NavItem>().Any(item => item.Key == ShellPages.Backups) || shell.FooterNavItems.Single().Key != ShellPages.Backups)
+            errors.Add("sidebar: o Histórico deveria ficar só no rodapé");
+        shell.Navigate(ShellPages.Backups);
+        if (shell.SelectedMainItem is not null || shell.SelectedFooterItem?.Key != ShellPages.Backups)
+            errors.Add("sidebar: com o Histórico aberto, só o rodapé deveria aparecer selecionado");
         var before = bindingErrors.Messages.Count;
         var sidebar = (FrameworkElement)((System.Windows.Controls.Panel)window.Content).Children[0];
         // Layout Foco: sem preferência salva, a sidebar abre recolhida.
