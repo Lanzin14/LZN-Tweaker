@@ -6,12 +6,12 @@
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:tools="clr-namespace:LznTweaker.Features.Tools"
-             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource StrokeBrush}" />
+            <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="14,12" />
@@ -74,8 +74,8 @@
         <!-- Cabeçalho do jogo e abas (só as que têm conteúdo) -->
         <StackPanel Margin="4,0,12,0">
             <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" />
-            <TextBlock Text="{Binding Description}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
-            <TextBlock Text="{Binding DetectionText}" Foreground="{StaticResource AccentTextBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,5,0,0" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Description}" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding DetectionText}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,5,0,0" TextWrapping="Wrap" />
             <ItemsControl ItemsSource="{Binding Tabs}" Margin="-4,12,0,10" Focusable="False">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
@@ -326,7 +326,7 @@
                                         <Grid>
                                             <StackPanel Margin="0,0,120,0">
                                                 <TextBlock Text="{Binding Label}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                                <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,3,0,0" ToolTip="{Binding Details}" />
+                                                <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,3,0,0" ToolTip="{Binding Details}" />
                                             </StackPanel>
                                             <Button HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.ToolbarButton}" Content="Restaurar"
                                                     Command="{Binding DataContext.RestoreBackupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
@@ -336,7 +336,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Border>
-                    <TextBlock Text="{Binding RunSummary}" Foreground="{StaticResource AccentTextBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,8,0,0"
+                    <TextBlock Text="{Binding RunSummary}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,8,0,0"
                                Visibility="{Binding HasActions, Converter={x:Static local:InverseBoolToVisibilityConverter.Instance}}" />
                 </StackPanel>
             </StackPanel>
@@ -347,7 +347,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:DiagnosticItemViewModel}">
                             <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,8">
-                                <Expander Foreground="{StaticResource TextPrimaryBrush}">
+                                <Expander Foreground="{StaticResource Lzn.Text}">
                                     <Expander.Header>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -364,8 +364,8 @@
                                         </Grid>
                                     </Expander.Header>
                                     <StackPanel Margin="24,8,0,4">
-                                        <TextBlock Text="{Binding Recommendation}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" LineHeight="16" />
-                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Recommendation}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
+                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,5,0,0" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Expander>
                             </Border>
@@ -380,7 +380,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:GuidanceItemViewModel}">
                             <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,8">
-                                <Expander Foreground="{StaticResource TextPrimaryBrush}">
+                                <Expander Foreground="{StaticResource Lzn.Text}">
                                     <Expander.Header>
                                         <StackPanel>
                                             <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" Foreground="{Binding TitleBrush}" TextWrapping="Wrap" />
@@ -395,7 +395,7 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,6,0,0" />
                                     </StackPanel>
                                 </Expander>
                             </Border>

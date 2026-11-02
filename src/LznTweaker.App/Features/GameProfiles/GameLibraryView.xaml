@@ -5,7 +5,7 @@
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.GameProfiles"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
 
@@ -48,18 +48,18 @@
         <Geometry x:Key="WindowsLogo">M0,0 H7.4 V7.4 H0 Z M8.6,0 H16 V7.4 H8.6 Z M0,8.6 H7.4 V16 H0 Z M8.6,8.6 H16 V16 H8.6 Z</Geometry>
 
         <Style x:Key="TabStyle" TargetType="TabItem">
-            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Tab" Padding="14,7" Margin="0,0,6,10" CornerRadius="8" Background="Transparent" BorderThickness="1" BorderBrush="{StaticResource StrokeBrush}">
+                        <Border x:Name="Tab" Padding="14,7" Margin="0,0,6,10" CornerRadius="8" Background="Transparent" BorderThickness="1" BorderBrush="{StaticResource Lzn.Stroke}">
                             <ContentPresenter ContentSource="Header" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Tab" Property="Background" Value="{StaticResource AccentSoftBrush}" />
-                                <Setter TargetName="Tab" Property="BorderBrush" Value="{StaticResource AccentStrokeBrush}" />
-                                <Setter Property="Foreground" Value="{StaticResource AccentTextBrush}" />
+                                <Setter TargetName="Tab" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
+                                <Setter TargetName="Tab" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                                <Setter Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
