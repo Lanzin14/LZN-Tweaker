@@ -88,8 +88,8 @@
                     <StackPanel>
                         <Grid>
                             <TextBlock Text="Limpeza" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" />
-                            <Border Style="{StaticResource Lzn.Badge.Success}" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding CleanupBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskLow}" />
+                            <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding CleanupBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
                             </Border>
                         </Grid>
                         <TextBlock Text="Temporários, caches e logs que podem ser apagados. Arquivos em uso ficam onde estão." Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,8,0,14" MinHeight="32" />

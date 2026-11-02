@@ -24,7 +24,7 @@ public sealed partial class HistoryEntryViewModel(TweakOperationResult entry, st
 
     public TweakOperationResult Entry { get; } = entry;
     public string When => Entry.StartedAt.LocalDateTime.ToString("g");
-    public string Title => Entry.RequestedState;
+    public string Title => BackupsViewModel.TitleOf(Entry);
     public string Area { get; } = area;
     public string Outcome => Entry.Outcome;
     public string Message => Entry.Message;
@@ -95,6 +95,7 @@ public sealed partial class BackupsViewModel : ObservableObject
     private string _summary = "Carregando o histórico…";
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(VisibleCountText))]
     private int _visibleCount;
 
     partial void OnSearchTextChanged(string value) => RefreshView();
@@ -124,7 +125,8 @@ public sealed partial class BackupsViewModel : ObservableObject
                 };
                 Entries.Add(row);
             }
-            Summary = $"{entries.Count} operação(ões) registradas · {undo.Count} ajuste(s) com valor anterior guardado · " +
+            Summary = $"{Plural.Of(entries.Count, "operação registrada", "operações registradas")} · " +
+                      $"{Plural.Of(undo.Count, "ajuste", "ajustes")} com valor anterior guardado · " +
                       $"{entries.Count(entry => entry.Outcome is not ("Sucesso verificado" or "Reversão verificada" or "Executado sem verificação" or "Nada a alterar" or "Ponto recente reutilizado"))} com falha ou bloqueio";
         }
         catch (Exception ex) when (ex is System.IO.IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
@@ -179,7 +181,7 @@ public sealed partial class BackupsViewModel : ObservableObject
             var results = await _executor.UndoAsync(entries.Select(entry => entry.Entry).ToArray());
             var ok = results.Count(result => result.Outcome == "Reversão verificada");
             _notifications.Notify(ok == results.Count ? "Restauração concluída" : "Restauração parcial",
-                $"{ok} de {results.Count} item(ns) restaurado(s)." + (ok == results.Count ? string.Empty :
+                $"{ok} de {Plural.Of(results.Count, "item restaurado", "itens restaurados")}." + (ok == results.Count ? string.Empty :
                     " " + string.Join(" | ", results.Where(result => result.Outcome != "Reversão verificada").Take(3).Select(result => result.Message))),
                 ok == results.Count ? NotificationKind.Success : NotificationKind.Warning);
         }
@@ -233,6 +235,19 @@ public sealed partial class BackupsViewModel : ObservableObject
             _ => true
         };
     }
+
+    /// <summary>Reversões e perfis de jogo guardam só "Desfazer" ou o nome do perfil; aqui ganham o nome do ajuste ou do jogo.</summary>
+    internal static string TitleOf(TweakOperationResult entry)
+    {
+        if (entry.RequestedState == "Desfazer")
+        {
+            var name = TweakCatalog.All.FirstOrDefault(definition => definition.Id == entry.TweakId)?.Name;
+            return name is null ? "Desfazer" : $"Desfazer: {name}";
+        }
+        return entry.TweakId == GameTuningService.DeadlockOperationId ? $"Deadlock: perfil {entry.RequestedState}" : entry.RequestedState;
+    }
+
+    public string VisibleCountText => Plural.Of(VisibleCount, "registro", "registros");
 
     internal static string AreaOf(string tweakId) => tweakId switch
     {

@@ -206,7 +206,7 @@
             <TextBox Style="{StaticResource Lzn.SearchBox}" Height="36" Tag="Pesquisar programa por nome…" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      AutomationProperties.Name="Pesquisar programa" />
             <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.Text.Caption}"
-                       Text="{Binding VisibleCount, StringFormat={}{0} programa(s)}" />
+                       Text="{Binding VisibleCountText}" />
         </Grid>
 
         <controls:MasterDetailLayout Grid.Row="3" Selected="{Binding SelectedProgram}" DetailTemplate="{StaticResource ProgramDetail}" CloseCommand="{Binding ClearSelectionCommand}"

@@ -174,7 +174,7 @@ public partial class TweakCardsViewModel : ObservableObject
         {
             var tweaks = Cards.OfType<TweakCardViewModel>().Where(card => card.IsPending).ToArray();
             var undo = tweaks.Count(card => card.PendingIsUndo);
-            return $"{tweaks.Length} alteração(ões) pendente(s)" + (undo > 0 ? $" · {undo} para desfazer" : string.Empty) +
+            return Plural.Of(tweaks.Length, "alteração pendente", "alterações pendentes") + (undo > 0 ? $" · {undo} para desfazer" : string.Empty) +
                    (tweaks.Any(card => card.Definition.RequiresRestart) ? " · inclui itens que exigem reinicialização" : string.Empty);
         }
     }
@@ -349,7 +349,7 @@ public partial class TweakCardsViewModel : ObservableObject
             blocked ? "Lote bloqueado" : failures.Length == 0 ? "Alterações concluídas" : "Concluído com falhas",
             blocked
                 ? "O ponto de restauração não foi criado; nenhuma alteração foi feita."
-                : $"{ok} item(ns) concluído(s)" + (failures.Length == 0 ? "." : $"; {failures.Length} com falha: " +
+                : Plural.Of(ok, "item concluído", "itens concluídos") + (failures.Length == 0 ? "." : $"; {failures.Length} com falha: " +
                     string.Join(" | ", failures.Take(3).Select(result => $"{result.RequestedState}: {result.Message}"))) +
                   (pending.Any(card => card.Definition.RequiresRestart) ? " Alguns itens exigem reinicialização." : string.Empty),
             blocked || failures.Length > 0 ? NotificationKind.Warning : NotificationKind.Success);

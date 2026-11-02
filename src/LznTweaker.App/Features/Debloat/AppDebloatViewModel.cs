@@ -167,7 +167,7 @@ public sealed partial class AppDebloatViewModel : ObservableObject
             var system = Queue.Count(item => item.IsSystem);
             return Queue.Count == 0
                 ? "Nenhum app marcado para remoção."
-                : $"{Queue.Count} app(s) marcado(s){(system > 0 ? $" · {system} do sistema" : string.Empty)}" +
+                : $"{Plural.Of(Queue.Count, "app marcado", "apps marcados")}{(system > 0 ? $" · {system} do sistema" : string.Empty)}" +
                   (RemoveForAllUsers ? " · para TODAS as contas (volta só pela Store)" : " · somente a conta atual");
         }
     }
@@ -212,8 +212,8 @@ public sealed partial class AppDebloatViewModel : ObservableObject
             SelectedApp = InstalledView.Cast<AppxItemViewModel>().FirstOrDefault();
             AccountWarning = inventory.AccountWarning;
             var sponsored = inventory.Packages.Count(package => package.Category == AppxCategory.Sponsored);
-            StatusText = $"{inventory.Packages.Count} app(s) removíveis encontrados ({sponsored} patrocinados). " +
-                         $"{inventory.ProtectedCount} pacote(s) do sistema, frameworks e componentes de outros programas foram ocultados por segurança.";
+            StatusText = $"{Plural.Of(inventory.Packages.Count, "app removível encontrado", "apps removíveis encontrados")} ({sponsored} patrocinados). " +
+                         $"{Plural.Of(inventory.ProtectedCount, "pacote", "pacotes")} do sistema, frameworks e componentes de outros programas foram ocultados por segurança.";
             await LoadRemovedAsync();
         }
         catch (Exception ex) when (ex is InvalidOperationException or System.IO.IOException or System.Text.Json.JsonException)
@@ -255,7 +255,7 @@ public sealed partial class AppDebloatViewModel : ObservableObject
             "• Antes de tudo, um ponto de restauração é criado (obrigatório). Ele protege o resto do sistema, mas não traz apps da Store de volta.\n" +
             "• Cada remoção é conferida e registrada no histórico; \"Restaurar apps removidos\" re-registra o app quando os arquivos ainda existem " +
             "ou abre a página dele na Microsoft Store.\n" +
-            (system.Length > 0 ? $"• {system.Length} app(s) do sistema: a remoção pode afetar funcionalidades do Windows.\n" : string.Empty) +
+            (system.Length > 0 ? $"• {Plural.Of(system.Length, "app", "apps")} do sistema: a remoção pode afetar funcionalidades do Windows.\n" : string.Empty) +
             (RemoveForAllUsers
                 ? "• Remoção para TODAS as contas, incluindo novas: o Windows apaga os arquivos e a volta só é possível pela Microsoft Store.\n"
                 : "• Somente a conta atual é afetada.\n") +
@@ -276,7 +276,7 @@ public sealed partial class AppDebloatViewModel : ObservableObject
             var results = await _service.RemoveAsync(apps.Select(app => app.Package).ToArray(), RemoveForAllUsers, progress);
             var removed = results.Count(result => result.TweakId.StartsWith(AppxDebloatService.OperationPrefix, StringComparison.Ordinal) && result.Outcome == "Sucesso verificado");
             var failures = results.Where(result => result.Outcome is not ("Sucesso verificado" or "Nada a alterar" or "Ponto recente reutilizado")).ToArray();
-            StatusText = $"{removed} de {apps.Length} app(s) removido(s)." +
+            StatusText = $"{removed} de {Plural.Of(apps.Length, "app removido", "apps removidos")}." +
                          (failures.Length == 0 ? string.Empty : " Problemas: " + string.Join(" | ", failures.Select(result => $"{result.RequestedState}: {result.Outcome} — {result.Message}")));
         }
         finally
@@ -314,7 +314,7 @@ public sealed partial class AppDebloatViewModel : ObservableObject
         var storeOnly = selected.Where(item => results.Any(result =>
             result.TweakId == AppxDebloatService.OperationPrefix + item.Package.Name && result.Outcome == "Requer Microsoft Store")).ToArray();
         var failures = results.Where(result => result.Outcome is not ("Reversão verificada" or "Nada a alterar" or "Requer Microsoft Store")).ToArray();
-        StatusText = $"{restored} app(s) restaurado(s)." +
+        StatusText = $"{Plural.Of(restored, "app restaurado", "apps restaurados")}." +
                      (storeOnly.Length > 0 ? $" {storeOnly.Length} só podem voltar pela Microsoft Store." : string.Empty) +
                      (failures.Length > 0 ? " Problemas: " + string.Join(" | ", failures.Select(result => $"{result.RequestedState}: {result.Message}")) : string.Empty);
 

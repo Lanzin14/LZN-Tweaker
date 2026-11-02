@@ -167,7 +167,7 @@ public sealed partial class GameLibraryViewModel : ObservableObject
             foreach (var section in AllSections)
                 section.Page.SetDiagnostics(items);
             var attention = items.Count(item => item.Status == DiagnosticStatus.Attention);
-            StatusText = $"{games.Count(game => game.IsInstalled)} de {games.Length} jogos encontrados · {attention} ponto(s) de atenção. " +
+            StatusText = $"{games.Count(game => game.IsInstalled)} de {games.Length} jogos encontrados · {Plural.Of(attention, "ponto de atenção", "pontos de atenção")}. " +
                          "Nada é alterado até você marcar ações e clicar em Executar.";
         }
         catch (Exception ex) when (ex is InvalidOperationException or System.IO.IOException or System.Text.Json.JsonException)

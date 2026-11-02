@@ -63,14 +63,14 @@ public sealed partial class OptimizationActionViewModel : ObservableObject
         $"Apaga o conteúdo de {location.Path}. Os jogos vão recompilar shaders e podem travar por alguns instantes nas primeiras partidas.",
         "Baixo", "Feche os jogos (arquivos em uso são mantidos).", "Todos os jogos",
         "Sem reversão: é cache e é recriado automaticamente.",
-        $"{ShaderCacheService.FormatBytes(location.Bytes)} em {location.Files:N0} arquivo(s) · {location.Vendor}")
+        $"{ShaderCacheService.FormatBytes(location.Bytes)} em {Plural.Of(location.Files, "arquivo", "arquivos")} · {location.Vendor}")
     { ShaderCache = location };
 
     public static OptimizationActionViewModel ForSteamFolder(SteamFolderTarget target) => new($"Redefinir {target.Label}",
         $"Renomeia steamapps\\shadercache\\{target.Game.SteamAppId} para um backup; a Steam e o jogo recriam o cache.",
         "Baixo", "Steam e o jogo fechados.", target.Game.Name,
         "Reversível: \"Restaurar\" devolve a pasta original.",
-        $"{ShaderCacheService.FormatBytes(target.Bytes)} em {target.Files:N0} arquivo(s) · {target.FolderPath}")
+        $"{ShaderCacheService.FormatBytes(target.Bytes)} em {Plural.Of(target.Files, "arquivo", "arquivos")} · {target.FolderPath}")
     { SteamFolder = target };
 
     public void SetResult(TweakOperationResult result)

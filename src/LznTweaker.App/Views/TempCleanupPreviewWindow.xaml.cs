@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Tweaks;
+using LznTweaker.Infrastructure;
 
 namespace LznTweaker.Views;
 
@@ -71,7 +72,7 @@ public partial class TempCleanupPreviewWindow : Window, INotifyPropertyChanged
     {
         var selected = Items.Where(item => item.IsSelected).Select(item => item.File).ToArray();
         var size = selected.Sum(file => file.Length);
-        SelectionSummary = $"{selected.Length:N0} de {Items.Count:N0} arquivo(s) · {FormatBytes(size)} selecionados";
+        SelectionSummary = $"{selected.Length:N0} de {Plural.Of(Items.Count, "arquivo", "arquivos")} · {FormatBytes(size)} selecionados";
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectionSummary)));
         AcceptCommand?.NotifyCanExecuteChanged();
     }

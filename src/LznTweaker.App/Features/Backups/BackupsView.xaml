@@ -113,7 +113,7 @@
                 </StackPanel>
             </Border>
             <TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.Text.Caption}"
-                       Text="{Binding VisibleCount, StringFormat={}{0} registro(s)}" />
+                       Text="{Binding VisibleCountText}" />
         </Grid>
 
         <controls:MasterDetailLayout Grid.Row="3" Selected="{Binding SelectedEntry}" DetailTemplate="{StaticResource HistoryDetail}" CloseCommand="{Binding ClearSelectionCommand}"

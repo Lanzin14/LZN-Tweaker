@@ -194,6 +194,7 @@ public sealed partial class ProgramsViewModel : ObservableObject
     public ICollectionView ProgramsView { get; }
     public IReadOnlyList<ProgramFilterOption> Filters { get; }
     public int VisibleCount => ProgramsView.Cast<object>().Count();
+    public string VisibleCountText => Plural.Of(VisibleCount, "programa", "programas");
     private ProgramTag? _selectedTag;
     private ProgramTag? SelectedTag => _selectedTag;
 
@@ -235,6 +236,7 @@ public sealed partial class ProgramsViewModel : ObservableObject
     {
         ProgramsView.Refresh();
         OnPropertyChanged(nameof(VisibleCount));
+        OnPropertyChanged(nameof(VisibleCountText));
         // O detalhe acompanha a lista: se o programa selecionado saiu do filtro, mostra o primeiro visível.
         if (SelectedProgram is null || !SelectedProgram.Matches(SelectedTag, SearchText))
             SelectedProgram = ProgramsView.Cast<ProgramCardViewModel>().FirstOrDefault();

@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LznTweaker.Core.Diagnostics;
 using LznTweaker.Core.GameOptimization;
-using LznTweaker.Core.GameTuning;
 using LznTweaker.Core.Tweaks;
 using LznTweaker.Features.Backups;
 using LznTweaker.Features.TweakCards;
@@ -66,7 +65,7 @@ public sealed partial class HomeViewModel : ObservableObject
     // A varredura da Limpeza só roda ao abrir a página: no Início ela deixaria a abertura do app lenta.
     public string CleanupBadge => _cleanup.IsBusy ? "verificando…"
         : _cleanup.Categories.All(category => category.ScanResult is null) ? "não verificado" : _cleanup.TotalFoundText;
-    public string StartupBadge => _startup.TotalCount == 0 ? "lendo…" : _startup.EnabledCount == 1 ? "1 ativado" : $"{_startup.EnabledCount} ativados";
+    public string StartupBadge => _startup.TotalCount == 0 ? "lendo…" : Plural.Of(_startup.EnabledCount, "ativado", "ativados");
 
     public IReadOnlyList<RecentChange> RecentChanges { get; private set; } = [];
     public bool HasRecentChanges => RecentChanges.Count > 0;
@@ -108,7 +107,7 @@ public sealed partial class HomeViewModel : ObservableObject
         {
             var entries = await _history.ReadAsync();
             RecentChanges = entries.OrderByDescending(entry => entry.StartedAt).Take(4)
-                .Select(entry => new RecentChange(TitleOf(entry), BackupsViewModel.AreaOf(entry.TweakId), entry.StartedAt.LocalDateTime.ToString("dd/MM HH:mm"),
+                .Select(entry => new RecentChange(BackupsViewModel.TitleOf(entry), BackupsViewModel.AreaOf(entry.TweakId), entry.StartedAt.LocalDateTime.ToString("dd/MM HH:mm"),
                     entry.Outcome, entry.Outcome is "Sucesso verificado" or "Reversão verificada" or "Executado sem verificação"))
                 .ToArray();
         }
@@ -119,17 +118,6 @@ public sealed partial class HomeViewModel : ObservableObject
         }
         OnPropertyChanged(nameof(RecentChanges));
         OnPropertyChanged(nameof(HasRecentChanges));
-    }
-
-    /// <summary>Reversões e perfis de jogo guardam só "Desfazer" ou o nome do perfil; aqui ganham o nome do ajuste ou do jogo.</summary>
-    internal static string TitleOf(TweakOperationResult entry)
-    {
-        if (entry.RequestedState == "Desfazer")
-        {
-            var name = TweakCatalog.All.FirstOrDefault(definition => definition.Id == entry.TweakId)?.Name;
-            return name is null ? "Desfazer" : $"Desfazer: {name}";
-        }
-        return entry.TweakId == GameTuningService.DeadlockOperationId ? $"Deadlock: perfil {entry.RequestedState}" : entry.RequestedState;
     }
 
     private async Task LoadGamesAsync()

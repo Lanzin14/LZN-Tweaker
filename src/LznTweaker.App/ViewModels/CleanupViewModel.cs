@@ -233,7 +233,10 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
                 var result = await _cleanupService.ScanCategoryAsync(category.CategoryType, cancellationToken);
                 category.ScanResult = result;
                 category.IsScanning = false;
-                category.StatusText = $"{result.FileCount:N0} arquivo(s) · {result.TotalSizeText}";
+                category.StatusText = $"{Plural.Of(result.FileCount, "arquivo", "arquivos")} · {result.TotalSizeText}";
+                // Área sem nada para apagar não fica marcada: o total marcado mostra só o que a limpeza vai liberar.
+                if (result.TotalBytes == 0)
+                    category.IsSelected = false;
 
                 _totalFoundBytes += result.TotalBytes;
                 _totalFoundFiles += result.FileCount;
@@ -297,7 +300,7 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
             IsBusy = false;
         }
 
-        var resultMessage = $"Limpeza concluída: {CleanupFileItem.FormatBytes(summary.TotalBytesFreed)} liberados ({summary.TotalDeleted:N0} arquivo(s) removido(s); {summary.TotalSkipped:N0} ignorado(s) por estarem em uso, sem permissão ou ausentes).";
+        var resultMessage = $"Limpeza concluída: {CleanupFileItem.FormatBytes(summary.TotalBytesFreed)} liberados ({Plural.Of(summary.TotalDeleted, "arquivo removido", "arquivos removidos")}; {Plural.Of(summary.TotalSkipped, "ignorado", "ignorados")} por estarem em uso, sem permissão ou ausentes).";
         if (summary.Errors.Count > 0)
             resultMessage += $" Avisos: {string.Join(" | ", summary.Errors)}";
 
