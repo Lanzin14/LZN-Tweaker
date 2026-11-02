@@ -39,8 +39,8 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="FnEvidence" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Margin="0,0,14,0" VerticalAlignment="Top" TextWrapping="Wrap" MaxWidth="220" />
-                <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,14,0" MaxWidth="220">
-                    <TextBlock Text="{Binding Value}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" />
+                <Border Grid.Column="1" Style="{StaticResource Lzn.ValueChip}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,14,0" MaxWidth="220">
+                    <TextBlock Text="{Binding Value}" Style="{StaticResource Lzn.ValueText}" TextWrapping="Wrap" />
                 </Border>
                 <StackPanel Grid.Column="2" Margin="0,0,12,0">
                     <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
@@ -71,12 +71,20 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Cabeçalho do jogo e abas (só as que têm conteúdo) -->
+        <!-- Cabeçalho do jogo (capa local, quando existe) e abas (só as que têm conteúdo) -->
         <StackPanel Margin="4,0,12,0">
-            <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Section}" />
-            <TextBlock Text="{Binding Description}" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
-            <TextBlock Text="{Binding DetectionText}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="0,5,0,0" TextWrapping="Wrap" />
-            <ItemsControl ItemsSource="{Binding Tabs}" Margin="-4,12,0,10" Focusable="False">
+            <DockPanel>
+                <Image DockPanel.Dock="Left" Source="{Binding Cover}" Width="184" Height="86" Stretch="UniformToFill" Margin="0,0,18,0" VerticalAlignment="Top"
+                       RenderOptions.BitmapScalingMode="HighQuality" Visibility="{Binding HasCover, Converter={StaticResource BoolToVisibility}}" AutomationProperties.Name="{Binding Title}">
+                    <Image.Clip><RectangleGeometry Rect="0,0,184,86" RadiusX="6" RadiusY="6" /></Image.Clip>
+                </Image>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding DetectionText}" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+            </DockPanel>
+            <ItemsControl ItemsSource="{Binding Tabs}" Margin="0,16,0,12" Focusable="False">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
@@ -117,8 +125,8 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,12,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
-                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Gerenciador de Tarefas" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
@@ -160,8 +168,8 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,10,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
-                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Vídeo e desempenho" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
@@ -178,8 +186,8 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Margin="0,0,14,0" VerticalAlignment="Top" />
-                                        <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,14,0">
-                                            <TextBlock Text="{Binding Value}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
+                                        <Border Grid.Column="1" Style="{StaticResource Lzn.ValueChip}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,14,0">
+                                            <TextBlock Text="{Binding Value}" Style="{StaticResource Lzn.ValueText}" />
                                         </Border>
                                         <StackPanel Grid.Column="2">
                                             <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
@@ -225,8 +233,8 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,12,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
-                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Configurações gerais: vídeo do jogo" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
@@ -251,8 +259,8 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,10,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,10,0">
-                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Placa de vídeo: escolha a fabricante" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>

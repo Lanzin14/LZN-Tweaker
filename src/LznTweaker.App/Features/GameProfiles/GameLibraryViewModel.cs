@@ -189,6 +189,7 @@ public sealed partial class GameLibraryViewModel : ObservableObject
         foreach (var section in Sections)
         {
             // Jogos da Epic: ícone do próprio executável instalado; sem ele, o monograma.
+            section.Page.Cover = section.Game?.SteamAppId is { } headerAppId ? LocalArtwork.SteamHeader(steamRoot, headerAppId) : null;
             section.Icon = section.Game?.SteamAppId is { } appId
                 ? LocalArtwork.SteamAppIcon(steamRoot, appId)
                 : section.Game?.Platform == GamePlatform.Epic

@@ -42,8 +42,8 @@
                         <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0"
                                    ToolTip="{Binding ManualPath}" />
                         <!-- Valor recomendado -->
-                        <Border Grid.Column="1" Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,14,0" MaxWidth="240" ToolTip="{Binding RecommendedValue}">
-                            <TextBlock Text="{Binding RecommendedValue}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextTrimming="CharacterEllipsis" />
+                        <Border Grid.Column="1" Style="{StaticResource Lzn.ValueChip}" Margin="0,0,14,0" MaxWidth="240" ToolTip="{Binding RecommendedValue}">
+                            <TextBlock Text="{Binding RecommendedValue}" Style="{StaticResource Lzn.ValueText}" TextTrimming="CharacterEllipsis" />
                         </Border>
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0"
                                     Visibility="{Binding ShowsState, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
@@ -345,7 +345,7 @@
                                                            Visibility="{Binding KeepsQualityForVisibility, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                                                 <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
                                             </StackPanel>
-                                            <TextBlock Grid.Column="1" Text="{Binding Value}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.AccentText}" Margin="0,0,16,0" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Value}" Style="{StaticResource Lzn.ValueText}" Margin="0,0,16,0" />
                                             <TextBlock Grid.Column="2" Text="{Binding Note}" Style="{StaticResource Lzn.Text.Caption}" />
                                         </Grid>
                                     </DataTemplate>

@@ -273,6 +273,13 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
         _ => []
     };
 
+    /// <summary>Capa local do jogo (Steam) para o cabeçalho; nula quando o jogo não tem arte no PC.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasCover))]
+    private System.Windows.Media.ImageSource? _cover;
+
+    public bool HasCover => Cover is not null;
+
     // ── Abas: Ações, Configurações, Orientações e Diagnóstico (só as que têm conteúdo) ──
     public const string ActionsTab = "actions";
     public const string SettingsTab = "settings";

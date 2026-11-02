@@ -17,23 +17,24 @@
                 <Setter.Value>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
-                        <Setter Property="Margin" Value="0,0,0,8" />
+                        <Setter Property="Margin" Value="0,0,0,2" />
                         <Setter Property="Cursor" Value="Hand" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
-                                    <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="10,9" BorderThickness="1"
-                                            Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.StrokeSubtle}">
-                                        <ContentPresenter />
-                                    </Border>
+                                    <Grid>
+                                        <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="10,7" Background="Transparent">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <Border x:Name="Marker" Width="3" HorizontalAlignment="Left" Margin="0,10" CornerRadius="2" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                                    </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.Sidebar.Active}" />
+                                            <Setter TargetName="Marker" Property="Visibility" Value="Visible" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -48,18 +49,18 @@
         <Geometry x:Key="WindowsLogo">M0,0 H7.4 V7.4 H0 Z M8.6,0 H16 V7.4 H8.6 Z M0,8.6 H7.4 V16 H0 Z M8.6,8.6 H16 V16 H8.6 Z</Geometry>
 
         <Style x:Key="TabStyle" TargetType="TabItem">
-            <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+            <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Tab" Padding="14,7" Margin="0,0,6,10" CornerRadius="8" Background="Transparent" BorderThickness="1" BorderBrush="{StaticResource Lzn.Stroke}">
-                            <ContentPresenter ContentSource="Header" />
-                        </Border>
+                        <Grid Margin="0,0,22,12" Background="Transparent" Cursor="Hand">
+                            <ContentPresenter ContentSource="Header" Margin="0,8,0,10" TextElement.FontWeight="Medium" />
+                            <Border x:Name="Underline" Height="2" VerticalAlignment="Bottom" CornerRadius="1" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                        </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Tab" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                                <Setter TargetName="Tab" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
-                                <Setter Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                                <Setter TargetName="Underline" Property="Visibility" Value="Visible" />
+                                <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -68,13 +69,13 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="28,22,20,10">
+    <Grid Margin="28,22,28,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="268" />
+            <ColumnDefinition Width="260" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -111,9 +112,9 @@
                                     Visibility="{Binding ShowsWindowsLogo, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                                 <Path Data="{StaticResource WindowsLogo}" Fill="{StaticResource Lzn.Info}" Width="16" Height="16" Stretch="Uniform" />
                             </Border>
-                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}"
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
                                     Visibility="{Binding ShowsMonogram, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <TextBlock Text="{Binding Monogram}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}"
+                                <TextBlock Text="&#xE7FC;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.TextMuted}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
@@ -122,7 +123,7 @@
                             </Border>
                         </Grid>
                         <StackPanel Grid.Column="1" Margin="10,0,8,0" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="Medium" Foreground="{StaticResource Lzn.Text}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
                             <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Lzn.Text.Caption}"
                                        Visibility="{Binding Subtitle, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                         </StackPanel>
@@ -152,7 +153,7 @@
         </ListBox>
 
         <!-- Página genérica (Windows, Steam, CS2, VALORANT, Overwatch 2, Hardware) -->
-        <local:GameOptimizationPageView Grid.Row="1" Grid.Column="1" Margin="16,0,0,0" DataContext="{Binding SelectedSection.Page}"
+        <local:GameOptimizationPageView Grid.Row="1" Grid.Column="1" Margin="20,0,0,0" DataContext="{Binding SelectedSection.Page}"
                                         Visibility="{Binding DataContext.SelectedSection.IsDeadlock, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:InverseBoolToVisibilityConverter.Instance}}" />
 
         <!-- Deadlock: a página existente do gameinfo.gi é preservada como primeira aba -->

@@ -333,9 +333,16 @@
         <Setter Property="Background" Value="{StaticResource Lzn.DangerSoft}" />
         <Setter Property="BorderBrush" Value="{StaticResource Lzn.DangerStroke}" />
     </Style>
-    <Style x:Key="Lzn.Badge.Accent" TargetType="Border" BasedOn="{StaticResource Lzn.Badge}">
-        <Setter Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+    <!-- Valor (recomendado, configurado, detectado): selo neutro com fonte técnica. Valor não é ação, então não usa violeta. -->
+    <Style x:Key="Lzn.ValueChip" TargetType="Border" BasedOn="{StaticResource Lzn.Badge}">
+        <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeSubtle}" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+    <Style x:Key="Lzn.ValueText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Lzn.MonoFont}" />
+        <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Caption}" />
+        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
     </Style>
     <Style x:Key="Lzn.StatusDot" TargetType="Ellipse">
         <Setter Property="Width" Value="7" />

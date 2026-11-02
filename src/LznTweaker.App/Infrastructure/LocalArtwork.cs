@@ -36,6 +36,25 @@ public static class LocalArtwork
         }
     }
 
+    /// <summary>Capa horizontal (header.jpg, 460×215) que o Steam guarda em appcache\librarycache\&lt;appid&gt;; só leitura.</summary>
+    public static ImageSource? SteamHeader(string? steamRoot, string? appId)
+    {
+        if (steamRoot is null || appId is null)
+            return null;
+        try
+        {
+            var folder = Path.Combine(steamRoot, "appcache", "librarycache", appId);
+            if (!Directory.Exists(folder))
+                return null;
+            var file = Directory.EnumerateFiles(folder, "header.jpg", SearchOption.AllDirectories).FirstOrDefault();
+            return file is null ? null : LoadBitmap(file);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
     /// <summary>Ícone principal de um executável instalado (ex.: steam.exe, RiotClientServices.exe).</summary>
     public static ImageSource? ExecutableIcon(string? path)
     {

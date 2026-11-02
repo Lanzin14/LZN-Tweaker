@@ -86,7 +86,7 @@ public sealed class PageSmokeTests
         errors.AddRange(CheckDiscordTab(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGpuPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckFortnitePage(provider, shell, window, bindingErrors, output));
-        errors.AddRange(CheckGameTabs(provider, shell, bindingErrors));
+        errors.AddRange(CheckGameTabs(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckToolsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGeneralList(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckSidebar(shell, window, bindingErrors, output));
@@ -125,7 +125,7 @@ public sealed class PageSmokeTests
     }
 
     /// <summary>Jogos: cada aba de cada jogo abre sem erro de binding; a barra "Executar marcadas" só aparece em Ações.</summary>
-    private static IEnumerable<string> CheckGameTabs(ServiceProvider provider, ShellViewModel shell, BindingErrorListener bindingErrors)
+    private static IEnumerable<string> CheckGameTabs(ServiceProvider provider, ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
     {
         var errors = new List<string>();
         var library = provider.GetRequiredService<LznTweaker.Features.GameProfiles.GameLibraryViewModel>();
@@ -150,6 +150,8 @@ public sealed class PageSmokeTests
                 var expectsBar = tab.Key == LznTweaker.Features.GameProfiles.GameOptimizationPageViewModel.ActionsTab && page.HasActions;
                 if (page.ShowsActionBar != expectsBar)
                     errors.Add($"jogos: {section.Title}, aba {tab.Title}: barra de ação {page.ShowsActionBar}, esperado {expectsBar}");
+                if (section.Game?.Id == LznTweaker.Core.GameOptimization.SupportedGames.Cs2Id && tab.Key == LznTweaker.Features.GameProfiles.GameOptimizationPageViewModel.SettingsTab)
+                    Save(window, Path.Combine(output, "games-cs2-settings.png"));
             }
         }
         library.SelectedSection = library.Sections[0];

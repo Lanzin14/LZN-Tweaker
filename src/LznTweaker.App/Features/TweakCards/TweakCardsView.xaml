@@ -107,9 +107,9 @@
                                    TextTrimming="CharacterEllipsis" MaxHeight="36" LineHeight="18" Margin="0,10,0,0" />
                         <WrapPanel Margin="0,6,0,0">
                             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CategoryChip}" Margin="0,0,8,0" />
-                            <Border Style="{StaticResource Lzn.Badge.Accent}" Margin="0,0,8,0"
+                            <Border Style="{StaticResource Lzn.ValueChip}" Margin="0,0,8,0"
                                     Visibility="{Binding IsRecommended, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <TextBlock Text="Recomendado" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
+                                <TextBlock Text="Recomendado" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
                             </Border>
                             <TextBlock Text="{Binding RestartText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
                         </WrapPanel>
