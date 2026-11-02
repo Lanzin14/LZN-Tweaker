@@ -30,19 +30,20 @@
 
         <!-- Linha de configuração do driver: nome, valor recomendado, estado e explicação expansível. -->
         <DataTemplate DataType="{x:Type local:DriverSettingViewModel}">
-            <Border Background="Transparent" Padding="0,12" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1">
+            <Border Background="Transparent" Padding="0,9" MinHeight="44" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1">
                 <StackPanel>
+                    <!-- Nome numa coluna fixa e o valor logo ao lado (não colado na borda direita). -->
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0"
+                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="Medium" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0"
                                    ToolTip="{Binding ManualPath}" />
                         <!-- Valor recomendado -->
-                        <Border Grid.Column="1" Style="{StaticResource Lzn.ValueChip}" Margin="0,0,14,0" MaxWidth="240" ToolTip="{Binding RecommendedValue}">
+                        <Border Grid.Column="1" Style="{StaticResource Lzn.ValueChip}" Margin="0,0,14,0" HorizontalAlignment="Left" MaxWidth="360" ToolTip="{Binding RecommendedValue}">
                             <TextBlock Text="{Binding RecommendedValue}" Style="{StaticResource Lzn.ValueText}" TextTrimming="CharacterEllipsis" />
                         </Border>
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0"
@@ -93,9 +94,9 @@
         <!-- Ícone do jogo: arte local do Steam ou monograma. -->
         <DataTemplate x:Key="GameIcon" DataType="{x:Type local:GpuGameViewModel}">
             <Grid Width="36" Height="36">
-                <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}"
-                        Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenFalse}}">
-                    <TextBlock Text="{Binding ShortName}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.AccentText}"
+                <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
+                        Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" ToolTip="{Binding ShortName}">
+                    <TextBlock Text="&#xE7FC;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.TextMuted}"
                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
                 <!-- Cantos arredondados por recorte: um ImageBrush ficaria fora da árvore visual e geraria erro de binding. -->
@@ -112,17 +113,11 @@
             <!-- Cabeçalho -->
             <controls:PageHeader Title="Placa de Vídeo" Guide="{x:Static shell:CategoryGuides.Gpu}">
                 <StackPanel Orientation="Horizontal">
-                    <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding DetectCommand}" Margin="0,0,8,0" ToolTip="Ler novamente a placa, o driver e o monitor">
+                    <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding DetectCommand}"
+                            ToolTip="Ler novamente a placa, o driver e o monitor. O LZN Tweaker não altera o driver: os ajustes desta página são feitos por você, e cada item explica como voltar.">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
                             <TextBlock Text="Atualizar detecção" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
-                        </StackPanel>
-                    </Button>
-                    <Button Style="{StaticResource Lzn.ToolbarButton}" IsEnabled="False" ToolTipService.ShowOnDisabled="True"
-                            ToolTip="Não há o que restaurar: o LZN Tweaker ainda não alterou nenhuma configuração de GPU. Os ajustes desta página são feitos por você no driver ou no jogo; cada item explica como voltar ao valor anterior.">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE7A7;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
-                            <TextBlock Text="Restaurar alterações" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -138,8 +133,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="34" Height="34" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.AccentSoft}" Margin="0,0,12,0">
-                            <TextBlock Text="&#xE7F4;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                        <Border Width="34" Height="34" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,12,0">
+                            <TextBlock Text="&#xE7F4;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                         </Border>
                         <TextBlock Grid.Column="1" Text="{Binding ModelText}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
                                    VerticalAlignment="Center" ToolTip="{Binding ModelText}" />
