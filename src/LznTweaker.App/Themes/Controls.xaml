@@ -147,6 +147,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,16,0">
                                 <Run Text="{Binding Summary, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" FontWeight="SemiBold"
@@ -154,7 +155,11 @@
                                 <Run Text="{Binding Hint, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" FontSize="{StaticResource Lzn.FontSize.Caption}"
                                      Foreground="{StaticResource Lzn.TextMuted}" />
                             </TextBlock>
-                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center" />
+                            <!-- Atalho do botão principal (ActionBar.cs): discreto, para quem usa o teclado. -->
+                            <TextBlock Grid.Column="1" Text="Ctrl+Enter" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
+                                       Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" Margin="0,0,14,0"
+                                       ToolTip="Ctrl+Enter aciona o botão principal desta barra" />
+                            <ContentPresenter Grid.Column="2" VerticalAlignment="Center" />
                         </Grid>
                     </Border>
                 </ControlTemplate>

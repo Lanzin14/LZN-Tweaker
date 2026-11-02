@@ -72,15 +72,20 @@ A skill `ui-ux-pro-max --design-system` sugeriu, para "ferramenta desktop gamer 
 
 | Token | Cor | HEX | Uso |
 |---|---|---|---|
-| Background | Preto azulado | `#0A0A0E` | Fundo das páginas (escurecido em 31/10/2026, como no mockup C; antes `#111116`). |
-| Surface | Grafite escuro | `#1B1B24` | Cards e painéis. |
-| Elevated | Grafite elevado | `#292936` | Campos, blocos de código, hover de linhas, menus. |
-| Accent | Roxo elétrico | `#8175FF` | Botão principal, seleção ativa, interruptor ligado, marcador de item ativo, logotipo. |
-| Lavender | Lavanda | `#A69FFF` | Hover do botão principal, anel de foco, links, destaque secundário. |
-| Text | Branco frio | `#E9E8F0` | Títulos, textos principais, valores. |
-| Muted | Cinza | `#858594` | Descrições, metadados, rótulos. |
+Atualizada em 02/11/2026 na reformulação visual "Obsidian + Electric Violet" (registro em `docs/REESTRUTURACAO-UX.md`).
+
+| Token | Cor | HEX | Uso |
+|---|---|---|---|
+| Background | Azul-preto | `#0B0D13` | Fundo das páginas. |
+| Surface | Grafite | `#14171F` | Sidebar e painéis (um nível só; listas são linhas sobre o fundo). |
+| Elevated | Grafite elevado | `#1B1F29` | Linha selecionada, campos, selos de valor. |
+| Accent | Violeta elétrico | `#8A6DFF` | Só ação, seleção e foco: botão principal (um por tela), item ativo, aba ativa, interruptor ligado. |
+| Lavender | Lavanda | `#A08BFF` | Hover do botão principal, anel de foco, links, ícone da página aberta. |
+| Text | Branco frio | `#E8EAF0` | Títulos, textos principais, valores. |
+| Muted | Cinza | `#8C92A4` | Descrições, metadados, rótulos (≥ 4,5:1 também sobre a linha selecionada). |
 | Danger | Vermelho suave | `#E47777` | Erros, risco alto, ações destrutivas. |
-| Sidebar | Grafite | `#1C1C24` | Fundo da barra lateral (escolha do usuário em 01/11/2026; antes Índigo `#4B0082`). Hover `#26262F`, ativo `#2E2A45` com traço lilás, borda `#2E2E38`, texto `#E9E8F0` e secundário `#A9A9B8` (todos AA, conferidos no teste de guarda). |
+| ControlStroke | Cinza-azulado | `#646B80` | Borda de caixa, interruptor, busca, seletor e botão secundário (≥ 3:1, WCAG 1.4.11). |
+| Sidebar | Grafite | `#14171F` | Fundo da barra lateral; hover `#1B1F29`, ativo `#1E1B33` com traço violeta, divisória `#1F2330`, secundário `#9AA0B2`. |
 
 ### 3.2 Cores de estado (complementares, já em uso)
 

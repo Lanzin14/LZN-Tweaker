@@ -4,7 +4,7 @@ Data: 31/10/2026. Base: as 13 páginas atuais (prints do teste de interface em `
 Razer Cortex e do WinUtil. Plano aprovado e implementado em 01/11/2026, em seis commits (fases 1 a 6). Diferenças em relação ao plano estão no fim do documento.
 
 Objetivo: menos telas, menos texto e menos cliques, sem perder recursos úteis e mantendo a identidade Obsidian
-(fundo escuro, sidebar Índigo, Space Grotesk/IBM Plex Sans, violeta como destaque).
+(fundo escuro, violeta como destaque; a identidade foi refinada na reformulação visual de 02/11/2026, no fim deste arquivo).
 
 ---
 
@@ -179,3 +179,39 @@ Diferenças em relação ao plano:
 - O Início não tem "Desfazer" direto nas últimas alterações: o atalho leva ao Histórico, que já faz a restauração com as verificações de segurança.
 - Placa de Vídeo › Perfis por jogo foi mantida como está (a remoção ficou para depois, para não perder conteúdo).
 - "Removidos pelo LZN Tweaker" continua em Remover apps.
+
+## Reformulação visual "Obsidian + Electric Violet" (02/11/2026)
+
+Objetivo: um app mais fácil de entender, transparente e agradável, sem mais opções. Análise com o revisor-visual (31
+prints), design-critique, accessibility-review (WCAG 2.1 AA) e ui-ux-pro-max; mockups aprovados em
+`docs/mockups-visual/` (Início, Ajustes, página do CS2). Nenhuma lógica de aplicar ajustes mudou.
+
+Regras visuais (valem para telas novas):
+- Violeta só para ação, seleção e foco. Estado usa verde (ativo/verificado), âmbar (pendente), vermelho (falha), azul
+  (em andamento) e cinza (inativo/não verificado), sempre com texto, nunca só cor.
+- Um botão principal por tela, sempre na `ActionBar` do rodapé (Ctrl+Enter aciona). Ações de linha e de detalhe são
+  secundárias.
+- Listas são linhas de 44 px com divisória (`Lzn.SettingRow`), sem cards dentro de cards. Lista e detalhe: a lista ocupa
+  o espaço livre e o detalhe tem 440 px (`Lzn.Layout.DockedDetailWidth`), com título de 18.
+- Abas de nível 1 com sublinhado (`Lzn.Tab`); nível 2 com seletor segmentado (`Lzn.Segment`).
+- Valor (recomendado, configurado) em selo neutro com fonte técnica (`Lzn.ValueChip` + `Lzn.ValueText`).
+- Plural sempre por `Plural.Of` ("1 app", "3 apps"), nunca "app(s)".
+
+| Etapa | O que entrou |
+|---|---|
+| 0 | Plurais sem parênteses, título legível no Histórico, áreas da Limpeza com 0 B desmarcadas. |
+| 1 | Paleta nova (tabela em `REDESIGN-OBSIDIAN.md` 3.1) e borda de controle ≥ 3:1, com testes de contraste. |
+| 2 | Abas com sublinhado, seletor segmentado, linha padrão, raio 8; fim do `Legacy.xaml` (66 usos migrados). |
+| 3 | Sidebar em Windows / Jogos / Ferramentas, Histórico fixo no rodapé, selo único de privilégio. |
+| 4 | Botão principal só na barra do rodapé (Ajustes, Remover apps, Jogos). |
+| 5 | Início minimalista: hardware numa linha, três ações com estado, alterações agrupadas, jogos com ícone. |
+| 6 | Lista larga e detalhe fixo de 440 px; detalhe de ajuste com fatos em grade. |
+| 7 | Jogos: capa local no cabeçalho, lista plana, valores neutros. |
+| 8 | Placa de Vídeo: valor ao lado do nome; sai o botão "Restaurar alterações", que nunca funcionava. |
+| 9 | Ferramentas sem "Pronto" repetido; Limpeza com o total uma vez; progresso em azul. |
+| 10 | Ctrl+Enter na barra de ação; auditoria de nomes para leitor de tela (nenhum botão só com ícone sem nome). |
+
+Diferenças em relação ao plano:
+- "Removidos pelo LZN Tweaker" continua como painel em Remover apps (virar filtro mudaria o comportamento da lista).
+- Os perfis Recomendado/Mínimo/Avançado continuam como botões: eles marcam ajustes (ação), não são um filtro.
+- O Ctrl+Enter não tem teste automático: o teste de interface não simula o estado real do teclado.
