@@ -30,6 +30,9 @@ public sealed class DashboardViewModel : INotifyPropertyChanged
     public bool IsBusy { get => _isBusy; private set => Set(ref _isBusy, value); }
     public string StatusMessage { get => _statusMessage; private set => Set(ref _statusMessage, value); }
     public string ProcessorDetail { get => _processorDetail; private set => Set(ref _processorDetail, value); }
+    /// <summary>Só o nome do processador, sem espaços sobrando (linha de hardware do Início).</summary>
+    public string ProcessorName { get => _processorName; private set => Set(ref _processorName, value); }
+    private string _processorName = "Lendo processador…";
     public string MemorySummary { get => _memorySummary; private set => Set(ref _memorySummary, value); }
     public string MemoryDetail { get => _memoryDetail; private set => Set(ref _memoryDetail, value); }
     public string StorageSummary { get => _storageSummary; private set => Set(ref _storageSummary, value); }
@@ -72,6 +75,7 @@ public sealed class DashboardViewModel : INotifyPropertyChanged
 
     private void UpdateFrom(SystemSnapshot snapshot)
     {
+        ProcessorName = string.Join(' ', snapshot.ProcessorName.Split(' ', StringSplitOptions.RemoveEmptyEntries));
         ProcessorDetail = snapshot.ProcessorName +
             (snapshot.ProcessorThreads > 0 ? $" · {snapshot.ProcessorThreads} threads" : "") +
             (snapshot.ProcessorClockMHz > 0 ? $" · até {snapshot.ProcessorClockMHz:N0} MHz" : "");

@@ -108,7 +108,7 @@ public sealed class PageSmokeTests
         var general = provider.GetRequiredService<LznTweaker.Features.TweakCards.GeneralPageViewModel>();
         for (var waited = 0; home.TweaksBadge == "lendo…" && waited < 50; waited++)
             Pump(TimeSpan.FromMilliseconds(100));
-        if (home.CleanupBadge != "não verificado")
+        if (!home.IsCleanupUnscanned)
             errors.Add($"início: a Limpeza não deveria ser varrida ao abrir o app (selo: {home.CleanupBadge})");
         var missing = home.RecommendedMissing;
         home.ReviewRecommendedCommand.Execute(null);

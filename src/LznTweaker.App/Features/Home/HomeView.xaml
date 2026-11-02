@@ -6,27 +6,45 @@
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
              Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+    <!-- Início (docs/REESTRUTURACAO-UX.md e reformulação visual): uma linha de hardware, o que fazer agora (3 linhas com
+         estado e ação), as últimas alterações e os jogos encontrados. Sem cards: listas são linhas com divisória. -->
     <UserControl.Resources>
-        <!-- Componente do PC: rótulo, valor e uma linha de detalhe -->
-        <Style x:Key="Spec" TargetType="Border" BasedOn="{StaticResource Lzn.Panel}">
-            <Setter Property="Padding" Value="16,14" />
+        <Style x:Key="HwItem" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Margin" Value="0,0,24,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <Style x:Key="SpecValue" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Body}" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Margin" Value="0,6,0,2" />
-            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Style x:Key="HwIcon" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <!-- Ação rápida: título com selo de número, uma frase e um botão -->
-        <Style x:Key="Quick" TargetType="Border" BasedOn="{StaticResource Lzn.Panel}">
-            <Setter Property="Padding" Value="18,16" />
+        <Style x:Key="TodoIcon" TargetType="Border">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Md}" />
+            <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
+            <Setter Property="Margin" Value="0,0,16,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="StatusCell" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Margin" Value="16,0" />
+        </Style>
+        <Style x:Key="SectionLink" TargetType="Button" BasedOn="{StaticResource Lzn.GhostButton}">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="6,2" />
         </Style>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="28,22,28,24">
             <controls:PageHeader Title="Início" Guide="{x:Static shell:CategoryGuides.Home}">
-                <Button Style="{StaticResource Lzn.ToolbarButton}" Command="{Binding RefreshDashboardCommand}" ToolTip="Ler de novo processador, memória e disco">
+                <Button Style="{StaticResource Lzn.GhostButton}" Command="{Binding RefreshDashboardCommand}" ToolTip="Ler de novo processador, memória e disco">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" />
                         <TextBlock Text="Atualizar" />
@@ -34,150 +52,195 @@
                 </Button>
             </controls:PageHeader>
 
-            <!-- Seu PC -->
-            <controls:AdaptiveGridPanel MinItemWidth="200" MaxColumns="4" Spacing="12">
-                <Border Style="{StaticResource Spec}">
-                    <StackPanel>
-                        <TextBlock Text="PROCESSADOR" Style="{StaticResource Lzn.Text.Overline}" />
-                        <TextBlock Text="{Binding Dashboard.ProcessorDetail}" Style="{StaticResource SpecValue}" ToolTip="{Binding Dashboard.ProcessorDetail}" />
-                        <TextBlock Text="{Binding Dashboard.CpuUsageText, StringFormat=Uso {0}}" Style="{StaticResource Lzn.Text.Caption}" />
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Spec}">
-                    <StackPanel>
-                        <TextBlock Text="PLACA DE VÍDEO" Style="{StaticResource Lzn.Text.Overline}" />
-                        <TextBlock Text="{Binding Dashboard.GraphicsSummary}" Style="{StaticResource SpecValue}" ToolTip="{Binding Dashboard.GraphicsSummary}" />
-                        <TextBlock Text="{Binding Dashboard.GraphicsMemorySummary}" Style="{StaticResource Lzn.Text.Caption}" TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Spec}">
-                    <StackPanel>
-                        <TextBlock Text="MEMÓRIA" Style="{StaticResource Lzn.Text.Overline}" />
-                        <TextBlock Text="{Binding Dashboard.MemorySummary}" Style="{StaticResource SpecValue}" />
-                        <TextBlock Text="{Binding Dashboard.MemoryDetail}" Style="{StaticResource Lzn.Text.Caption}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Dashboard.MemoryDetail}" />
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Spec}">
-                    <StackPanel>
-                        <TextBlock Text="ARMAZENAMENTO" Style="{StaticResource Lzn.Text.Overline}" />
-                        <TextBlock Text="{Binding Dashboard.StorageSummary}" Style="{StaticResource SpecValue}" ToolTip="{Binding Dashboard.StorageSummary}" />
-                        <Button Style="{StaticResource Lzn.GhostButton}" HorizontalAlignment="Left" Padding="0,2" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Hardware}">
-                            <TextBlock Text="Ver hardware →" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" />
-                        </Button>
-                    </StackPanel>
-                </Border>
-            </controls:AdaptiveGridPanel>
+            <!-- Hardware numa linha; o detalhe fica em Ferramentas › Hardware. -->
+            <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1" Padding="0,10" Margin="0,0,0,22">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource SectionLink}" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Hardware}">
+                        <TextBlock Text="Detalhes do hardware" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="Medium" Foreground="{StaticResource Lzn.AccentHover}" />
+                    </Button>
+                    <WrapPanel VerticalAlignment="Center">
+                        <StackPanel Style="{StaticResource HwItem}" ToolTip="{Binding Dashboard.ProcessorDetail}">
+                            <TextBlock Text="&#xE950;" Style="{StaticResource HwIcon}" />
+                            <TextBlock Text="{Binding Dashboard.ProcessorName}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource HwItem}" ToolTip="{Binding Dashboard.GraphicsMemorySummary}">
+                            <TextBlock Text="&#xE7F4;" Style="{StaticResource HwIcon}" />
+                            <TextBlock Text="{Binding Dashboard.GraphicsSummary}" Foreground="{StaticResource Lzn.TextSecondary}" MaxWidth="320" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource HwItem}" ToolTip="{Binding Dashboard.MemoryDetail}">
+                            <TextBlock Text="&#xE964;" Style="{StaticResource HwIcon}" />
+                            <TextBlock Text="{Binding Dashboard.MemorySummary, StringFormat={}{0} de RAM}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource HwItem}">
+                            <TextBlock Text="&#xEDA2;" Style="{StaticResource HwIcon}" />
+                            <TextBlock Text="{Binding Dashboard.StorageSummary}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        </StackPanel>
+                    </WrapPanel>
+                </DockPanel>
+            </Border>
 
-            <!-- Ações rápidas -->
-            <TextBlock Text="AÇÕES RÁPIDAS" Style="{StaticResource Lzn.Text.Overline}" Margin="2,22,0,10" />
-            <controls:AdaptiveGridPanel MinItemWidth="260" MaxColumns="3" Spacing="12">
-                <Border Style="{StaticResource Quick}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Ajustes recomendados" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" />
-                            <Border Style="{StaticResource Lzn.Badge.Accent}" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding TweaksBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" />
-                            </Border>
-                        </Grid>
-                        <TextBlock Text="{Binding TweaksText}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,8,0,14" MinHeight="32" />
-                        <Button Style="{StaticResource Lzn.PrimaryButton}" HorizontalAlignment="Left" Content="Revisar recomendados" Command="{Binding ReviewRecommendedCommand}"
-                                ToolTip="Abre Ajustes do Windows com a seleção recomendada marcada. Nada é aplicado sem a sua revisão." />
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Quick}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Limpeza" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" />
-                            <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding CleanupBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
-                            </Border>
-                        </Grid>
-                        <TextBlock Text="Temporários, caches e logs que podem ser apagados. Arquivos em uso ficam onde estão." Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,8,0,14" MinHeight="32" />
-                        <Button Style="{StaticResource Lzn.ToolbarButton}" HorizontalAlignment="Left" Content="Ver e limpar" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Cleanup}" />
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Quick}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Inicialização" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" />
-                            <Border Style="{StaticResource Lzn.Badge.Warn}" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding StartupBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" />
-                            </Border>
-                        </Grid>
-                        <TextBlock Text="Programas que abrem sozinhos com o Windows. Desativar não desinstala." Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,8,0,14" MinHeight="32" />
-                        <Button Style="{StaticResource Lzn.ToolbarButton}" HorizontalAlignment="Left" Content="Revisar" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Startup}" />
-                    </StackPanel>
-                </Border>
-            </controls:AdaptiveGridPanel>
-
-            <!-- Últimas alterações e jogos -->
-            <Grid Margin="0,22,0,0">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="12" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="28" />
+                    <ColumnDefinition Width="340" />
                 </Grid.ColumnDefinitions>
-                <Border Style="{StaticResource Lzn.Panel}" Padding="0">
-                    <StackPanel>
-                        <Grid Margin="16,14,12,6">
-                            <TextBlock Text="ÚLTIMAS ALTERAÇÕES" Style="{StaticResource Lzn.Text.Overline}" VerticalAlignment="Center" />
-                            <Button Style="{StaticResource Lzn.GhostButton}" HorizontalAlignment="Right" Padding="6,2" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Backups}">
-                                <TextBlock Text="Ver histórico e desfazer →" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" />
-                            </Button>
-                        </Grid>
-                        <ItemsControl ItemsSource="{Binding RecentChanges}" Focusable="False" Margin="0,0,0,8">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type local:RecentChange}">
-                                    <Grid Margin="16,7">
+
+                <StackPanel>
+                    <!-- O que fazer agora: um botão roxo só (Revisar recomendados). -->
+                    <TextBlock Text="O QUE FAZER AGORA" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,6" />
+
+                    <Border Style="{StaticResource Lzn.SettingRow}" MinHeight="64" Padding="4,10">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Left" Style="{StaticResource TodoIcon}">
+                                <TextBlock Text="{StaticResource Lzn.Glyph.Settings}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <Button DockPanel.Dock="Right" Style="{StaticResource Lzn.PrimaryButton}" Content="Revisar recomendados" Command="{Binding ReviewRecommendedCommand}" VerticalAlignment="Center"
+                                    ToolTip="Abre Ajustes do Windows com a seleção recomendada marcada. Nada é aplicado sem a sua revisão." />
+                            <StackPanel DockPanel.Dock="Right" Style="{StaticResource StatusCell}">
+                                <TextBlock Text="{Binding TweaksBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Medium" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource Lzn.RiskLow}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasRecommendedPending}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource Lzn.RiskWarn}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsTweaksLoading}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Ajustes recomendados" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding TweaksText}" Style="{StaticResource Lzn.Text.Caption}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Lzn.SettingRow}" MinHeight="64" Padding="4,10">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Left" Style="{StaticResource TodoIcon}">
+                                <TextBlock Text="&#xEA99;" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <Button DockPanel.Dock="Right" Style="{StaticResource Lzn.ToolbarButton}" Content="Abrir Limpeza" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Cleanup}" VerticalAlignment="Center" />
+                            <StackPanel DockPanel.Dock="Right" Style="{StaticResource StatusCell}">
+                                <TextBlock Text="{Binding CleanupBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Medium" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsCleanupUnscanned}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Limpeza" FontWeight="SemiBold" />
+                                <TextBlock Text="Temporários, caches e logs. A varredura só roda quando você abre a Limpeza." Style="{StaticResource Lzn.Text.Caption}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Lzn.SettingRow}" MinHeight="64" Padding="4,10">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Left" Style="{StaticResource TodoIcon}">
+                                <TextBlock Text="&#xE768;" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <Button DockPanel.Dock="Right" Style="{StaticResource Lzn.ToolbarButton}" Content="Revisar" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Startup}" VerticalAlignment="Center" />
+                            <StackPanel DockPanel.Dock="Right" Style="{StaticResource StatusCell}">
+                                <TextBlock Text="{Binding StartupBadge}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Medium" Foreground="{StaticResource Lzn.TextSecondary}" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Inicialização" FontWeight="SemiBold" />
+                                <TextBlock Text="Programas que abrem sozinhos com o Windows. Desativar não desinstala." Style="{StaticResource Lzn.Text.Caption}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Últimas alterações -->
+                    <Grid Margin="0,28,0,6">
+                        <TextBlock Text="ÚLTIMAS ALTERAÇÕES" Style="{StaticResource Lzn.Text.Overline}" VerticalAlignment="Center" />
+                        <Button Style="{StaticResource SectionLink}" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Backups}">
+                            <TextBlock Text="Ver histórico e desfazer" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Medium" Foreground="{StaticResource Lzn.AccentHover}" />
+                        </Button>
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding RecentChanges}" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:RecentChange}">
+                                <Border Style="{StaticResource Lzn.SettingRow}" MinHeight="40" Padding="4,6" ToolTip="{Binding Outcome}">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="92" />
                                         </Grid.ColumnDefinitions>
-                                        <Ellipse x:Name="Dot" Width="7" Height="7" Fill="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                        <Ellipse x:Name="Dot" Style="{StaticResource Lzn.StatusDot}" Margin="0,0,12,0" />
                                         <TextBlock Grid.Column="1" TextTrimming="CharacterEllipsis" VerticalAlignment="Center">
-                                            <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold" /><Run Text="  ·  " Foreground="{StaticResource Lzn.TextMuted}" /><Run Text="{Binding Area, Mode=OneWay}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="{StaticResource Lzn.FontSize.Caption}" />
+                                            <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold" /><Run Text="   " /><Run Text="{Binding Detail, Mode=OneWay}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="{StaticResource Lzn.FontSize.Caption}" />
                                         </TextBlock>
-                                        <TextBlock Grid.Column="2" Text="{Binding When}" Style="{StaticResource Lzn.Text.Caption}" VerticalAlignment="Center" Margin="12,0,0,0" ToolTip="{Binding Outcome}" />
+                                        <TextBlock x:Name="Status" Grid.Column="2" Text="{Binding StatusText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Medium"
+                                                   Foreground="{StaticResource Lzn.TextSecondary}" VerticalAlignment="Center" Margin="16,0,0,0" />
+                                        <TextBlock Grid.Column="3" Text="{Binding When}" Style="{StaticResource Lzn.Text.Caption}" VerticalAlignment="Center" HorizontalAlignment="Right" />
                                     </Grid>
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding Succeeded}" Value="True">
-                                            <Setter TargetName="Dot" Property="Fill" Value="{StaticResource Lzn.RiskLow}" />
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <TextBlock Text="Nenhuma alteração registrada ainda." Style="{StaticResource Lzn.Text.Caption}" Margin="16,0,16,16"
-                                   Visibility="{Binding HasRecentChanges, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
-                    </StackPanel>
-                </Border>
-                <Border Grid.Column="2" Style="{StaticResource Lzn.Panel}" Padding="16,14">
-                    <StackPanel>
-                        <TextBlock Text="JOGOS ENCONTRADOS" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,10" />
-                        <ItemsControl ItemsSource="{Binding InstalledGames}" Focusable="False">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" Margin="0,3" TextTrimming="CharacterEllipsis" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <TextBlock Text="Nenhum jogo compatível encontrado." Style="{StaticResource Lzn.Text.Caption}"
-                                   Visibility="{Binding HasInstalledGames, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
-                        <Button Style="{StaticResource Lzn.ToolbarButton}" HorizontalAlignment="Stretch" Margin="0,12,0,0" Content="Abrir Jogos"
-                                Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Games}" />
-                    </StackPanel>
-                </Border>
-            </Grid>
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Succeeded}" Value="True">
+                                        <Setter TargetName="Dot" Property="Fill" Value="{StaticResource Lzn.RiskLow}" />
+                                        <Setter TargetName="Status" Property="Foreground" Value="{StaticResource Lzn.RiskLow}" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Nenhuma alteração registrada ainda." Style="{StaticResource Lzn.Text.Caption}" Margin="4,8,0,0"
+                               Visibility="{Binding HasRecentChanges, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
+                </StackPanel>
 
-            <!-- Sobre, discreto no rodapé -->
-            <StackPanel Orientation="Horizontal" Margin="2,26,0,0">
-                <Image Source="pack://application:,,,/LznTweaker;component/Assets/Brand/lzn-logo-mark.png" Height="18" Stretch="Uniform" VerticalAlignment="Center"
-                       RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="Logo do LZN Tweaker" />
-                <TextBlock Style="{StaticResource Lzn.Text.Caption}" VerticalAlignment="Center" Margin="10,0,0,0">
-                    <Run Text="LZN Tweaker " /><Run Text="{Binding AppVersion, Mode=OneWay}" /><Run Text=" · ajustes com base técnica, reversíveis e registrados no Histórico · em desenvolvimento" />
-                </TextBlock>
-            </StackPanel>
+                <!-- Jogos encontrados e o que garante a segurança -->
+                <StackPanel Grid.Column="2">
+                    <Grid Margin="0,0,0,6">
+                        <TextBlock Text="JOGOS ENCONTRADOS" Style="{StaticResource Lzn.Text.Overline}" VerticalAlignment="Center" />
+                        <Button Style="{StaticResource SectionLink}" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Games}">
+                            <TextBlock Text="Abrir Jogos" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Medium" Foreground="{StaticResource Lzn.AccentHover}" />
+                        </Button>
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding InstalledGames}" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:HomeGame}">
+                                <Border Style="{StaticResource Lzn.SettingRow}" Padding="4,8">
+                                    <DockPanel>
+                                        <Border DockPanel.Dock="Left" Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Sm}" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,12,0">
+                                            <Grid>
+                                                <TextBlock Text="&#xE7FC;" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextMuted}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <Image Source="{Binding Icon}" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality" />
+                                            </Grid>
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Medium" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Platform}" Style="{StaticResource Lzn.Text.Caption}" />
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Nenhum jogo compatível encontrado." Style="{StaticResource Lzn.Text.Caption}" Margin="4,8,0,0"
+                               Visibility="{Binding HasInstalledGames, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
+
+                    <TextBlock Text="SEGURANÇA" Style="{StaticResource Lzn.Text.Overline}" Margin="0,28,0,8" />
+                    <TextBlock Text="Antes de cada alteração o app cria um ponto de restauração, e o Histórico guarda o valor anterior para desfazer."
+                               Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="20" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
