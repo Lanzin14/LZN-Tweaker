@@ -212,7 +212,7 @@ Regras:
 
 ### 5.2 Tipografia
 
-Fonte (decisão do usuário em 31/10/2026, substitui a Segoe UI): **Space Grotesk** no conteúdo (no lugar da Manrope, também em 31/10/2026) e **IBM Plex Sans** na sidebar, embutidas no app (SIL OFL 1.1, ver `Assets/Fonts/FONTES.md`), com Segoe UI como reserva.
+Fonte (escolhida em 02/11/2026 a pedido do usuário; antes Space Grotesk no conteúdo e IBM Plex Sans na sidebar): **Geist** no app inteiro e **Geist Mono** em textos técnicos, embutidas no app (SIL OFL 1.1, ver `Assets/Fonts/FONTES.md`), com Segoe UI e Cascadia Mono como reserva.
 Técnica: **Cascadia Mono, Consolas**.
 
 | Estilo | Tamanho / peso | Uso |

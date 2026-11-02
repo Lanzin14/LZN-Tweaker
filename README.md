@@ -56,6 +56,6 @@ O código do LZN Tweaker está sob a licença MIT (`LICENSE`). Partes de terceir
 
 - Perfis de configuração do Deadlock (`src/LznTweaker.Core/GameTuning/Profiles/Deadlock`): GPL-3.0, do projeto
   OptimizationLock; origem e versões em `FONTES.md` na mesma pasta.
-- Fontes IBM Plex Sans e Space Grotesk (`src/LznTweaker.App/Assets/Fonts`): SIL Open Font License 1.1.
+- Fontes Geist e Geist Mono (`src/LznTweaker.App/Assets/Fonts`): SIL Open Font License 1.1.
 
 Cada Release inclui esses textos em `LznTweaker-licencas.zip`.

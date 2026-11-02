@@ -1,15 +1,17 @@
 # Fontes embutidas
 
 As duas famílias são de licença livre (SIL Open Font License 1.1, texto em `OFL.txt` de cada pasta) e ficam
-embutidas no executável; o `OFL.txt` acompanha a pasta de saída.
+embutidas no executável; o `OFL.txt` acompanha a pasta de saída e o `LznTweaker-licencas.zip` de cada Release.
 
-| Família | Uso | Arquivos | Origem (baixado em 31/10/2026) |
+| Família | Uso | Arquivos | Origem |
 |---|---|---|---|
-| Space Grotesk | Conteúdo do app (`Lzn.Font`) | `SpaceGrotesk-Regular/Medium/Bold.ttf` (arquivos originais, sem modificação; não há SemiBold, então títulos usam o peso mais próximo) | Repositório oficial, `github.com/floriankarsten/space-grotesk/fonts/ttf/static` (baixado em 31/10/2026, substitui a Manrope) |
-| IBM Plex Sans | Sidebar (`Lzn.SidebarFont`) | `IBMPlexSans-Regular/Medium/SemiBold.ttf` (arquivos completos, sem modificação) | Repositório oficial da IBM, `github.com/IBM/plex/packages/plex-sans/fonts/complete/ttf`; licença de `github.com/google/fonts/ofl/ibmplexsans` |
+| Geist | App inteiro: conteúdo (`Lzn.Font`) e sidebar (`Lzn.SidebarFont`) | `Geist-Regular/Medium/SemiBold/Bold.ttf` (originais, sem modificação) | Repositório oficial da Vercel, `github.com/vercel/geist-font/fonts/Geist/ttf`, commit `a0a06a3` (02/04/2026), baixado em 02/11/2026 |
+| Geist Mono | Textos técnicos: caminhos, comandos, valores (`Lzn.MonoFont`) | `GeistMono-Regular/Medium.ttf` (originais, sem modificação) | Mesmo repositório, `fonts/GeistMono/ttf`, mesmo commit |
 
 Observações:
 
-- A IBM Plex reserva o nome "Plex" na licença. Por isso os arquivos são os originais, sem subconjunto: uma versão
-  modificada não poderia usar esse nome.
-- Se uma fonte faltar, o WPF cai para Segoe UI Variable / Segoe UI (listadas depois na mesma `FontFamily`).
+- Escolhida em 02/11/2026 no lugar da Space Grotesk (conteúdo) e da IBM Plex Sans (sidebar): uma família só deixa o
+  app coeso, e a Geist tem o peso SemiBold que os títulos usam (a Space Grotesk não tinha).
+- Só os pesos usados no XAML (Regular, Medium, SemiBold e Bold) são embutidos, para não pesar no `.exe`.
+- Se uma fonte faltar, o WPF cai para Segoe UI Variable / Segoe UI e Cascadia Mono / Consolas (listadas depois na
+  mesma `FontFamily`).
