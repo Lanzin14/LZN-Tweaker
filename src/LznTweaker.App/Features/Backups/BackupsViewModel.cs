@@ -198,6 +198,7 @@ public sealed partial class BackupsViewModel : ObservableObject
     /// <summary>Resumo da barra de ação: quantos registros marcados podem ser restaurados aqui.</summary>
     public string SelectedRestoreText => Entries.Count(entry => entry.IsSelected && entry.CanRestoreHere) switch
     {
+        0 when !Entries.Any(entry => entry.CanRestoreHere) => "Nenhum registro com valor anterior para restaurar",
         0 => "Marque os registros que quer restaurar",
         1 => "1 registro para restaurar",
         var count => $"{count} registros para restaurar"

@@ -11,11 +11,11 @@
         <DataTemplate x:Key="ToolGroupTemplate" DataType="{x:Type local:ToolGroup}">
             <StackPanel Margin="0,0,0,16">
                 <TextBlock Text="{Binding Title, Converter={x:Static infra:UpperCaseConverter.Instance}}" Style="{StaticResource Lzn.Text.Overline}" Margin="2,0,0,8" ToolTip="{Binding Description}" />
-                <Border Style="{StaticResource Lzn.Panel}" Padding="0">
+                <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0">
                     <ItemsControl ItemsSource="{Binding Rows}" Focusable="False">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ToolRow}">
-                                <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="16,11">
+                                <Border Style="{StaticResource Lzn.SettingRow}" Padding="4,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="280" />
@@ -23,15 +23,25 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Card.Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,16,0" />
+                                        <TextBlock Text="{Binding Card.Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="Medium" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,16,0" />
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
                                             <TextBlock Text="{Binding Card.Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextMuted}"
                                                        TextTrimming="CharacterEllipsis" ToolTip="{Binding Card.Description}" />
                                             <TextBlock Text="{Binding Card.Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,2,0,0"
                                                        Visibility="{Binding Card.Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                                         </StackPanel>
-                                        <TextBlock Grid.Column="2" Text="{Binding Card.StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
-                                                   VerticalAlignment="Center" Margin="0,0,14,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Card.StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding Card.StateBrush}"
+                                                   VerticalAlignment="Center" Margin="0,0,14,0" MaxWidth="220" TextTrimming="CharacterEllipsis" ToolTip="{Binding Card.StateText}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Card.StateText}" Value="Pronto">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <Button Grid.Column="3" Style="{StaticResource Lzn.ToolbarButton}" MinWidth="96" Content="{Binding Card.ButtonText}"
                                                 Command="{Binding Run}" CommandParameter="{Binding Card}" IsEnabled="{Binding Card.CanPrimaryAction}"
                                                 ToolTip="{Binding Card.RiskTooltip}" AutomationProperties.Name="{Binding Card.Title}" />

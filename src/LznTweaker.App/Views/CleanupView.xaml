@@ -9,7 +9,7 @@
         <!-- Área de varredura numa linha: caixa, nome (selo "Sistema" quando pede administrador), uma frase e o tamanho.
              Caminho e quantidade de arquivos ficam na dica. -->
         <DataTemplate x:Key="CategoryRow">
-            <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,10" Background="Transparent">
+            <Border Style="{StaticResource Lzn.SettingRow}" Padding="14,6">
                 <Border.ToolTip>
                     <TextBlock>
                         <Run Text="{Binding PathSummary, Mode=OneWay}" /><LineBreak /><Run Text="{Binding StatusText, Mode=OneWay}" />
@@ -83,7 +83,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <Border Style="{StaticResource Lzn.Panel}" Padding="0" Margin="0,0,0,12" VerticalAlignment="Top">
+            <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Margin="0,0,0,12" VerticalAlignment="Top">
                 <ItemsControl ItemsSource="{Binding Categories}" ItemTemplate="{StaticResource CategoryRow}" Focusable="False" />
             </Border>
         </ScrollViewer>

@@ -245,7 +245,8 @@ public sealed class CleanupViewModel : INotifyPropertyChanged
                 ProgressValue = (index * 100.0) / Categories.Count;
             }
 
-            StatusMessage = $"Varredura concluída: {TotalFoundText} identificados em {TotalFilesText}.";
+            // O total já aparece no topo e na barra de ação; aqui fica só a contagem de arquivos.
+            StatusMessage = $"Varredura concluída: {TotalFilesText}.";
             UpdateCounters();
         }
         catch (OperationCanceledException)

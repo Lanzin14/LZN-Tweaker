@@ -142,7 +142,8 @@
     <Style TargetType="ProgressBar">
         <Setter Property="Height" Value="6" />
         <Setter Property="Background" Value="{StaticResource Lzn.SurfaceActive}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Accent}" />
+        <!-- Progresso é estado "em andamento" (azul); o violeta fica para ação, seleção e foco. -->
+        <Setter Property="Foreground" Value="{StaticResource Lzn.Info}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
