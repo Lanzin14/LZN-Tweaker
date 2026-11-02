@@ -13,6 +13,14 @@ graphify-out/
 *.zip
 
 # Ferramentas de agentes de IA (skills de terceiros e configurações locais)
-.claude/
+# .claude/ é local, exceto a configuração do projeto: hooks, skills e subagentes do LZN Tweaker.
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+!.claude/agents/
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/release/
+!.claude/skills/lzn-verificar/
 .agents/
 skills-lock.json
