@@ -44,6 +44,8 @@ public sealed partial class DesignSystemGuardTests
     [InlineData("Gray300", "Gray800", "Texto secundário sobre Elevated")]
     [InlineData("Gray400", "Gray950", "Muted sobre o fundo")]
     [InlineData("Gray400", "Gray900", "Muted sobre Surface")]
+    [InlineData("Gray400", "Gray850", "Muted sobre linha selecionada")]
+    [InlineData("Gray400", "GraphiteActive", "Muted no item ativo da sidebar")]
     [InlineData("Gray950", "Violet500", "Texto do botão principal")]
     [InlineData("Gray950", "Violet400", "Texto do botão principal no hover")]
     [InlineData("Violet500", "Gray950", "Roxo como texto sobre o fundo")]
@@ -60,11 +62,23 @@ public sealed partial class DesignSystemGuardTests
     [InlineData("Gray50", "GraphiteHover", "Item da sidebar no hover")]
     [InlineData("Gray50", "GraphiteActive", "Item ativo da sidebar")]
     [InlineData("Amber300", "GraphiteActive", "Aviso no rodapé da sidebar")]
-    public void Text_pairs_meet_wcag_aa(string foreground, string background, string usage)
+    public void Text_pairs_meet_wcag_aa(string foreground, string background, string usage) =>
+        AssertContrast(foreground, background, usage, 4.5);
+
+    // Componentes de interface (WCAG 1.4.11): a borda de caixa, interruptor e busca precisa se destacar do fundo.
+    [Theory]
+    [InlineData("ControlStroke", "Gray950", "Borda de controle sobre o fundo")]
+    [InlineData("ControlStroke", "Gray900", "Borda de controle sobre Surface")]
+    [InlineData("ControlStroke", "Gray850", "Borda de controle sobre linha selecionada")]
+    [InlineData("Violet500", "Gray850", "Interruptor ligado sobre linha selecionada")]
+    public void Control_borders_meet_wcag_non_text_contrast(string foreground, string background, string usage) =>
+        AssertContrast(foreground, background, usage, 3.0);
+
+    private static void AssertContrast(string foreground, string background, string usage, double minimum)
     {
         var colors = TokenColor().Matches(File.ReadAllText(TokensPath)).ToDictionary(match => match.Groups[1].Value, match => match.Groups[2].Value);
         var ratio = Contrast(colors[foreground], colors[background]);
-        Assert.True(ratio >= 4.5, $"{usage}: {foreground} sobre {background} tem {ratio:0.00}:1 (mínimo 4,5:1).");
+        Assert.True(ratio >= minimum, $"{usage}: {foreground} sobre {background} tem {ratio:0.00}:1 (mínimo {minimum:0.0}:1).");
     }
 
     private static double Contrast(string a, string b)

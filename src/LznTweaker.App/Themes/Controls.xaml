@@ -67,7 +67,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Border x:Name="Ring" Width="20" Height="20" CornerRadius="10" BorderThickness="1" BorderBrush="{StaticResource Lzn.StrokeStrong}" Background="Transparent">
+                    <Border x:Name="Ring" Width="20" Height="20" CornerRadius="10" BorderThickness="1" BorderBrush="{StaticResource Lzn.ControlStroke}" Background="Transparent">
                         <TextBlock x:Name="Glyph" Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
@@ -340,7 +340,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <Border x:Name="Track" Width="40" Height="20" CornerRadius="10" BorderThickness="1"
-                            Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}">
+                            Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.ControlStroke}">
                         <Ellipse x:Name="Thumb" Width="12" Height="12" HorizontalAlignment="Left" Margin="4,0,0,0" Fill="{StaticResource Lzn.TextSecondary}">
                             <Ellipse.RenderTransform>
                                 <TranslateTransform x:Name="ThumbOffset" X="0" />
@@ -453,7 +453,7 @@
     <Style x:Key="Lzn.ToolbarButton" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
         <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Lzn.ControlStroke}" />
         <Setter Property="Padding" Value="12,8" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisual}" />
@@ -467,7 +467,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.TextMuted}" />
                             <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
@@ -541,7 +541,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Border x:Name="Chrome" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Padding="10,0"
-                            Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}">
+                            Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.ControlStroke}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -558,7 +558,7 @@
                             <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.TextMuted}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
                             <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.Accent}" />
@@ -584,7 +584,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Border x:Name="CheckChrome" Width="18" Height="18" CornerRadius="5" VerticalAlignment="Center"
-                                Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}"
+                                Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.ControlStroke}"
                                 BorderThickness="1" SnapsToDevicePixels="True">
                             <TextBlock x:Name="CheckGlyph" Text="&#xE73E;" FontFamily="{StaticResource Lzn.IconFont}" Foreground="White" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
@@ -615,7 +615,7 @@
     <Style x:Key="MinimalComboBoxStyle" TargetType="ComboBox">
         <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
         <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Lzn.ControlStroke}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="9,5" />
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
@@ -653,7 +653,7 @@
                                IsOpen="{TemplateBinding IsDropDownOpen}" VerticalOffset="4"
                                PlacementTarget="{Binding ElementName=ToggleButton}" PopupAnimation="Fade">
                             <Border MinWidth="{Binding ActualWidth, ElementName=ToggleButton}"
-                                    Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}"
+                                    Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.ControlStroke}"
                                     BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="4">
                                 <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}" CanContentScroll="True">
                                     <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
@@ -663,7 +663,7 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
+                            <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{StaticResource Lzn.TextMuted}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
                             <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{StaticResource Lzn.Accent}" />
