@@ -146,11 +146,9 @@ public partial class TweakCardsViewModel : ObservableObject
     private string _countText = string.Empty;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsDetailOverlayOpen), nameof(DetailActionIsPrimary))]
+    [NotifyPropertyChangedFor(nameof(IsDetailOverlayOpen))]
     private CardViewModel? _selectedCard;
 
-    /// <summary>Um só botão roxo por tela: havendo alterações pendentes, "Revisar e aplicar" é o principal e a ação do detalhe vira secundária.</summary>
-    public bool DetailActionIsPrimary => SelectedCard is { IsPending: false } && !HasPending;
 
     /// <summary>
     /// Detalhe fixo ao lado da lista: a view liga quando a página usa lista e há largura para os dois. Em janela
@@ -398,7 +396,6 @@ public partial class TweakCardsViewModel : ObservableObject
         OnPropertyChanged(nameof(PendingCount));
         OnPropertyChanged(nameof(HasPending));
         OnPropertyChanged(nameof(PendingSummary));
-        OnPropertyChanged(nameof(DetailActionIsPrimary));
         ApplyCommand.NotifyCanExecuteChanged();
         DiscardCommand.NotifyCanExecuteChanged();
         if (StateFilter == "Pendentes")

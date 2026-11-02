@@ -505,17 +505,12 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <!-- Um só botão roxo por tela: com a alteração pendente, "Revisar e aplicar" é o principal e esta ação vira secundária. -->
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding SelectedCard.PrimaryActionText, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
-                            <Button Style="{StaticResource Lzn.PrimaryButton}" Padding="22,11" FontSize="15" Margin="0,0,10,0"
-                                    Content="{Binding SelectedCard.PrimaryActionText}" Command="{Binding PrimaryActionCommand}" CommandParameter="{Binding SelectedCard}"
-                                    IsEnabled="{Binding SelectedCard.CanPrimaryAction}" ToolTip="{Binding SelectedCard.PrimaryActionTooltip}" ToolTipService.ShowOnDisabled="True"
-                                    Visibility="{Binding DetailActionIsPrimary, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
-                            <Button Style="{StaticResource Lzn.ToolbarButton}" Padding="20,10" FontSize="15" Margin="0,0,10,0"
-                                    Content="{Binding SelectedCard.PrimaryActionText}" Command="{Binding PrimaryActionCommand}" CommandParameter="{Binding SelectedCard}"
-                                    IsEnabled="{Binding SelectedCard.CanPrimaryAction}" ToolTip="{Binding SelectedCard.PrimaryActionTooltip}" ToolTipService.ShowOnDisabled="True"
-                                    Visibility="{Binding DetailActionIsPrimary, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
-                        </StackPanel>
+                        <!-- Ação do detalhe sempre secundária: só marca ou desmarca. O único botão roxo da tela é "Revisar e aplicar",
+                             na barra do rodapé, que aparece quando há algo marcado. -->
+                        <Button Style="{StaticResource Lzn.ToolbarButton}" Padding="16,10" Margin="0,0,10,0"
+                                Content="{Binding SelectedCard.PrimaryActionText}" Command="{Binding PrimaryActionCommand}" CommandParameter="{Binding SelectedCard}"
+                                IsEnabled="{Binding SelectedCard.CanPrimaryAction}" ToolTip="{Binding SelectedCard.PrimaryActionTooltip}" ToolTipService.ShowOnDisabled="True"
+                                Visibility="{Binding SelectedCard.PrimaryActionText, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                         <Button Grid.Column="1" Style="{StaticResource Lzn.ToolbarButton}" Padding="16,10" Command="{Binding RefreshCommand}"
                                 ToolTip="Ler novamente o estado real dos ajustes" Visibility="{Binding HasTweaks, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                             <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Refresh}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Verificar estado" FontSize="{StaticResource Lzn.FontSize.BodySmall}" /></StackPanel>

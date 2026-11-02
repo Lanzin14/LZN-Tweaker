@@ -139,32 +139,22 @@
             </controls:MasterDetailLayout.Master>
         </controls:MasterDetailLayout>
 
-        <!-- Lote: escopo, resumo e ação destrutiva -->
-        <Border Grid.Row="4" Style="{StaticResource Lzn.Panel}" Padding="16,12" Margin="0,4,0,12">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="{Binding QueueSummary}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                    <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding RemoveForAllUsers}" Margin="0,8,0,0">
-                        <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Foreground="{StaticResource Lzn.TextSecondary}">
-                            Remover para todos os usuários <Run Text="(apaga os arquivos: a volta só é possível pela Microsoft Store)" Foreground="{StaticResource Lzn.RiskWarn}" />
-                        </TextBlock>
-                    </CheckBox>
-                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,6,0,0"
-                               Text="Um ponto de restauração é criado antes de cada lote (obrigatório). Ele protege o restante do sistema, mas não reinstala apps da Store." />
-                </StackPanel>
-                <Button Grid.Column="1" Style="{StaticResource Lzn.DangerButton}" Command="{Binding RemoveSelectedCommand}" VerticalAlignment="Center" Margin="16,0,0,0" Padding="16,9"
+        <!-- Lote: barra de ação padrão no rodapé (resumo, escopo e a ação destrutiva). -->
+        <controls:ActionBar Grid.Row="5" Summary="{Binding QueueSummary}" Hint="  ·  ponto de restauração antes de remover">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding RemoveForAllUsers}" VerticalAlignment="Center" Margin="0,0,16,0"
+                          ToolTip="Apaga os arquivos para todas as contas, inclusive novas: a volta só é possível pela Microsoft Store. O ponto de restauração protege o resto do sistema, mas não reinstala apps da Store.">
+                    <TextBlock Text="Para todos os usuários" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                </CheckBox>
+                <Button Style="{StaticResource Lzn.DangerButton}" Command="{Binding RemoveSelectedCommand}"
                         ToolTip="Marque ao menos um app. Pede confirmação e cria o ponto de restauração antes." ToolTipService.ShowOnDisabled="True">
                     <StackPanel Orientation="Horizontal"><TextBlock Text="{StaticResource Lzn.Glyph.Delete}" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" /><TextBlock Text="Remover marcados" /></StackPanel>
                 </Button>
-            </Grid>
-        </Border>
+            </StackPanel>
+        </controls:ActionBar>
 
         <!-- Removidos pelo LZN Tweaker (lidos do histórico) -->
-        <Border Grid.Row="5" Style="{StaticResource Lzn.Panel}" Padding="16,12">
+        <Border Grid.Row="4" Style="{StaticResource Lzn.Panel}" Padding="16,12" Margin="0,4,0,8">
             <DockPanel>
                 <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                     <StackPanel>

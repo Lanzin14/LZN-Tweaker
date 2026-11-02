@@ -384,6 +384,7 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
             {
                 OnPropertyChanged(nameof(SelectedActionsCount));
                 OnPropertyChanged(nameof(SelectedActionsText));
+                RunCommand.NotifyCanExecuteChanged();
             }
         };
         Actions.Add(action);
@@ -401,7 +402,7 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanRun))]
+    [RelayCommand(CanExecute = nameof(CanRunSelected))]
     private async Task RunAsync()
     {
         var selected = Actions.Where(action => action.IsSelected).ToArray();
@@ -497,4 +498,5 @@ public sealed partial class GameOptimizationPageViewModel : ObservableObject
     }
 
     private bool CanRun() => !IsBusy;
+    private bool CanRunSelected() => !IsBusy && SelectedActionsCount > 0;
 }
