@@ -9,7 +9,7 @@
 
     <!-- ═══ Estilos implícitos (valem para todo o app) ═══ -->
     <Style TargetType="ComboBoxItem">
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Padding" Value="9,7" />
         <Setter Property="Cursor" Value="Hand" />
@@ -21,11 +21,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="ItemChrome" Property="Background" Value="{StaticResource Lzn.SurfaceActive}" />
+                            <Setter TargetName="ItemChrome" Property="Background" Value="{DynamicResource Lzn.SurfaceActive}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="ItemChrome" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                            <Setter TargetName="ItemChrome" Property="Background" Value="{DynamicResource Lzn.AccentSoft}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.AccentText}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -35,10 +35,10 @@
 
     <!-- Dica: superfície elevada, quebra de linha e largura máxima legível. -->
     <Style TargetType="ToolTip">
-        <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.SurfaceRaised}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeStrong}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
         <Setter Property="Padding" Value="10,7" />
         <Setter Property="MaxWidth" Value="360" />
@@ -66,13 +66,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
-                    <Border x:Name="ThumbChrome" CornerRadius="3" Background="{StaticResource Lzn.ScrollThumb}" />
+                    <Border x:Name="ThumbChrome" CornerRadius="3" Background="{DynamicResource Lzn.ScrollThumb}" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ThumbChrome" Property="Background" Value="{StaticResource Lzn.ScrollThumbHover}" />
+                            <Setter TargetName="ThumbChrome" Property="Background" Value="{DynamicResource Lzn.ScrollThumbHover}" />
                         </Trigger>
                         <Trigger Property="IsDragging" Value="True">
-                            <Setter TargetName="ThumbChrome" Property="Background" Value="{StaticResource Lzn.AccentStroke}" />
+                            <Setter TargetName="ThumbChrome" Property="Background" Value="{DynamicResource Lzn.AccentStroke}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -141,9 +141,9 @@
     <!-- Barra de progresso arredondada (uso de CPU/RAM/disco, limpeza). -->
     <Style TargetType="ProgressBar">
         <Setter Property="Height" Value="6" />
-        <Setter Property="Background" Value="{StaticResource Lzn.SurfaceActive}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.SurfaceActive}" />
         <!-- Progresso é estado "em andamento" (azul); o violeta fica para ação, seleção e foco. -->
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Info}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Info}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>

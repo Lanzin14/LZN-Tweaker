@@ -5,7 +5,7 @@
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.GameProfiles"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
 
@@ -26,14 +26,14 @@
                                         <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="10,7" Background="Transparent">
                                             <ContentPresenter />
                                         </Border>
-                                        <Border x:Name="Marker" Width="3" HorizontalAlignment="Left" Margin="0,10" CornerRadius="2" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                                        <Border x:Name="Marker" Width="3" HorizontalAlignment="Left" Margin="0,10" CornerRadius="2" Background="{DynamicResource Lzn.Accent}" Visibility="Collapsed" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                                            <Setter TargetName="Row" Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.Sidebar.Active}" />
+                                            <Setter TargetName="Row" Property="Background" Value="{DynamicResource Lzn.Sidebar.Active}" />
                                             <Setter TargetName="Marker" Property="Visibility" Value="Visible" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
@@ -49,18 +49,18 @@
         <Geometry x:Key="WindowsLogo">M0,0 H7.4 V7.4 H0 Z M8.6,0 H16 V7.4 H8.6 Z M0,8.6 H7.4 V16 H0 Z M8.6,8.6 H16 V16 H8.6 Z</Geometry>
 
         <Style x:Key="TabStyle" TargetType="TabItem">
-            <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+            <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
                         <Grid Margin="0,0,22,12" Background="Transparent" Cursor="Hand">
                             <ContentPresenter ContentSource="Header" Margin="0,8,0,10" TextElement.FontWeight="Medium" />
-                            <Border x:Name="Underline" Height="2" VerticalAlignment="Bottom" CornerRadius="1" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                            <Border x:Name="Underline" Height="2" VerticalAlignment="Bottom" CornerRadius="1" Background="{DynamicResource Lzn.Accent}" Visibility="Collapsed" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="Underline" Property="Visibility" Value="Visible" />
-                                <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                                <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -108,22 +108,22 @@
                                    Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                                 <Image.Clip><RectangleGeometry Rect="0,0,36,36" RadiusX="8" RadiusY="8" /></Image.Clip>
                             </Image>
-                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceRaised}"
                                     Visibility="{Binding ShowsWindowsLogo, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <Path Data="{StaticResource WindowsLogo}" Fill="{StaticResource Lzn.Info}" Width="16" Height="16" Stretch="Uniform" />
+                                <Path Data="{StaticResource WindowsLogo}" Fill="{DynamicResource Lzn.Info}" Width="16" Height="16" Stretch="Uniform" />
                             </Border>
-                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceRaised}"
                                     Visibility="{Binding ShowsMonogram, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <TextBlock Text="&#xE7FC;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.TextMuted}"
+                                <TextBlock Text="&#xE7FC;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{DynamicResource Lzn.TextMuted}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
+                            <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceRaised}"
                                     Visibility="{Binding ShowsGlyph, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.AccentHover}" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{DynamicResource Lzn.AccentHover}" HorizontalAlignment="Center" />
                             </Border>
                         </Grid>
                         <StackPanel Grid.Column="1" Margin="10,0,8,0" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="Medium" Foreground="{StaticResource Lzn.Text}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
+                            <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="Medium" Foreground="{DynamicResource Lzn.Text}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
                             <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Lzn.Text.Caption}"
                                        Visibility="{Binding Subtitle, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                         </StackPanel>
@@ -137,11 +137,11 @@
                                     <Grid Width="18" Height="18" Margin="4,0,0,0" ToolTip="{Binding Name}" Background="Transparent" AutomationProperties.Name="{Binding Name}">
                                         <Image Source="{Binding Icon}" Width="16" Height="16" RenderOptions.BitmapScalingMode="HighQuality"
                                                Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
-                                        <Path Data="{StaticResource WindowsLogo}" Fill="{StaticResource Lzn.TextSecondary}" Width="13" Height="13" Stretch="Uniform"
+                                        <Path Data="{StaticResource WindowsLogo}" Fill="{DynamicResource Lzn.TextSecondary}" Width="13" Height="13" Stretch="Uniform"
                                               Visibility="{Binding IsWindows, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
-                                        <Border CornerRadius="4" Background="{StaticResource Lzn.SurfaceActive}"
+                                        <Border CornerRadius="4" Background="{DynamicResource Lzn.SurfaceActive}"
                                                 Visibility="{Binding ShowsInitial, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                            <TextBlock Text="{Binding Initial}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding Initial}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                         </Border>
                                     </Grid>
                                 </DataTemplate>

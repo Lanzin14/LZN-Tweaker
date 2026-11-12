@@ -4,11 +4,11 @@
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:games="clr-namespace:LznTweaker.Features.GameProfiles"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <Style x:Key="Panel" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+            <Setter Property="Background" Value="{DynamicResource Lzn.Surface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Lzn.Stroke}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="12" />
             <Setter Property="Padding" Value="14" />
@@ -16,7 +16,7 @@
         <Style x:Key="Label" TargetType="TextBlock">
             <Setter Property="FontSize" Value="10" />
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+            <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
         </Style>
     </UserControl.Resources>
 
@@ -30,11 +30,11 @@
         <controls:PageHeader x:Name="Header" Title="Hardware" Guide="{x:Static shell:CategoryGuides.Hardware}" Status="{Binding Dashboard.StatusMessage}" Margin="0,0,0,14" />
 
         <controls:AdaptiveGridPanel Grid.Row="1" MinItemWidth="200" MaxColumns="5" Spacing="10" Margin="0,0,8,12" DataContext="{Binding Dashboard}">
-            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="CPU" Style="{StaticResource Label}" /><TextBlock Text="{Binding ProcessorDetail}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding CpuUsageText, StringFormat=Uso: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,4,0,0" /></StackPanel></Border>
-            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="GPU" Style="{StaticResource Label}" /><TextBlock Text="{Binding GraphicsSummary}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding GraphicsMemorySummary}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
-            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="RAM" Style="{StaticResource Label}" /><TextBlock Text="{Binding MemorySummary}" FontSize="12" Margin="0,8,0,0" /><TextBlock Text="{Binding MemoryDetail}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
-            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="ARMAZENAMENTO" Style="{StaticResource Label}" /><TextBlock Text="{Binding StorageSummary}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding DiskActivitySummary}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
-            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="PLACA-MÃE" Style="{StaticResource Label}" /><TextBlock Text="{Binding MotherboardSummary}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="Temperaturas: não lidas (exigem driver de kernel; veja HWiNFO nas orientações)." FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
+            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="CPU" Style="{StaticResource Label}" /><TextBlock Text="{Binding ProcessorDetail}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding CpuUsageText, StringFormat=Uso: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="0,4,0,0" /></StackPanel></Border>
+            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="GPU" Style="{StaticResource Label}" /><TextBlock Text="{Binding GraphicsSummary}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding GraphicsMemorySummary}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
+            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="RAM" Style="{StaticResource Label}" /><TextBlock Text="{Binding MemorySummary}" FontSize="12" Margin="0,8,0,0" /><TextBlock Text="{Binding MemoryDetail}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
+            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="ARMAZENAMENTO" Style="{StaticResource Label}" /><TextBlock Text="{Binding StorageSummary}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding DiskActivitySummary}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
+            <Border Style="{StaticResource Panel}"><StackPanel><TextBlock Text="PLACA-MÃE" Style="{StaticResource Label}" /><TextBlock Text="{Binding MotherboardSummary}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" /><TextBlock Text="Temperaturas: não lidas (exigem driver de kernel; veja HWiNFO nas orientações)." FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,4,0,0" TextWrapping="Wrap" /></StackPanel></Border>
         </controls:AdaptiveGridPanel>
 
         <!-- Diagnóstico de hardware: mesma página da biblioteca de jogos (mesma instância e estado) -->

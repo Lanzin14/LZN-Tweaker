@@ -5,7 +5,7 @@
         Title="LZN Tweaker" Icon="pack://application:,,,/LznTweaker;component/app.ico" Height="880" Width="1400"
         MinHeight="640" MinWidth="980"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource Lzn.Background}" Foreground="{StaticResource Lzn.Text}"
+        Background="{DynamicResource Lzn.Background}" Foreground="{DynamicResource Lzn.Text}"
         FontFamily="{StaticResource Lzn.Font}" FontSize="{StaticResource Lzn.FontSize.Body}" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
@@ -31,10 +31,10 @@
                 <TextBlock Text="{Binding Glyph}" FontSize="15" Width="26">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.TextMuted}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.Sidebar.TextMuted}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                    <Setter Property="Foreground" Value="{StaticResource Lzn.AccentHover}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource Lzn.AccentHover}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -47,10 +47,10 @@
         <!-- Ponto de privilégio: verde como administrador, âmbar sem (o app pede administrador para aplicar). -->
         <Style x:Key="PrivilegeDot" TargetType="Ellipse">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Fill" Value="{StaticResource Lzn.RiskWarn}" />
+            <Setter Property="Fill" Value="{DynamicResource Lzn.RiskWarn}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsElevated}" Value="True">
-                    <Setter Property="Fill" Value="{StaticResource Lzn.RiskLow}" />
+                    <Setter Property="Fill" Value="{DynamicResource Lzn.RiskLow}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -66,17 +66,17 @@
         </Style>
     </Window.Resources>
 
-    <Grid Background="{StaticResource Lzn.Background}">
+    <Grid Background="{DynamicResource Lzn.Background}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar expansível: 208 px com nomes ou 68 px só com ícones; texto em Geist (Lzn.SidebarFont) -->
-        <Border BorderBrush="{StaticResource Lzn.Sidebar.Stroke}" BorderThickness="0,0,1,0" TextElement.FontFamily="{StaticResource Lzn.SidebarFont}">
+        <Border BorderBrush="{DynamicResource Lzn.Sidebar.Stroke}" BorderThickness="0,0,1,0" TextElement.FontFamily="{StaticResource Lzn.SidebarFont}">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Background" Value="{StaticResource Lzn.Sidebar}" />
+                    <Setter Property="Background" Value="{DynamicResource Lzn.Sidebar}" />
                     <Setter Property="Width" Value="208" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsSidebarCollapsed}" Value="True">
@@ -91,13 +91,13 @@
                 <DockPanel DockPanel.Dock="Top" Margin="6,0,0,14" Style="{StaticResource ExpandedOnly}">
                     <Button DockPanel.Dock="Right" Style="{StaticResource Lzn.GhostButton}" Padding="7,5" Command="{Binding ToggleSidebarCommand}"
                             ToolTip="{Binding SidebarToggleText}" AutomationProperties.Name="{Binding SidebarToggleText}">
-                        <TextBlock Text="{Binding SidebarToggleGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" />
+                        <TextBlock Text="{Binding SidebarToggleGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{DynamicResource Lzn.Sidebar.TextMuted}" />
                     </Button>
                     <Image Source="pack://application:,,,/LznTweaker;component/Assets/Brand/lzn-logo-mark.png" Height="22" Stretch="Uniform" VerticalAlignment="Center"
                            RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="LZN Tweaker" ToolTip="LZN Tweaker" />
-                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" VerticalAlignment="Center" Margin="8,0,0,0"
+                    <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.Sidebar.TextMuted}" VerticalAlignment="Center" Margin="8,0,0,0"
                                ToolTip="{Binding AppVersion, StringFormat=LZN Tweaker {0}}">
-                        <Run Text="Tweaker" Foreground="{StaticResource Lzn.Sidebar.Text}" FontWeight="Medium" />
+                        <Run Text="Tweaker" Foreground="{DynamicResource Lzn.Sidebar.Text}" FontWeight="Medium" />
                     </TextBlock>
                 </DockPanel>
                 <StackPanel DockPanel.Dock="Top" Margin="0,2,0,10" Style="{StaticResource CollapsedOnly}">
@@ -110,7 +110,7 @@
                     </Border>
                     <Button Style="{StaticResource Lzn.GhostButton}" HorizontalAlignment="Center" Padding="10,7" Margin="0,10,0,0" Command="{Binding ToggleSidebarCommand}"
                             ToolTip="{Binding SidebarToggleText}" ToolTipService.Placement="Right" AutomationProperties.Name="{Binding SidebarToggleText}">
-                        <TextBlock Text="{Binding SidebarToggleGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="12" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" />
+                        <TextBlock Text="{Binding SidebarToggleGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="12" Foreground="{DynamicResource Lzn.Sidebar.TextMuted}" />
                     </Button>
                 </StackPanel>
 
@@ -124,12 +124,46 @@
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="10,10,0,0" Style="{StaticResource ExpandedOnly}"
                             ToolTip="{Binding FooterSummary}" ToolTipService.Placement="Right" AutomationProperties.Name="{Binding FooterSummary}">
                     <Ellipse Width="7" Height="7" Margin="0,0,10,0" Style="{StaticResource PrivilegeDot}" />
-                    <TextBlock Text="{Binding PrivilegeText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" />
+                    <TextBlock Text="{Binding PrivilegeText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.Sidebar.TextMuted}" />
                 </StackPanel>
+
+                <!-- Tema (expandida): seguir o Windows, claro ou escuro Grafite + Azul. Troca na hora e fica salvo. -->
+                <DockPanel DockPanel.Dock="Bottom" Margin="10,8,4,0" Style="{StaticResource ExpandedOnly}">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Lzn.Segment.First}" Padding="0" Width="30" Height="26" GroupName="Tema" Command="{Binding SetThemeCommand}" CommandParameter="System"
+                                     IsChecked="{Binding IsThemeSystem, Mode=OneWay}" ToolTip="Seguir o tema do Windows" AutomationProperties.Name="Seguir o tema do Windows">
+                            <TextBlock Text="&#xE7F4;" Style="{StaticResource Lzn.Icon}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource Lzn.Segment}" Padding="0" Width="30" Height="26" GroupName="Tema" Command="{Binding SetThemeCommand}" CommandParameter="Light"
+                                     IsChecked="{Binding IsThemeLight, Mode=OneWay}" ToolTip="Tema claro" AutomationProperties.Name="Tema claro">
+                            <TextBlock Text="&#xE706;" Style="{StaticResource Lzn.Icon}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource Lzn.Segment.Last}" Padding="0" Width="30" Height="26" GroupName="Tema" Command="{Binding SetThemeCommand}" CommandParameter="Dark"
+                                     IsChecked="{Binding IsThemeDark, Mode=OneWay}" ToolTip="Tema escuro" AutomationProperties.Name="Tema escuro">
+                            <TextBlock Text="&#xE708;" Style="{StaticResource Lzn.Icon}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </RadioButton>
+                    </StackPanel>
+                    <TextBlock Text="Tema" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.Sidebar.TextMuted}" VerticalAlignment="Center" />
+                </DockPanel>
+                <!-- Tema (recolhida): um botão que alterna Windows → claro → escuro. -->
+                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Center" Padding="9,6" Margin="0,6,0,0" Command="{Binding CycleThemeCommand}"
+                        ToolTip="{Binding ThemeText}" ToolTipService.Placement="Right" AutomationProperties.Name="{Binding ThemeText}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource Lzn.GhostButton}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSidebarCollapsed}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <TextBlock Text="{Binding ThemeGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{DynamicResource Lzn.Sidebar.TextMuted}" />
+                </Button>
 
                 <!-- Rodapé: Histórico fixo, separado do menu por uma linha. -->
                 <StackPanel DockPanel.Dock="Bottom">
-                    <Border Height="1" Margin="4,8,4,6" Background="{StaticResource Lzn.Sidebar.Stroke}" />
+                    <Border Height="1" Margin="4,8,4,6" Background="{DynamicResource Lzn.Sidebar.Stroke}" />
                     <ListBox ItemsSource="{Binding FooterNavItems}" SelectedItem="{Binding SelectedFooterItem}" Background="Transparent" BorderThickness="0"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource SidebarNavItem}"
                              ItemTemplate="{StaticResource NavItemTemplate}" KeyboardNavigation.TabNavigation="Once" />
@@ -154,10 +188,10 @@
                                             </Style>
                                         </Grid.Style>
                                         <Border Style="{StaticResource ExpandedOnly}">
-                                            <TextBlock Text="{Binding Name}" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.Sidebar.TextMuted}" Margin="10,10,0,5" />
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource Lzn.Text.Overline}" Foreground="{DynamicResource Lzn.Sidebar.TextMuted}" Margin="10,10,0,5" />
                                         </Border>
                                         <!-- Recolhida, a seção vira uma linha divisória. -->
-                                        <Border Height="1" Margin="6,12,6,8" Background="{StaticResource Lzn.Sidebar.Stroke}" Style="{StaticResource CollapsedOnly}" />
+                                        <Border Height="1" Margin="6,12,6,8" Background="{DynamicResource Lzn.Sidebar.Stroke}" Style="{StaticResource CollapsedOnly}" />
                                     </Grid>
                                 </DataTemplate>
                             </GroupStyle.HeaderTemplate>
@@ -188,7 +222,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type shell:ToastViewModel}">
                     <!-- Notificação: superfície elevada com faixa colorida pelo tipo (sucesso, aviso, erro). -->
-                    <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Margin="0,8,0,0">
+                    <Border Background="{DynamicResource Lzn.SurfaceRaised}" BorderBrush="{DynamicResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Margin="0,8,0,0">
                         <Border.Effect>
                             <DropShadowEffect Color="Black" BlurRadius="24" ShadowDepth="4" Opacity="0.5" />
                         </Border.Effect>
@@ -203,7 +237,7 @@
                             <TextBlock Grid.Column="1" Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" Foreground="{Binding AccentBrush}" VerticalAlignment="Top" Margin="11,13,10,0" />
                             <StackPanel Grid.Column="2" Margin="0,12,0,12">
                                 <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding Message}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                <TextBlock Text="{Binding Message}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
                             </StackPanel>
                             <Button Grid.Column="3" Style="{StaticResource Lzn.GhostButton}" VerticalAlignment="Top" Margin="6,6,6,0" ToolTip="Fechar" AutomationProperties.Name="Fechar notificação"
                                     Command="{Binding DataContext.DismissToastCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}">

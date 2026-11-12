@@ -7,7 +7,7 @@
              xmlns:tabs="clr-namespace:LznTweaker.Features.TweakCards"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <Style x:Key="FieldLabel" TargetType="TextBlock" BasedOn="{StaticResource Lzn.Text.Overline}">
             <Setter Property="Margin" Value="0,0,0,4" />
@@ -30,7 +30,7 @@
 
         <!-- Linha de configuração do driver: nome, valor recomendado, estado e explicação expansível. -->
         <DataTemplate DataType="{x:Type local:DriverSettingViewModel}">
-            <Border Background="Transparent" Padding="0,9" MinHeight="44" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1">
+            <Border Background="Transparent" Padding="0,9" MinHeight="44" BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1">
                 <StackPanel>
                     <!-- Nome numa coluna fixa e o valor logo ao lado (não colado na borda direita). -->
                     <Grid>
@@ -60,7 +60,7 @@
                     </Grid>
 
                     <!-- Explicação expandida -->
-                    <Border Margin="0,10,0,0" Padding="14,4,14,12" Background="{StaticResource Lzn.SurfaceSunken}" CornerRadius="{StaticResource Lzn.Radius.Md}"
+                    <Border Margin="0,10,0,0" Padding="14,4,14,12" Background="{DynamicResource Lzn.SurfaceSunken}" CornerRadius="{StaticResource Lzn.Radius.Md}"
                             Visibility="{Binding IsExpanded, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                         <controls:AdaptiveGridPanel MinItemWidth="260" MaxColumns="2" Spacing="18">
                             <StackPanel>
@@ -82,7 +82,7 @@
                                 <TextBlock Text="{Binding Guide.HowToRestore}" Style="{StaticResource GuideText}" />
                                 <TextBlock Text="Valor atual" Style="{StaticResource GuideLabel}" />
                                 <TextBlock Text="{Binding CurrentValueText}" Style="{StaticResource GuideText}" />
-                                <TextBlock Text="{Binding Caution}" Style="{StaticResource GuideText}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,10,0,0"
+                                <TextBlock Text="{Binding Caution}" Style="{StaticResource GuideText}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,10,0,0"
                                            Visibility="{Binding Caution, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                             </StackPanel>
                         </controls:AdaptiveGridPanel>
@@ -94,9 +94,9 @@
         <!-- Ícone do jogo: arte local do Steam ou monograma. -->
         <DataTemplate x:Key="GameIcon" DataType="{x:Type local:GpuGameViewModel}">
             <Grid Width="36" Height="36">
-                <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}"
+                <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceRaised}"
                         Visibility="{Binding HasIcon, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" ToolTip="{Binding ShortName}">
-                    <TextBlock Text="&#xE7FC;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.TextMuted}"
+                    <TextBlock Text="&#xE7FC;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{DynamicResource Lzn.TextMuted}"
                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
                 <!-- Cantos arredondados por recorte: um ImageBrush ficaria fora da árvore visual e geraria erro de binding. -->
@@ -133,8 +133,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="34" Height="34" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,12,0">
-                            <TextBlock Text="&#xE7F4;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
+                        <Border Width="34" Height="34" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceRaised}" Margin="0,0,12,0">
+                            <TextBlock Text="&#xE7F4;" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                         </Border>
                         <TextBlock Grid.Column="1" Text="{Binding ModelText}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
                                    VerticalAlignment="Center" ToolTip="{Binding ModelText}" />
@@ -147,8 +147,8 @@
                         <Button Grid.Column="3" Style="{StaticResource Lzn.GhostButton}" Command="{Binding ToggleOverviewCommand}" VerticalAlignment="Center"
                                 AutomationProperties.Name="Saiba mais sobre a placa de vídeo">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Saiba mais" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentText}" />
-                                <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" Margin="7,1,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Saiba mais" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.AccentText}" />
+                                <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.AccentText}" Margin="7,1,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Lzn.Icon}">
                                             <Setter Property="Text" Value="&#xE70D;" />
@@ -164,7 +164,7 @@
                         </Button>
                     </Grid>
                     <StackPanel Margin="0,14,0,2" Visibility="{Binding IsOverviewExpanded, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                        <Border Height="1" Background="{StaticResource Lzn.StrokeSubtle}" Margin="0,0,0,14" />
+                        <Border Height="1" Background="{DynamicResource Lzn.StrokeSubtle}" Margin="0,0,0,14" />
                         <controls:AdaptiveGridPanel MinItemWidth="190" MaxColumns="4" Spacing="16">
                             <StackPanel><TextBlock Text="Fabricante" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding VendorText}" Style="{StaticResource FieldValue}" /></StackPanel>
                             <StackPanel><TextBlock Text="Driver instalado" Style="{StaticResource FieldLabel}" /><TextBlock Text="{Binding DriverPackageText}" Style="{StaticResource FieldValue}" /></StackPanel>
@@ -175,7 +175,7 @@
                         </controls:AdaptiveGridPanel>
                         <TextBlock Text="{Binding DetectionDetail}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,12,0,0"
                                    Visibility="{Binding DetectionDetail, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
-                        <TextBlock Text="{Binding AutomationNote}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,12,0,0" MaxWidth="900" HorizontalAlignment="Left" />
+                        <TextBlock Text="{Binding AutomationNote}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,12,0,0" MaxWidth="900" HorizontalAlignment="Left" />
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -198,14 +198,14 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <TextBlock Text="{Binding SelectedTabDescription}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="4,8,0,0"
+            <TextBlock Text="{Binding SelectedTabDescription}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="4,8,0,0"
                        Visibility="{Binding SelectedTabDescription, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
             <Border Height="12" />
 
             <!-- NVIDIA -->
             <StackPanel Style="{StaticResource Section}" Visibility="{Binding IsNvidiaTab, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                 <TextBlock Text="{Binding NvidiaBanner}" Style="{StaticResource Lzn.Text.Body}" Margin="0,0,0,4" />
-                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,10" TextWrapping="Wrap" Text="Todas pedem configuração manual no painel do driver: passe o mouse no nome para ver o caminho, ou clique em ⓘ para o detalhe." />
+                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,0,0,10" TextWrapping="Wrap" Text="Todas pedem configuração manual no painel do driver: passe o mouse no nome para ver o caminho, ou clique em ⓘ para o detalhe." />
                 <Border Style="{StaticResource Lzn.Panel}" Padding="18,4">
                     <ItemsControl ItemsSource="{Binding NvidiaSettings}" Focusable="False" />
                 </Border>
@@ -214,7 +214,7 @@
             <!-- AMD -->
             <StackPanel Style="{StaticResource Section}" Visibility="{Binding IsAmdTab, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                 <TextBlock Text="{Binding AmdBanner}" Style="{StaticResource Lzn.Text.Body}" Margin="0,0,0,4" />
-                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,10" TextWrapping="Wrap" Text="Todas pedem configuração manual no painel do driver: passe o mouse no nome para ver o caminho, ou clique em ⓘ para o detalhe." />
+                <TextBlock Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,0,0,10" TextWrapping="Wrap" Text="Todas pedem configuração manual no painel do driver: passe o mouse no nome para ver o caminho, ou clique em ⓘ para o detalhe." />
                 <Border Style="{StaticResource Lzn.Panel}" Padding="18,4">
                     <ItemsControl ItemsSource="{Binding AmdSettings}" Focusable="False" />
                 </Border>
@@ -235,8 +235,8 @@
                                     <Style TargetType="Button" BasedOn="{StaticResource Lzn.ToolbarButton}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                <Setter Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                                                <Setter Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                                                <Setter Property="Background" Value="{DynamicResource Lzn.AccentSoft}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource Lzn.AccentStroke}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -244,7 +244,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource GameIcon}" />
                                     <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" />
+                                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.Text}" />
                                         <TextBlock Text="{Binding InstalledText}" Style="{StaticResource Lzn.Text.Caption}" />
                                     </StackPanel>
                                 </StackPanel>
@@ -274,7 +274,7 @@
 
                         <WrapPanel Margin="0,14,0,0">
                             <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,8,6">
-                                <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}">
+                                <TextBlock FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}">
                                     <Run Text="GPU: " /><Run Text="{Binding DataContext.VendorText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}" />
                                 </TextBlock>
                             </Border>
@@ -291,7 +291,7 @@
                         <ItemsControl ItemsSource="{Binding VendorAdvice}" Focusable="False">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type local:VendorAdviceRow}">
-                                    <Border Padding="12,10" Margin="0,0,0,6" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceSunken}">
+                                    <Border Padding="12,10" Margin="0,0,0,6" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceSunken}">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="Opacity" Value="0.7" />
@@ -302,7 +302,7 @@
                                         </Border.Style>
                                         <StackPanel>
                                             <TextBlock FontSize="{StaticResource Lzn.FontSize.BodySmall}" TextWrapping="Wrap">
-                                                <Run Text="{Binding Vendor, Mode=OneWay}" FontWeight="SemiBold" /><Run Text=" · " Foreground="{StaticResource Lzn.TextMuted}" /><Run Text="{Binding Recommendation, Mode=OneWay}" Foreground="{StaticResource Lzn.AccentText}" />
+                                                <Run Text="{Binding Vendor, Mode=OneWay}" FontWeight="SemiBold" /><Run Text=" · " Foreground="{DynamicResource Lzn.TextMuted}" /><Run Text="{Binding Recommendation, Mode=OneWay}" Foreground="{DynamicResource Lzn.AccentText}" />
                                             </TextBlock>
                                             <TextBlock Text="{Binding Detail}" Style="{StaticResource GuideText}" Margin="0,4,0,0" />
                                             <TextBlock Text="Apenas consulta: não se aplica à GPU instalada." Style="{StaticResource Lzn.Text.Caption}" Margin="0,4,0,0"
@@ -321,11 +321,11 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <CheckBox Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding KeepVisibility}" AutomationProperties.Name="Priorizar visibilidade" />
-                                <TextBlock Text="Priorizar visibilidade" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" VerticalAlignment="Center" Margin="8,0,0,0"
+                                <TextBlock Text="Priorizar visibilidade" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" VerticalAlignment="Center" Margin="8,0,0,0"
                                            ToolTip="Mantém em qualidade maior as opções que ajudam a enxergar inimigos; as demais continuam no LOW." />
                             </StackPanel>
                         </Grid>
-                        <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceSunken}" Padding="12,4" Grid.IsSharedSizeScope="True">
+                        <Border CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceSunken}" Padding="12,4" Grid.IsSharedSizeScope="True">
                             <ItemsControl ItemsSource="{Binding Settings}" Focusable="False">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type local:GameSettingRow}">
@@ -336,7 +336,7 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
-                                                <TextBlock Text="&#xE890;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Info}" Margin="0,0,6,0" ToolTip="Mantido em qualidade maior pela visibilidade"
+                                                <TextBlock Text="&#xE890;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{DynamicResource Lzn.Info}" Margin="0,0,6,0" ToolTip="Mantido em qualidade maior pela visibilidade"
                                                            Visibility="{Binding KeepsQualityForVisibility, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                                                 <TextBlock Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
                                             </StackPanel>
@@ -352,7 +352,7 @@
                         <TextBlock Text="{Binding FpsCapAdvice}" Style="{StaticResource GuideText}" />
                         <TextBlock Text="Como testar" Style="{StaticResource GuideLabel}" />
                         <TextBlock Text="{Binding TestAdvice}" Style="{StaticResource GuideText}" />
-                        <TextBlock Text="{Binding Caveat}" Style="{StaticResource GuideText}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,10,0,0"
+                        <TextBlock Text="{Binding Caveat}" Style="{StaticResource GuideText}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,10,0,0"
                                    Visibility="{Binding Caveat, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                     </StackPanel>
                 </Border>
@@ -395,7 +395,7 @@
                                             <DataTemplate>
                                                 <Grid Margin="0,3">
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
-                                                    <Ellipse Width="4" Height="4" Fill="{StaticResource Lzn.AccentHover}" VerticalAlignment="Top" Margin="0,7,0,0" HorizontalAlignment="Left" />
+                                                    <Ellipse Width="4" Height="4" Fill="{DynamicResource Lzn.AccentHover}" VerticalAlignment="Top" Margin="0,7,0,0" HorizontalAlignment="Left" />
                                                     <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource GuideText}" />
                                                 </Grid>
                                             </DataTemplate>

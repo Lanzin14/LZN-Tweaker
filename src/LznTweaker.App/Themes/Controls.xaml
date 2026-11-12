@@ -19,42 +19,42 @@
     <Style x:Key="Lzn.Text.Title" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Title}" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
     </Style>
     <!-- Título do painel de detalhe (Ajustes, Histórico, Inicialização, Programas, Remover apps): 18, sem título gigante. -->
     <Style x:Key="Lzn.Text.Display" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Section}" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="LineHeight" Value="24" />
     </Style>
     <Style x:Key="Lzn.Text.Section" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Section}" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
     </Style>
     <Style x:Key="Lzn.Text.Subtitle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Subtitle}" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
     </Style>
     <Style x:Key="Lzn.Text.Body" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Body}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextSecondary}" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="LineHeight" Value="19" />
     </Style>
     <Style x:Key="Lzn.Text.Caption" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Caption}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
     <!-- Rótulo de grupo (sidebar, seções de painel). -->
     <Style x:Key="Lzn.Text.Overline" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Overline}" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
     </Style>
 
     <!-- ═══ Cabeçalho de página ═══ -->
@@ -68,19 +68,19 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Border x:Name="Ring" Width="20" Height="20" CornerRadius="10" BorderThickness="1" BorderBrush="{StaticResource Lzn.ControlStroke}" Background="Transparent">
-                        <TextBlock x:Name="Glyph" Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.TextMuted}"
+                    <Border x:Name="Ring" Width="20" Height="20" CornerRadius="10" BorderThickness="1" BorderBrush="{DynamicResource Lzn.ControlStroke}" Background="Transparent">
+                        <TextBlock x:Name="Glyph" Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{DynamicResource Lzn.TextMuted}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Ring" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
-                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                            <Setter TargetName="Ring" Property="BorderBrush" Value="{DynamicResource Lzn.AccentHover}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource Lzn.AccentText}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Ring" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                            <Setter TargetName="Ring" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
-                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                            <Setter TargetName="Ring" Property="Background" Value="{DynamicResource Lzn.AccentSoft}" />
+                            <Setter TargetName="Ring" Property="BorderBrush" Value="{DynamicResource Lzn.AccentStroke}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource Lzn.AccentText}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -107,7 +107,7 @@
                             </StackPanel>
                             <TextBlock Text="{Binding Guide.Summary, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource Lzn.Text.Body}"
                                        TextWrapping="Wrap" Margin="0,4,0,0" />
-                            <Border Margin="0,10,0,0" Padding="14,10,14,12" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceSunken}"
+                            <Border Margin="0,10,0,0" Padding="14,10,14,12" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceSunken}"
                                     DataContext="{Binding Guide, RelativeSource={RelativeSource TemplatedParent}}"
                                     Visibility="{Binding IsChecked, ElementName=InfoToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                                 <controls:AdaptiveGridPanel MinItemWidth="220" MaxColumns="3" Spacing="18">
@@ -120,7 +120,7 @@
                                         <TextBlock Text="{Binding Benefit}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
                                     </StackPanel>
                                     <StackPanel Visibility="{Binding Care, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
-                                        <TextBlock Text="Cuidados" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,3" />
+                                        <TextBlock Text="Cuidados" Style="{StaticResource Lzn.Text.Overline}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,0,0,3" />
                                         <TextBlock Text="{Binding Care}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
                                     </StackPanel>
                                 </controls:AdaptiveGridPanel>
@@ -142,7 +142,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:ActionBar">
-                    <Border BorderThickness="0,1,0,0" BorderBrush="{StaticResource Lzn.Stroke}" Padding="0,12,0,16">
+                    <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Lzn.Stroke}" Padding="0,12,0,16">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -151,13 +151,13 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,16,0">
                                 <Run Text="{Binding Summary, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" FontWeight="SemiBold"
-                                     FontSize="{StaticResource Lzn.FontSize.Body}" Foreground="{StaticResource Lzn.Text}" />
+                                     FontSize="{StaticResource Lzn.FontSize.Body}" Foreground="{DynamicResource Lzn.Text}" />
                                 <Run Text="{Binding Hint, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" FontSize="{StaticResource Lzn.FontSize.Caption}"
-                                     Foreground="{StaticResource Lzn.TextMuted}" />
+                                     Foreground="{DynamicResource Lzn.TextMuted}" />
                             </TextBlock>
                             <!-- Atalho do botão principal (ActionBar.cs): discreto, para quem usa o teclado. -->
                             <TextBlock Grid.Column="1" Text="Ctrl+Enter" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
-                                       Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" Margin="0,0,14,0"
+                                       Foreground="{DynamicResource Lzn.TextMuted}" VerticalAlignment="Center" Margin="0,0,14,0"
                                        ToolTip="Ctrl+Enter aciona o botão principal desta barra" />
                             <ContentPresenter Grid.Column="2" VerticalAlignment="Center" />
                         </Grid>
@@ -176,7 +176,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:Banner">
                     <Border x:Name="Box" CornerRadius="{StaticResource Lzn.Radius.Lg}" BorderThickness="1" Padding="14,12"
-                            Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}">
+                            Background="{DynamicResource Lzn.WarnSoft}" BorderBrush="{DynamicResource Lzn.WarnStroke}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -184,21 +184,21 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock x:Name="Glyph" Text="{StaticResource Lzn.Glyph.Warning}" Style="{StaticResource Lzn.Icon}" FontSize="16"
-                                       Foreground="{StaticResource Lzn.RiskWarn}" VerticalAlignment="Top" Margin="0,1,12,0" />
+                                       Foreground="{DynamicResource Lzn.RiskWarn}" VerticalAlignment="Top" Margin="0,1,12,0" />
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding Problem.Title, RelativeSource={RelativeSource TemplatedParent}}" FontSize="{StaticResource Lzn.FontSize.Body}"
                                            FontWeight="SemiBold" TextWrapping="Wrap" />
                                 <TextBlock Text="{Binding Problem.Message, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource Lzn.Text.Caption}"
-                                           Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                           Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
                                 <ToggleButton x:Name="DetailsToggle" HorizontalAlignment="Left" Margin="0,6,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
                                               AutomationProperties.Name="Mostrar detalhes técnicos"
                                               Visibility="{Binding Problem.Details, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                                     <ToggleButton.Template>
                                         <ControlTemplate TargetType="ToggleButton">
                                             <StackPanel Orientation="Horizontal" Background="Transparent">
-                                                <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" />
+                                                <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.AccentHover}" />
                                                 <TextBlock x:Name="Chevron" Text="{StaticResource Lzn.Glyph.ChevronDown}" Style="{StaticResource Lzn.Icon}" FontSize="9"
-                                                           Foreground="{StaticResource Lzn.AccentHover}" Margin="5,1,0,0" />
+                                                           Foreground="{DynamicResource Lzn.AccentHover}" Margin="5,1,0,0" />
                                             </StackPanel>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsChecked" Value="True">
@@ -209,8 +209,8 @@
                                     </ToggleButton.Template>
                                 </ToggleButton>
                                 <TextBox Text="{Binding Problem.Details, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"
-                                         FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}"
-                                         Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8" Margin="0,6,0,0"
+                                         FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}"
+                                         Background="{DynamicResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8" Margin="0,6,0,0"
                                          AutomationProperties.Name="Detalhes técnicos"
                                          Visibility="{Binding IsChecked, ElementName=DetailsToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                             </StackPanel>
@@ -219,16 +219,16 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding Problem.Kind, RelativeSource={RelativeSource Self}}" Value="Error">
-                            <Setter TargetName="Box" Property="Background" Value="{StaticResource Lzn.DangerSoft}" />
-                            <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource Lzn.DangerStroke}" />
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource Lzn.DangerSoft}" />
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Lzn.DangerStroke}" />
                             <Setter TargetName="Glyph" Property="Text" Value="{StaticResource Lzn.Glyph.Error}" />
-                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.RiskHigh}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource Lzn.RiskHigh}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Problem.Kind, RelativeSource={RelativeSource Self}}" Value="Info">
-                            <Setter TargetName="Box" Property="Background" Value="{StaticResource Lzn.Surface}" />
-                            <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource Lzn.Surface}" />
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Lzn.Stroke}" />
                             <Setter TargetName="Glyph" Property="Text" Value="{StaticResource Lzn.Glyph.Info}" />
-                            <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource Lzn.TextSecondary}" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -251,8 +251,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:EmptyState">
                     <StackPanel MaxWidth="320">
-                        <TextBlock Text="{TemplateBinding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="28" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
-                        <TextBlock Text="{TemplateBinding Message}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}"
+                        <TextBlock Text="{TemplateBinding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="28" Foreground="{DynamicResource Lzn.TextMuted}" HorizontalAlignment="Center" />
+                        <TextBlock Text="{TemplateBinding Message}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}"
                                    TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0" />
                         <ContentPresenter HorizontalAlignment="Center" Margin="0,12,0,0" />
                     </StackPanel>
@@ -272,7 +272,7 @@
                 <ControlTemplate TargetType="controls:LoadingState">
                     <StackPanel Width="260">
                         <ProgressBar IsIndeterminate="True" Height="3" />
-                        <TextBlock Text="{TemplateBinding Message}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}"
+                        <TextBlock Text="{TemplateBinding Message}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}"
                                    TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0" />
                     </StackPanel>
                 </ControlTemplate>
@@ -283,23 +283,23 @@
     <!-- ═══ Superfícies ═══ -->
     <!-- Card interativo: degrau de tom no hover, contorno violeta discreto, sem brilho. -->
     <Style x:Key="Lzn.Card" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeSubtle}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeSubtle}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Md}" />
         <Setter Property="Padding" Value="{StaticResource Lzn.Padding.Card}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                <Setter Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                <Setter Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource Lzn.AccentStroke}" />
             </Trigger>
         </Style.Triggers>
     </Style>
     <!-- Painel estático (métricas, resumos): sem estado de hover. -->
     <Style x:Key="Lzn.Panel" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeSubtle}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeSubtle}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Md}" />
         <Setter Property="Padding" Value="{StaticResource Lzn.Padding.Card}" />
@@ -312,7 +312,7 @@
         <Setter Property="MinHeight" Value="44" />
         <Setter Property="Padding" Value="14,6" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeSubtle}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeSubtle}" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
@@ -322,38 +322,38 @@
         <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Sm}" />
         <Setter Property="Padding" Value="7,2" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.SurfaceRaised}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.Stroke}" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style x:Key="Lzn.Badge.Success" TargetType="Border" BasedOn="{StaticResource Lzn.Badge}">
-        <Setter Property="Background" Value="{StaticResource Lzn.SuccessSoft}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.SuccessStroke}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.SuccessSoft}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.SuccessStroke}" />
     </Style>
     <Style x:Key="Lzn.Badge.Warn" TargetType="Border" BasedOn="{StaticResource Lzn.Badge}">
-        <Setter Property="Background" Value="{StaticResource Lzn.WarnSoft}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.WarnStroke}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.WarnSoft}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.WarnStroke}" />
     </Style>
     <Style x:Key="Lzn.Badge.Danger" TargetType="Border" BasedOn="{StaticResource Lzn.Badge}">
-        <Setter Property="Background" Value="{StaticResource Lzn.DangerSoft}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.DangerStroke}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.DangerSoft}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.DangerStroke}" />
     </Style>
     <!-- Valor (recomendado, configurado, detectado): selo neutro com fonte técnica. Valor não é ação, então não usa violeta. -->
     <Style x:Key="Lzn.ValueChip" TargetType="Border" BasedOn="{StaticResource Lzn.Badge}">
-        <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeSubtle}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.SurfaceRaised}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeSubtle}" />
         <Setter Property="CornerRadius" Value="4" />
     </Style>
     <Style x:Key="Lzn.ValueText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource Lzn.MonoFont}" />
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Caption}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
     </Style>
     <Style x:Key="Lzn.StatusDot" TargetType="Ellipse">
         <Setter Property="Width" Value="7" />
         <Setter Property="Height" Value="7" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Fill" Value="{StaticResource Lzn.TextMuted}" />
+        <Setter Property="Fill" Value="{DynamicResource Lzn.TextMuted}" />
     </Style>
 
     <!-- ═══ Interruptor (estilo Windows 11) ═══ -->
@@ -364,8 +364,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <Border x:Name="Track" Width="40" Height="20" CornerRadius="10" BorderThickness="1"
-                            Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.ControlStroke}">
-                        <Ellipse x:Name="Thumb" Width="12" Height="12" HorizontalAlignment="Left" Margin="4,0,0,0" Fill="{StaticResource Lzn.TextSecondary}">
+                            Background="{DynamicResource Lzn.SurfaceRaised}" BorderBrush="{DynamicResource Lzn.ControlStroke}">
+                        <Ellipse x:Name="Thumb" Width="12" Height="12" HorizontalAlignment="Left" Margin="4,0,0,0" Fill="{DynamicResource Lzn.TextSecondary}">
                             <Ellipse.RenderTransform>
                                 <TranslateTransform x:Name="ThumbOffset" X="0" />
                             </Ellipse.RenderTransform>
@@ -391,12 +391,12 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
-                            <Setter TargetName="Track" Property="Background" Value="{StaticResource Lzn.AccentStrong}" />
-                            <Setter TargetName="Track" Property="BorderBrush" Value="{StaticResource Lzn.AccentStrong}" />
+                            <Setter TargetName="Track" Property="Background" Value="{DynamicResource Lzn.AccentStrong}" />
+                            <Setter TargetName="Track" Property="BorderBrush" Value="{DynamicResource Lzn.AccentStrong}" />
                             <Setter TargetName="Thumb" Property="Fill" Value="White" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Track" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
+                            <Setter TargetName="Track" Property="BorderBrush" Value="{DynamicResource Lzn.AccentHover}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Track" Property="Opacity" Value="0.4" />
@@ -412,7 +412,7 @@
     <!-- Item da sidebar (Eminência): tom mais claro no hover, mais escuro e marcador claro quando selecionado. -->
     <Style x:Key="Lzn.NavItem" TargetType="ListBoxItem">
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.TextMuted}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Sidebar.TextMuted}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
@@ -422,17 +422,17 @@
                             <ContentPresenter />
                         </Border>
                         <Border x:Name="Indicator" Width="3" Height="18" CornerRadius="2" HorizontalAlignment="Left"
-                                Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                                Background="{DynamicResource Lzn.Accent}" Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.Sidebar.Hover}" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.Text}" />
+                            <Setter TargetName="Row" Property="Background" Value="{DynamicResource Lzn.Sidebar.Hover}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.Sidebar.Text}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.Sidebar.Active}" />
+                            <Setter TargetName="Row" Property="Background" Value="{DynamicResource Lzn.Sidebar.Active}" />
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Sidebar.Text}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.Sidebar.Text}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -443,7 +443,7 @@
     <!-- Aba contextual (Core, Privacy, QoL...): fundo elevado e sublinhado violeta quando ativa. -->
     <!-- Aba de nível 1 (seções da página): texto e sublinhado violeta, sem fundo. -->
     <Style x:Key="Lzn.Tab" TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisual}" />
@@ -454,15 +454,15 @@
                     <Grid Background="Transparent">
                         <ContentPresenter Margin="0,8,0,10" />
                         <Border x:Name="Underline" Height="2" VerticalAlignment="Bottom" CornerRadius="1"
-                                Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                                Background="{DynamicResource Lzn.Accent}" Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.TextSecondary}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="Underline" Property="Visibility" Value="Visible" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -473,7 +473,7 @@
     <!-- Seletor segmentado (nível 2: filtros e perfis dentro de uma seção). Use num StackPanel horizontal; o primeiro
          e o último ganham cantos com Lzn.Segment.First / Lzn.Segment.Last. -->
     <Style x:Key="Lzn.Segment" TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextSecondary}" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
@@ -482,17 +482,17 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Border x:Name="Chip" BorderBrush="{StaticResource Lzn.ControlStroke}" BorderThickness="{TemplateBinding BorderThickness}"
+                    <Border x:Name="Chip" BorderBrush="{DynamicResource Lzn.ControlStroke}" BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding Tag}" Background="Transparent" Padding="12,5">
                         <ContentPresenter HorizontalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Chip" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                            <Setter TargetName="Chip" Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Chip" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                            <Setter TargetName="Chip" Property="Background" Value="{DynamicResource Lzn.AccentSoft}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -510,9 +510,9 @@
     <!-- ═══ Botões ═══ -->
     <!-- Neutro de barra de ferramentas (Filtro, Ordenar, Atualizar). -->
     <Style x:Key="Lzn.ToolbarButton" TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
-        <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.ControlStroke}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextSecondary}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.ControlStroke}" />
         <Setter Property="Padding" Value="12,8" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisual}" />
@@ -525,12 +525,12 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.TextMuted}" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" />
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Lzn.TextMuted}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceActive}" />
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.SurfaceActive}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Chrome" Property="Opacity" Value="0.45" />
@@ -544,8 +544,8 @@
 
     <!-- Ação principal da página (ex.: Revisar e aplicar): roxo sólido com texto escuro; o hover clareia para Lavender. -->
     <Style x:Key="Lzn.PrimaryButton" TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextOnAccent}" />
-        <Setter Property="Background" Value="{StaticResource Lzn.Accent}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextOnAccent}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.Accent}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Padding" Value="16,9" />
         <Setter Property="Cursor" Value="Hand" />
@@ -558,14 +558,14 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentHover}" />
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.AccentStrong}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentStrong}" />
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.AccentPressed}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceActive}" />
-                            <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.SurfaceActive}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
                             <Setter Property="Cursor" Value="Arrow" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -578,36 +578,36 @@
     <Style x:Key="Lzn.GhostButton" TargetType="Button" BasedOn="{StaticResource Lzn.ToolbarButton}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
         <Setter Property="Padding" Value="6" />
     </Style>
 
     <!-- Ação destrutiva (remover, restaurar tudo). -->
     <Style x:Key="Lzn.DangerButton" TargetType="Button" BasedOn="{StaticResource Lzn.ToolbarButton}">
-        <Setter Property="Background" Value="{StaticResource Lzn.DangerSoft}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.DangerStroke}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.RiskHigh}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.DangerSoft}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.DangerStroke}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.RiskHigh}" />
     </Style>
 
     <!-- ═══ Entrada ═══ -->
     <!-- Caixa de busca com ícone e texto de exemplo (Tag). -->
     <Style x:Key="Lzn.SearchBox" TargetType="TextBox">
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
-        <Setter Property="CaretBrush" Value="{StaticResource Lzn.Text}" />
-        <Setter Property="SelectionBrush" Value="{StaticResource Lzn.Accent}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource Lzn.Text}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource Lzn.Accent}" />
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.Body}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Border x:Name="Chrome" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Padding="10,0"
-                            Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.ControlStroke}">
+                            Background="{DynamicResource Lzn.Surface}" BorderBrush="{DynamicResource Lzn.ControlStroke}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,8,0" />
-                            <TextBlock x:Name="Placeholder" Grid.Column="1" Text="{TemplateBinding Tag}" Foreground="{StaticResource Lzn.TextMuted}"
+                            <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,0,8,0" />
+                            <TextBlock x:Name="Placeholder" Grid.Column="1" Text="{TemplateBinding Tag}" Foreground="{DynamicResource Lzn.TextMuted}"
                                        VerticalAlignment="Center" IsHitTestVisible="False" Visibility="Collapsed" />
                             <ScrollViewer x:Name="PART_ContentHost" Grid.Column="1" VerticalAlignment="Center" />
                         </Grid>
@@ -617,10 +617,10 @@
                             <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.TextMuted}" />
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Lzn.TextMuted}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.Accent}" />
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Lzn.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -630,7 +630,7 @@
 
     <Style x:Key="AccentCheckBoxStyle" TargetType="CheckBox">
         <!-- Sem isto, o rótulo herda o preto padrão do Windows. -->
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisual}" />
         <Setter Property="Template">
@@ -643,7 +643,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Border x:Name="CheckChrome" Width="18" Height="18" CornerRadius="5" VerticalAlignment="Center"
-                                Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.ControlStroke}"
+                                Background="{DynamicResource Lzn.SurfaceRaised}" BorderBrush="{DynamicResource Lzn.ControlStroke}"
                                 BorderThickness="1" SnapsToDevicePixels="True">
                             <TextBlock x:Name="CheckGlyph" Text="&#xE73E;" FontFamily="{StaticResource Lzn.IconFont}" Foreground="White" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
@@ -655,11 +655,11 @@
                             <Setter TargetName="Label" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentHover}" />
+                            <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource Lzn.AccentHover}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="CheckChrome" Property="Background" Value="{StaticResource Lzn.AccentStrong}" />
-                            <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentStrong}" />
+                            <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource Lzn.AccentStrong}" />
+                            <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource Lzn.AccentStrong}" />
                             <Setter TargetName="CheckGlyph" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
@@ -672,9 +672,9 @@
     </Style>
 
     <Style x:Key="MinimalComboBoxStyle" TargetType="ComboBox">
-        <Setter Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Lzn.ControlStroke}" />
+        <Setter Property="Background" Value="{DynamicResource Lzn.SurfaceRaised}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Lzn.ControlStroke}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="9,5" />
         <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
@@ -694,7 +694,7 @@
                                                   ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                                   ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                   ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" />
-                                <TextBlock Text="&#xE70D;" FontFamily="{StaticResource Lzn.IconFont}" Foreground="{StaticResource Lzn.TextMuted}" FontSize="10"
+                                <TextBlock Text="&#xE70D;" FontFamily="{StaticResource Lzn.IconFont}" Foreground="{DynamicResource Lzn.TextMuted}" FontSize="10"
                                            HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"
                                            IsHitTestVisible="False" />
                             </Grid>
@@ -712,7 +712,7 @@
                                IsOpen="{TemplateBinding IsDropDownOpen}" VerticalOffset="4"
                                PlacementTarget="{Binding ElementName=ToggleButton}" PopupAnimation="Fade">
                             <Border MinWidth="{Binding ActualWidth, ElementName=ToggleButton}"
-                                    Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.ControlStroke}"
+                                    Background="{DynamicResource Lzn.SurfaceRaised}" BorderBrush="{DynamicResource Lzn.ControlStroke}"
                                     BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="4">
                                 <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}" CanContentScroll="True">
                                     <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
@@ -722,10 +722,10 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{StaticResource Lzn.TextMuted}" />
+                            <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{DynamicResource Lzn.TextMuted}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{StaticResource Lzn.Accent}" />
+                            <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{DynamicResource Lzn.Accent}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="ComboChrome" Property="Opacity" Value="0.55" />
@@ -741,7 +741,7 @@
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Padding" Value="12,9" />
-        <Setter Property="Foreground" Value="{StaticResource Lzn.Text}" />
+        <Setter Property="Foreground" Value="{DynamicResource Lzn.Text}" />
         <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -750,15 +750,15 @@
                         <Border x:Name="Row" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="{TemplateBinding Padding}" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
                             <ContentPresenter />
                         </Border>
-                        <Border x:Name="Indicator" Width="3" Height="20" CornerRadius="2" HorizontalAlignment="Left" Background="{StaticResource Lzn.Accent}" Visibility="Collapsed" />
+                        <Border x:Name="Indicator" Width="3" Height="20" CornerRadius="2" HorizontalAlignment="Left" Background="{DynamicResource Lzn.Accent}" Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
+                            <Setter TargetName="Row" Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Row" Property="Background" Value="{StaticResource Lzn.AccentSoft}" />
-                            <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" />
+                            <Setter TargetName="Row" Property="Background" Value="{DynamicResource Lzn.AccentSoft}" />
+                            <Setter TargetName="Row" Property="BorderBrush" Value="{DynamicResource Lzn.AccentStroke}" />
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -793,7 +793,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border x:Name="MasterPane" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,1,0" Padding="0,0,14,0">
+                        <Border x:Name="MasterPane" BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,0,1,0" Padding="0,0,14,0">
                             <ContentPresenter Content="{TemplateBinding Master}" />
                         </Border>
 
@@ -804,7 +804,7 @@
                                     <ContentPresenter Content="{TemplateBinding Selected}" ContentTemplate="{TemplateBinding DetailTemplate}" ContentTemplateSelector="{TemplateBinding DetailTemplateSelector}" />
                                 </ScrollViewer>
                                 <StackPanel x:Name="DockedEmpty" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Visibility="Collapsed">
-                                    <TextBlock Text="{StaticResource Lzn.Glyph.Select}" Style="{StaticResource Lzn.Icon}" FontSize="26" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
+                                    <TextBlock Text="{StaticResource Lzn.Glyph.Select}" Style="{StaticResource Lzn.Icon}" FontSize="26" Foreground="{DynamicResource Lzn.TextMuted}" HorizontalAlignment="Center" />
                                     <TextBlock Text="{TemplateBinding Placeholder}" Style="{StaticResource Lzn.Text.Caption}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0" />
                                 </StackPanel>
                             </Grid>
@@ -812,13 +812,13 @@
 
                         <!-- Detalhe por cima da lista (janela estreita) -->
                         <Grid x:Name="Overlay" Grid.ColumnSpan="2" Visibility="Collapsed">
-                            <Border Background="{StaticResource Lzn.Overlay}">
+                            <Border Background="{DynamicResource Lzn.Overlay}">
                                 <Border.InputBindings>
                                     <MouseBinding MouseAction="LeftClick" Command="{Binding CloseCommand, RelativeSource={RelativeSource TemplatedParent}}" />
                                 </Border.InputBindings>
                             </Border>
-                            <Border HorizontalAlignment="Right" Width="{StaticResource Lzn.Layout.DetailWidth}" Background="{StaticResource Lzn.Surface}"
-                                    BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1,0,0,0">
+                            <Border HorizontalAlignment="Right" Width="{StaticResource Lzn.Layout.DetailWidth}" Background="{DynamicResource Lzn.Surface}"
+                                    BorderBrush="{DynamicResource Lzn.StrokeStrong}" BorderThickness="1,0,0,0">
                                 <DockPanel Margin="22,16,16,18">
                                     <Button DockPanel.Dock="Top" HorizontalAlignment="Right" Style="{StaticResource Lzn.GhostButton}" ToolTip="Fechar (Esc)" AutomationProperties.Name="Fechar detalhes"
                                             Command="{Binding CloseCommand, RelativeSource={RelativeSource TemplatedParent}}">

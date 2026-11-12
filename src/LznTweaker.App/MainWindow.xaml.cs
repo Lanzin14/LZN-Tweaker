@@ -1,6 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
+using LznTweaker.Infrastructure;
 using LznTweaker.Shell;
 
 namespace LznTweaker;
@@ -14,17 +16,27 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = viewModel;
-        SourceInitialized += (_, _) => ApplyDarkTitleBar();
+        SourceInitialized += (_, _) => ApplyTitleBar();
+        ThemeService.Changed += ApplyTitleBar;
+        Closed += (_, _) => ThemeService.Changed -= ApplyTitleBar;
     }
 
-    /// <summary>Barra de título nativa escura (Windows 10 20H1+); no Windows 11 também na cor de fundo do app.</summary>
-    private void ApplyDarkTitleBar()
+    /// <summary>
+    /// Barra de título nativa no tema do app: clara ou escura (Windows 10 20H1+) e, no Windows 11, na cor de fundo
+    /// (Lzn.Background), para a janela parecer uma peça só.
+    /// </summary>
+    private void ApplyTitleBar()
     {
         var handle = new WindowInteropHelper(this).Handle;
-        var enabled = 1;
-        _ = DwmSetWindowAttribute(handle, DwmUseImmersiveDarkMode, ref enabled, sizeof(int));
-        var captionColor = 0x000E0A0A; // COLORREF (0x00BBGGRR) de #0A0A0E, o fundo do app
-        _ = DwmSetWindowAttribute(handle, DwmCaptionColor, ref captionColor, sizeof(int));
+        if (handle == IntPtr.Zero)
+            return;
+        var dark = ThemeService.IsDark ? 1 : 0;
+        _ = DwmSetWindowAttribute(handle, DwmUseImmersiveDarkMode, ref dark, sizeof(int));
+        if (TryFindResource("Lzn.Background") is SolidColorBrush background)
+        {
+            var captionColor = background.Color.R | (background.Color.G << 8) | (background.Color.B << 16); // COLORREF 0x00BBGGRR
+            _ = DwmSetWindowAttribute(handle, DwmCaptionColor, ref captionColor, sizeof(int));
+        }
     }
 
     [DllImport("dwmapi.dll")]

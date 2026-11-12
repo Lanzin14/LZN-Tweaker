@@ -5,13 +5,13 @@
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <!-- Grupo de ferramentas: rótulo e um painel com uma linha por ferramenta (nome, frase, aviso, risco e botão) -->
         <DataTemplate x:Key="ToolGroupTemplate" DataType="{x:Type local:ToolGroup}">
             <StackPanel Margin="0,0,0,16">
                 <TextBlock Text="{Binding Title, Converter={x:Static infra:UpperCaseConverter.Instance}}" Style="{StaticResource Lzn.Text.Overline}" Margin="2,0,0,8" ToolTip="{Binding Description}" />
-                <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0">
+                <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0">
                     <ItemsControl ItemsSource="{Binding Rows}" Focusable="False">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ToolRow}">
@@ -25,9 +25,9 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding Card.Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="Medium" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,16,0" />
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
-                                            <TextBlock Text="{Binding Card.Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextMuted}"
+                                            <TextBlock Text="{Binding Card.Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextMuted}"
                                                        TextTrimming="CharacterEllipsis" ToolTip="{Binding Card.Description}" />
-                                            <TextBlock Text="{Binding Card.Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,2,0,0"
+                                            <TextBlock Text="{Binding Card.Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,2,0,0"
                                                        Visibility="{Binding Card.Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                                         </StackPanel>
                                         <TextBlock Grid.Column="2" Text="{Binding Card.StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding Card.StateBrush}"

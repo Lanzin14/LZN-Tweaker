@@ -4,7 +4,7 @@
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <!-- Área de varredura numa linha: caixa, nome (selo "Sistema" quando pede administrador), uma frase e o tamanho.
              Caminho e quantidade de arquivos ficam na dica. -->
@@ -29,10 +29,10 @@
                         <Border Style="{StaticResource Lzn.Badge}" Margin="8,0,0,0" VerticalAlignment="Center"
                                 Visibility="{Binding RequiresElevation, Converter={x:Static infra:VisibilityConverter.WhenTrue}}"
                                 ToolTip="Pasta do sistema: o Windows pede permissão de administrador para limpar.">
-                            <TextBlock Text="Sistema" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                            <TextBlock Text="Sistema" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                         </Border>
                     </StackPanel>
-                    <TextBlock Grid.Column="2" Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                    <TextBlock Grid.Column="2" Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}"
                                TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
                     <TextBlock Grid.Column="3" Text="{Binding SizeDisplay}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center"
                                MinWidth="90" TextAlignment="Right" Margin="16,0,0,0" Typography.NumeralAlignment="Tabular" />
@@ -83,7 +83,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Margin="0,0,0,12" VerticalAlignment="Top">
+            <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Margin="0,0,0,12" VerticalAlignment="Top">
                 <ItemsControl ItemsSource="{Binding Categories}" ItemTemplate="{StaticResource CategoryRow}" Focusable="False" />
             </Border>
         </ScrollViewer>

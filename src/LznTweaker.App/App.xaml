@@ -6,6 +6,8 @@
         <!-- Cores, tipografia e estilos ficam todos em Themes/Theme.xaml. -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <!-- Paleta: trocada em tempo real pelo ThemeService (claro ou escuro, seguindo o Windows por padrão). -->
+                <ResourceDictionary Source="Themes/Palette.Dark.xaml" />
                 <ResourceDictionary Source="Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -5,7 +5,7 @@
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:vm="clr-namespace:LznTweaker.ViewModels"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <!-- Selo de impacto estimado na inicialização (cor de estado: baixo, médio, alto) -->
         <DataTemplate x:Key="ImpactBadge" DataType="{x:Type vm:StartupItemViewModel}">
@@ -24,12 +24,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,12,0" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding CategoryGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
+                <Border Width="30" Height="30" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceActive}" Margin="0,0,12,0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CategoryGlyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                 </Border>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                    <TextBlock Text="{Binding Publisher}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                    <TextBlock Text="{Binding Publisher}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
                 </StackPanel>
                 <ContentPresenter Grid.Column="2" Content="{Binding}" ContentTemplate="{StaticResource ImpactBadge}" Margin="12,0,0,0" />
                 <CheckBox Grid.Column="3" Style="{StaticResource Lzn.ToggleSwitch}" IsChecked="{Binding IsEnabled, Mode=TwoWay}" VerticalAlignment="Center" Margin="14,0,4,0"
@@ -44,7 +44,7 @@
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ImpactBadge}" />
                     <Border Style="{StaticResource Lzn.Badge}" Margin="8,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding CategoryDisplay}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        <TextBlock Text="{Binding CategoryDisplay}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                     </Border>
                 </StackPanel>
 
@@ -55,25 +55,25 @@
                 <TextBlock Style="{StaticResource Lzn.Text.Body}" TextWrapping="Wrap"
                            Text="O programa deixa de abrir sozinho com o Windows. Ele continua instalado e funciona normalmente quando você o abre. A mudança vale na hora; para voltar, ligue de novo aqui ou no Gerenciador de Tarefas." />
 
-                <Expander Margin="0,16,0,0" Foreground="{StaticResource Lzn.TextSecondary}">
+                <Expander Margin="0,16,0,0" Foreground="{DynamicResource Lzn.TextSecondary}">
                     <Expander.Header>
-                        <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
+                        <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.AccentHover}" />
                     </Expander.Header>
                     <StackPanel>
                         <TextBlock Text="Comando executado" Style="{StaticResource Lzn.DetailLabel}" />
                         <TextBox Text="{Binding Command, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
-                                 Foreground="{StaticResource Lzn.TextSecondary}" Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
+                                 Foreground="{DynamicResource Lzn.TextSecondary}" Background="{DynamicResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
                                  AutomationProperties.Name="Comando executado" />
                         <TextBlock Text="Origem" Style="{StaticResource Lzn.DetailLabel}" />
                         <TextBlock Text="{Binding LocationDisplay}" Style="{StaticResource Lzn.Text.Body}" />
                         <StackPanel Visibility="{Binding ShowsTechnicalName, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
                             <TextBlock Text="Nome no registro" Style="{StaticResource Lzn.DetailLabel}" />
-                            <TextBlock Text="{Binding Name}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Name}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" />
                         </StackPanel>
                     </StackPanel>
                 </Expander>
 
-                <Border BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,18,0,0">
+                <Border BorderBrush="{DynamicResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,18,0,0">
                     <Grid>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Ellipse Style="{StaticResource Lzn.StatusDot}" Fill="{Binding StateBrush}" Margin="0,0,8,0" />
@@ -115,9 +115,9 @@
             </Grid.ColumnDefinitions>
             <TextBox Style="{StaticResource Lzn.SearchBox}" Height="36" Tag="Buscar por nome, fabricante ou comando…" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      AutomationProperties.Name="Buscar programas de inicialização" />
-            <Border Grid.Column="1" Margin="8,0,0,0" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" Padding="10,0,4,0">
+            <Border Grid.Column="1" Margin="8,0,0,0" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{DynamicResource Lzn.Surface}" BorderBrush="{DynamicResource Lzn.Stroke}" Padding="10,0,4,0">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{StaticResource Lzn.Glyph.Filter}" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,0,4,0" />
+                    <TextBlock Text="{StaticResource Lzn.Glyph.Filter}" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="0,0,4,0" />
                     <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding CategoryFilters}" SelectedItem="{Binding SelectedCategoryFilter, Mode=TwoWay}" MinWidth="170"
                               BorderThickness="0" Background="Transparent" AutomationProperties.Name="Categoria" />
                 </StackPanel>

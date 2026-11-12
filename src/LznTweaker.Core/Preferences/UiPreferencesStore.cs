@@ -8,6 +8,9 @@ public sealed record UiPreferences
 {
     /// <summary>Sidebar só com ícones. Padrão: recolhida (layout Foco).</summary>
     public bool SidebarCollapsed { get; init; } = true;
+
+    /// <summary>Tema: "System" (segue o Windows), "Light" ou "Dark". Padrão: segue o Windows.</summary>
+    public string Theme { get; init; } = "System";
 }
 
 /// <summary>

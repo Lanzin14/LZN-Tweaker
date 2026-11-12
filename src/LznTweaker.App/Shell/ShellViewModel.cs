@@ -53,7 +53,11 @@ public sealed partial class ShellViewModel : ObservableObject
         _services = services;
         _uiPreferences = uiPreferences;
         // Layout Foco: a sidebar abre recolhida (só ícones) até o usuário escolher outra coisa; a escolha é lembrada.
-        _isSidebarCollapsed = uiPreferences.Load().SidebarCollapsed;
+        var preferences = uiPreferences.Load();
+        _isSidebarCollapsed = preferences.SidebarCollapsed;
+        // Tema antes da janela existir: a primeira pintura já sai no tema certo.
+        _themeChoice = Enum.TryParse<AppTheme>(preferences.Theme, out var theme) ? theme : AppTheme.System;
+        ThemeService.Apply(_themeChoice);
         NavItems = new ObservableCollection<NavItem>(ShellPages.All);
         NavView = new CollectionViewSource { Source = NavItems }.View;
         NavView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(NavItem.Section)));
@@ -107,6 +111,49 @@ public sealed partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSidebarCollapsed;
 
+    /// <summary>Tema escolhido: seguir o Windows, claro ou escuro (Grafite + Azul). Troca na hora e fica salvo.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsThemeSystem), nameof(IsThemeLight), nameof(IsThemeDark), nameof(ThemeText), nameof(ThemeGlyph))]
+    private AppTheme _themeChoice;
+
+    public bool IsThemeSystem => ThemeChoice == AppTheme.System;
+    public bool IsThemeLight => ThemeChoice == AppTheme.Light;
+    public bool IsThemeDark => ThemeChoice == AppTheme.Dark;
+    public string ThemeText => ThemeChoice switch
+    {
+        AppTheme.Light => "Tema: claro",
+        AppTheme.Dark => "Tema: escuro",
+        _ => "Tema: seguir o Windows"
+    };
+    public string ThemeGlyph => ThemeChoice switch
+    {
+        AppTheme.Light => "\uE706",
+        AppTheme.Dark => "\uE708",
+        _ => "\uE7F4"
+    };
+
+    partial void OnThemeChoiceChanged(AppTheme value)
+    {
+        ThemeService.Apply(value);
+        _uiPreferences.TrySave(_uiPreferences.Load() with { Theme = value.ToString() });
+    }
+
+    [RelayCommand]
+    private void SetTheme(string? choice)
+    {
+        if (Enum.TryParse<AppTheme>(choice, out var theme))
+            ThemeChoice = theme;
+    }
+
+    /// <summary>Sidebar recolhida: um botão só, que passa por Windows → claro → escuro.</summary>
+    [RelayCommand]
+    private void CycleTheme() => ThemeChoice = ThemeChoice switch
+    {
+        AppTheme.System => AppTheme.Light,
+        AppTheme.Light => AppTheme.Dark,
+        _ => AppTheme.System
+    };
+
     public string SidebarToggleText => IsSidebarCollapsed ? "Expandir menu" : "Recolher menu";
     public string SidebarToggleGlyph => IsSidebarCollapsed ? "" : "";
     public string FooterSummary => $"{StatusText} · {UserName} · {PrivilegeText} · {WindowsVersion}";
@@ -115,7 +162,7 @@ public sealed partial class ShellViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(SidebarToggleText));
         OnPropertyChanged(nameof(SidebarToggleGlyph));
-        _uiPreferences.TrySave(new UiPreferences { SidebarCollapsed = value });
+        _uiPreferences.TrySave(_uiPreferences.Load() with { SidebarCollapsed = value });
     }
 
     partial void OnStatusTextChanged(string value) => OnPropertyChanged(nameof(FooterSummary));

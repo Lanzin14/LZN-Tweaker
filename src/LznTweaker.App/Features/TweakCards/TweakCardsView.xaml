@@ -6,7 +6,7 @@
              xmlns:tweaks="clr-namespace:LznTweaker.Core.Tweaks;assembly=LznTweaker.Core"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <!-- Selo de risco: ícone + texto, explicação no hover -->
         <DataTemplate x:Key="RiskBadge" DataType="{x:Type local:CardViewModel}">
@@ -23,8 +23,8 @@
             <Border Style="{StaticResource Lzn.Badge}" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="Categoria"
                     Visibility="{Binding Category, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Category.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="10" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,5,0" />
-                    <TextBlock Text="{Binding Category.Title, FallbackValue=''}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Category.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="10" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding Category.Title, FallbackValue=''}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" VerticalAlignment="Center" />
                 </StackPanel>
             </Border>
         </DataTemplate>
@@ -33,19 +33,19 @@
         <DataTemplate x:Key="GroupHeader">
             <StackPanel Margin="2,4,0,10" Visibility="{Binding Name, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Name.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{StaticResource Lzn.Text}" Margin="0,0,10,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Name.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="16" Foreground="{DynamicResource Lzn.Text}" Margin="0,0,10,0" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding Name.Title, FallbackValue=''}" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
                     <Border Style="{StaticResource Lzn.Badge}" Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding ItemCount}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        <TextBlock Text="{Binding ItemCount}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                     </Border>
                 </StackPanel>
-                <TextBlock Text="{Binding Name.Description, FallbackValue=''}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="23,3,0,0" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Name.Description, FallbackValue=''}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="23,3,0,0" TextWrapping="Wrap" />
             </StackPanel>
         </DataTemplate>
 
         <Style x:Key="InfoButton" TargetType="Button">
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Foreground" Value="{StaticResource Lzn.TextMuted}" />
+            <Setter Property="Foreground" Value="{DynamicResource Lzn.TextMuted}" />
             <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisual}" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -55,8 +55,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceRaised}" />
-                                <Setter Property="Foreground" Value="{StaticResource Lzn.AccentHover}" />
+                                <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.SurfaceRaised}" />
+                                <Setter Property="Foreground" Value="{DynamicResource Lzn.AccentHover}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -74,8 +74,8 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,12,0">
-                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceActive}" Margin="0,0,12,0">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                         </Border>
                         <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
                                    ToolTip="{Binding Title}" />
@@ -103,15 +103,15 @@
                                 Command="{Binding DataContext.ToggleQueueCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
                     </Grid>
                     <StackPanel>
-                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap"
+                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap"
                                    TextTrimming="CharacterEllipsis" MaxHeight="36" LineHeight="18" Margin="0,10,0,0" />
                         <WrapPanel Margin="0,6,0,0">
                             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CategoryChip}" Margin="0,0,8,0" />
                             <Border Style="{StaticResource Lzn.ValueChip}" Margin="0,0,8,0"
                                     Visibility="{Binding IsRecommended, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                                <TextBlock Text="Recomendado" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                                <TextBlock Text="Recomendado" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                             </Border>
-                            <TextBlock Text="{Binding RestartText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding RestartText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" VerticalAlignment="Center" />
                         </WrapPanel>
                     </StackPanel>
                 </DockPanel>
@@ -128,8 +128,8 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceActive}" Margin="0,0,12,0">
-                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceActive}" Margin="0,0,12,0">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
                         </Border>
                         <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding Title}" />
                         <Button Grid.Column="2" Style="{StaticResource InfoButton}" ToolTip="Detalhes"
@@ -151,9 +151,9 @@
                                 Command="{Binding DataContext.RunQuickActionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
                     </Grid>
                     <StackPanel>
-                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap"
+                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap"
                                    TextTrimming="CharacterEllipsis" MaxHeight="36" LineHeight="18" Margin="0,10,0,0" />
-                        <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,8,0,0" TextWrapping="Wrap"
+                        <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,8,0,0" TextWrapping="Wrap"
                                    Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                         <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource CategoryChip}" Margin="0,6,0,0" HorizontalAlignment="Left" />
                     </StackPanel>
@@ -180,8 +180,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.DiscordSoft}" Margin="0,0,12,0">
-                            <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{StaticResource Lzn.Discord}" Stretch="Uniform" Width="18" Height="14" />
+                        <Border Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.DiscordSoft}" Margin="0,0,12,0">
+                            <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{DynamicResource Lzn.Discord}" Stretch="Uniform" Width="18" Height="14" />
                         </Border>
                         <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" />
                     </Grid>
@@ -201,9 +201,9 @@
                         </Button>
                     </Grid>
                     <StackPanel>
-                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" Margin="0,10,0,0" />
+                        <TextBlock Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="18" Margin="0,10,0,0" />
                         <TextBlock Text="Caminho" Style="{StaticResource Lzn.Text.Overline}" Margin="0,10,0,4" />
-                        <TextBlock Text="{Binding PathText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding PathText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.AccentText}" TextWrapping="Wrap" />
                     </StackPanel>
                 </DockPanel>
             </Border>
@@ -224,14 +224,14 @@
                 <TextBlock Text="Limitações e compatibilidade" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
                 <TextBlock Text="{Binding Definition.Compatibility}" Style="{StaticResource Lzn.Text.Body}" />
                 <TextBlock Text="Restauração" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
-                <TextBlock Text="{Binding RollbackText}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
-                <TextBlock FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0">
+                <TextBlock Text="{Binding RollbackText}" FontSize="12" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                <TextBlock FontSize="12" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0">
                     <Run Text="{Binding RestartText, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding AdministratorText, Mode=OneWay}" />
                 </TextBlock>
                 <TextBlock Text="Estado detectado" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
-                <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding SwitchTooltip}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" Margin="0,8,0,0" />
-                <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0"
+                <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding SwitchTooltip}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.AccentText}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                <TextBlock Text="{Binding Definition.SourceUrl, StringFormat=Referência: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0"
                            Visibility="{Binding Definition.SourceUrl, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
             </StackPanel>
         </DataTemplate>
@@ -244,10 +244,10 @@
                 <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" />
                 <TextBlock Text="{Binding Definition.Confirmation}" Style="{StaticResource Lzn.Text.Body}" Margin="0,10,0,0"
                            Visibility="{Binding Definition.Confirmation, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
-                <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{StaticResource Lzn.RiskWarn}" TextWrapping="Wrap" Margin="0,10,0,0"
+                <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{DynamicResource Lzn.RiskWarn}" TextWrapping="Wrap" Margin="0,10,0,0"
                            Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                 <TextBlock Text="A execução é registrada em Backups. O app só executa a ferramenta desta lista fixa; nenhum comando digitado é aceito."
-                           FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
+                           FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
             </StackPanel>
         </DataTemplate>
 
@@ -261,7 +261,7 @@
                 <TextBlock Text="Benefício" Style="{StaticResource Lzn.Text.Overline}" Margin="0,18,0,6" />
                 <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Body}" />
                 <TextBlock Text="Caminho no Discord" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
-                <TextBlock Text="{Binding PathText}" FontSize="12" Foreground="{StaticResource Lzn.AccentText}" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding PathText}" FontSize="12" Foreground="{DynamicResource Lzn.AccentText}" TextWrapping="Wrap" />
                 <TextBlock Text="Como configurar" Style="{StaticResource Lzn.Text.Overline}" Margin="0,14,0,6" />
                 <ItemsControl ItemsSource="{Binding NumberedSteps}" Focusable="False">
                     <ItemsControl.ItemTemplate>
@@ -270,16 +270,16 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Border Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,10" Margin="0,6,0,0"
+                <Border Background="{DynamicResource Lzn.WarnSoft}" BorderBrush="{DynamicResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,10" Margin="0,6,0,0"
                         Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                     <StackPanel>
-                        <TextBlock Text="Pode variar conforme a versão" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.RiskWarn}" />
-                        <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        <TextBlock Text="Pode variar conforme a versão" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.RiskWarn}" />
+                        <TextBlock Text="{Binding Note}" FontSize="12" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0" />
                     </StackPanel>
                 </Border>
                 <TextBlock Text="O LZN Tweaker não abre nem altera o Discord. Se uma opção não estiver no lugar indicado, o Discord pode ter mudado o menu na sua versão."
-                           FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
-                <TextBlock Text="{Binding Guide.SourceUrl, StringFormat=Referência: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,10,0,0" />
+                           FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,14,0,0" />
+                <TextBlock Text="{Binding Guide.SourceUrl, StringFormat=Referência: {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,10,0,0" />
             </StackPanel>
         </DataTemplate>
 
@@ -294,7 +294,7 @@
                 </Grid.ColumnDefinitions>
                 <Ellipse Width="8" Height="8" Fill="{Binding StateBrush}" Margin="2,0,14,0" VerticalAlignment="Center" />
                 <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="15" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding Title}" />
-                <TextBlock Grid.Column="2" Text="{Binding StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                <TextBlock Grid.Column="2" Text="{Binding StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}"
                            Margin="12,0,0,0" VerticalAlignment="Center" />
             </Grid>
         </DataTemplate>
@@ -307,7 +307,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{StaticResource Lzn.Discord}" Stretch="Uniform" Width="13" Height="10" Margin="0,0,11,0" VerticalAlignment="Center" />
+                <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{DynamicResource Lzn.Discord}" Stretch="Uniform" Width="13" Height="10" Margin="0,0,11,0" VerticalAlignment="Center" />
                 <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="15" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding Title}" />
                 <TextBlock Grid.Column="2" Text="{Binding RecommendationText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{Binding RecommendationBrush}"
                            Margin="12,0,0,0" VerticalAlignment="Center" />
@@ -342,9 +342,9 @@
         <!-- Rótulo de grupo: ícone da categoria e nome em maiúsculas -->
         <DataTemplate x:Key="FocusGroupHeader">
             <StackPanel Orientation="Horizontal" Margin="6,18,0,8" Visibility="{Binding Name, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
-                <TextBlock Text="{Binding Name.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,0,9,0" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Name.Glyph, FallbackValue=''}" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,0,9,0" VerticalAlignment="Center" />
                 <TextBlock Text="{Binding Name.Title, FallbackValue='', Converter={x:Static infra:UpperCaseConverter.Instance}}" Style="{StaticResource Lzn.Text.Overline}" VerticalAlignment="Center" />
-                <TextBlock Text="{Binding ItemCount}" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.TextMuted}" Margin="8,0,0,0" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding ItemCount}" Style="{StaticResource Lzn.Text.Overline}" Foreground="{DynamicResource Lzn.TextMuted}" Margin="8,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
         </DataTemplate>
 
@@ -358,7 +358,7 @@
             <Setter Property="VerticalAlignment" Value="Top" />
         </Style>
         <Style x:Key="FactValue" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource Lzn.TextSecondary}" />
+            <Setter Property="Foreground" Value="{DynamicResource Lzn.TextSecondary}" />
             <Setter Property="FontSize" Value="{StaticResource Lzn.FontSize.BodySmall}" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="Margin" Value="0,0,0,8" />
@@ -385,10 +385,10 @@
                 <WrapPanel Margin="0,12,0,0">
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" Margin="0,0,8,6" />
                     <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,8,6">
-                        <TextBlock Text="{Binding RestartText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        <TextBlock Text="{Binding RestartText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                     </Border>
                 </WrapPanel>
-                <TextBlock Text="{Binding Description}" Style="{StaticResource FocusCardText}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,8,0,0" />
+                <TextBlock Text="{Binding Description}" Style="{StaticResource FocusCardText}" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="0,8,0,0" />
 
                 <!-- O que importa antes de decidir: estado agora, como voltar, permissão e compatibilidade -->
                 <Grid Margin="0,18,0,0">
@@ -420,8 +420,8 @@
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
                             <StackPanel Orientation="Horizontal" Background="Transparent">
-                                <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
-                                <TextBlock x:Name="Chevron" Text="{StaticResource Lzn.Glyph.ChevronDown}" Style="{StaticResource Lzn.Icon}" FontSize="10" Foreground="{StaticResource Lzn.AccentHover}" Margin="6,2,0,0" />
+                                <TextBlock Text="Detalhes técnicos" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.AccentHover}" />
+                                <TextBlock x:Name="Chevron" Text="{StaticResource Lzn.Glyph.ChevronDown}" Style="{StaticResource Lzn.Icon}" FontSize="10" Foreground="{DynamicResource Lzn.AccentHover}" Margin="6,2,0,0" />
                             </StackPanel>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
@@ -438,7 +438,7 @@
                         <StackPanel>
                             <TextBlock Text="O que será alterado" Style="{StaticResource FocusCardLabel}" />
                             <TextBox Text="{Binding ChangesText, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" Padding="0"
-                                     FontFamily="{StaticResource Lzn.MonoFont}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" AutomationProperties.Name="O que será alterado" />
+                                     FontFamily="{StaticResource Lzn.MonoFont}" FontSize="13" Foreground="{DynamicResource Lzn.TextSecondary}" AutomationProperties.Name="O que será alterado" />
                         </StackPanel>
                     </Border>
                     <TextBlock Text="Estado detectado" Style="{StaticResource Lzn.DetailLabel}" Margin="0,16,0,6" />
@@ -457,14 +457,14 @@
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RiskBadge}" Margin="0,0,8,6" />
                 </WrapPanel>
                 <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Display}" TextWrapping="Wrap" Margin="0,14,0,0" />
-                <TextBlock Text="{Binding Description}" FontSize="16" LineHeight="25" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding Description}" FontSize="16" LineHeight="25" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left" />
                 <Border Style="{StaticResource FocusCard}" Margin="0,26,0,0" Visibility="{Binding ConfirmationNotice, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                     <StackPanel>
                         <TextBlock Text="Antes de executar" Style="{StaticResource FocusCardLabel}" />
                         <TextBlock Text="{Binding ConfirmationNotice}" Style="{StaticResource FocusCardText}" />
                     </StackPanel>
                 </Border>
-                <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.RiskWarn}" TextWrapping="Wrap" Margin="2,14,0,0"
+                <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.RiskWarn}" TextWrapping="Wrap" Margin="2,14,0,0"
                            Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                 <TextBlock Text="A execução é registrada no Histórico. O app só executa a ferramenta desta lista fixa; nenhum comando digitado é aceito."
                            Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="2,16,0,0" />
@@ -477,15 +477,15 @@
                 <WrapPanel>
                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource RecommendationBadge}" Margin="0,0,8,6" />
                     <Border Style="{StaticResource Lzn.Badge}" Margin="0,0,8,6">
-                        <TextBlock Text="{Binding StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                        <TextBlock Text="{Binding StateText}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                     </Border>
                 </WrapPanel>
                 <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Display}" TextWrapping="Wrap" Margin="0,14,0,0" />
-                <TextBlock Text="{Binding Description}" FontSize="16" LineHeight="25" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding Description}" FontSize="16" LineHeight="25" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,10,0,0" MaxWidth="820" HorizontalAlignment="Left" />
                 <Border Style="{StaticResource FocusCard}" Margin="0,26,0,0">
                     <StackPanel>
                         <TextBlock Text="Caminho no Discord" Style="{StaticResource FocusCardLabel}" />
-                        <TextBlock Text="{Binding PathText}" Style="{StaticResource FocusCardText}" Foreground="{StaticResource Lzn.AccentText}" />
+                        <TextBlock Text="{Binding PathText}" Style="{StaticResource FocusCardText}" Foreground="{DynamicResource Lzn.AccentText}" />
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource FocusCard}" Margin="0,14,0,0">
@@ -500,11 +500,11 @@
                         </ItemsControl>
                     </StackPanel>
                 </Border>
-                <Border Background="{StaticResource Lzn.WarnSoft}" BorderBrush="{StaticResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16,12" Margin="0,14,0,0"
+                <Border Background="{DynamicResource Lzn.WarnSoft}" BorderBrush="{DynamicResource Lzn.WarnStroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16,12" Margin="0,14,0,0"
                         Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                     <StackPanel>
-                        <TextBlock Text="Pode variar conforme a versão" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.RiskWarn}" />
-                        <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        <TextBlock Text="Pode variar conforme a versão" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.RiskWarn}" />
+                        <TextBlock Text="{Binding Note}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0" />
                     </StackPanel>
                 </Border>
                 <TextBlock Text="O LZN Tweaker não abre nem altera o Discord. Se uma opção não estiver no lugar indicado, o Discord pode ter mudado o menu na sua versão."
@@ -525,7 +525,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="28,24,24,16" Focusable="False">
                     <ContentControl Content="{Binding SelectedCard}" ContentTemplateSelector="{StaticResource FocusDetailsSelector}" Focusable="False" />
                 </ScrollViewer>
-                <Border Grid.Row="1" BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Padding="28,14,24,16">
+                <Border Grid.Row="1" BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Padding="28,14,24,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -579,7 +579,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Lista -->
-            <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}">
+            <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="BorderThickness" Value="0,0,1,0" />
@@ -600,25 +600,25 @@
                         </Grid.ColumnDefinitions>
                         <WrapPanel VerticalAlignment="Bottom">
                             <TextBlock Text="{Binding Title}" Style="{StaticResource Lzn.Text.Title}" Margin="0,0,12,0" />
-                            <TextBlock Text="{Binding CountText}" FontSize="{StaticResource Lzn.FontSize.Body}" Foreground="{StaticResource Lzn.TextMuted}" VerticalAlignment="Bottom" Margin="0,0,0,3" />
+                            <TextBlock Text="{Binding CountText}" FontSize="{StaticResource Lzn.FontSize.Body}" Foreground="{DynamicResource Lzn.TextMuted}" VerticalAlignment="Bottom" Margin="0,0,0,3" />
                         </WrapPanel>
                         <ToggleButton x:Name="FocusInfoToggle" Grid.Column="1" VerticalAlignment="Center" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}"
                                       ToolTip="Sobre esta página" AutomationProperties.Name="Sobre esta página">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Border x:Name="Chrome" Width="32" Height="32" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="Transparent">
-                                        <TextBlock Text="{StaticResource Lzn.Glyph.Info}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{StaticResource Lzn.Glyph.Info}" Style="{StaticResource Lzn.Icon}" FontSize="15" Foreground="{DynamicResource Lzn.TextMuted}" HorizontalAlignment="Center" />
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" /></Trigger>
-                                        <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentSoft}" /></Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" /></Trigger>
+                                        <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.AccentSoft}" /></Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </ToggleButton.Template>
                         </ToggleButton>
                         <Popup PlacementTarget="{Binding ElementName=FocusInfoToggle}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                IsOpen="{Binding IsChecked, ElementName=FocusInfoToggle, Mode=TwoWay}" VerticalOffset="6" HorizontalOffset="-300">
-                            <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16" Width="560">
+                            <Border Background="{DynamicResource Lzn.SurfaceRaised}" BorderBrush="{DynamicResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16" Width="560">
                                 <StackPanel>
                                     <controls:CategoryInfo Guide="{Binding Guide}" />
                                     <TextBlock Text="{Binding StatusText}" Style="{StaticResource Lzn.Text.Caption}" TextWrapping="Wrap" Margin="0,10,0,0" />
@@ -663,12 +663,12 @@
                     </WrapPanel>
 
                     <!-- Aviso em destaque da aba (Discord) -->
-                    <Border DockPanel.Dock="Top" Margin="0,12,0,0" Background="{StaticResource Lzn.DiscordSoft}" BorderBrush="{StaticResource Lzn.DiscordStroke}" BorderThickness="1"
+                    <Border DockPanel.Dock="Top" Margin="0,12,0,0" Background="{DynamicResource Lzn.DiscordSoft}" BorderBrush="{DynamicResource Lzn.DiscordStroke}" BorderThickness="1"
                             CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,10"
                             Visibility="{Binding SelectedTabHighlight, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}"
                             ToolTip="Nada é alterado automaticamente. Os nomes seguem a versão atual do Discord em português e podem mudar entre versões.">
                         <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{StaticResource Lzn.Discord}" Stretch="Uniform" Width="20" Height="15" Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{DynamicResource Lzn.Discord}" Stretch="Uniform" Width="20" Height="15" Margin="0,0,10,0" VerticalAlignment="Center" />
                             <TextBlock Text="{Binding SelectedTabHighlight}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="Bold" VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
@@ -685,23 +685,23 @@
                                       ToolTip="Filtros e ordenação" AutomationProperties.Name="Filtros e ordenação">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
-                                    <Border x:Name="Chrome" Width="40" Height="40" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}">
+                                    <Border x:Name="Chrome" Width="40" Height="40" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{DynamicResource Lzn.Surface}" BorderBrush="{DynamicResource Lzn.Stroke}">
                                         <Grid>
-                                            <TextBlock Text="{StaticResource Lzn.Glyph.Filter}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
-                                            <Ellipse Width="6" Height="6" Fill="{StaticResource Lzn.Accent}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,7,7,0"
+                                            <TextBlock Text="{StaticResource Lzn.Glyph.Filter}" Style="{StaticResource Lzn.Icon}" FontSize="14" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" />
+                                            <Ellipse Width="6" Height="6" Fill="{DynamicResource Lzn.Accent}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,7,7,0"
                                                      Visibility="{Binding HasFilters, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" /></Trigger>
-                                        <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentSoft}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" /></Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" /></Trigger>
+                                        <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.AccentSoft}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Lzn.AccentStroke}" /></Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </ToggleButton.Template>
                         </ToggleButton>
                         <Popup Grid.Column="1" PlacementTarget="{Binding ElementName=FocusFilterToggle}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                IsOpen="{Binding IsChecked, ElementName=FocusFilterToggle, Mode=TwoWay}" VerticalOffset="6">
-                            <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="14" Width="260">
+                            <Border Background="{DynamicResource Lzn.SurfaceRaised}" BorderBrush="{DynamicResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="14" Width="260">
                                 <StackPanel>
                                     <TextBlock Text="Risco" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,6" />
                                     <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding RiskOptions}" SelectedItem="{Binding RiskFilter}" AutomationProperties.Name="Filtrar por risco" />
@@ -790,10 +790,10 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock Text="{Binding SelectedTabDescription}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="4,8,0,0"
+            <TextBlock Text="{Binding SelectedTabDescription}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="4,8,0,0"
                        Visibility="{Binding SelectedTabDescription, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
             <!-- Aviso em destaque da aba (hoje, só a aba Discord) -->
-            <Border Margin="0,12,0,0" Background="{StaticResource Lzn.DiscordSoft}" BorderBrush="{StaticResource Lzn.DiscordStroke}" BorderThickness="1"
+            <Border Margin="0,12,0,0" Background="{DynamicResource Lzn.DiscordSoft}" BorderBrush="{DynamicResource Lzn.DiscordStroke}" BorderThickness="1"
                     CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="16,12"
                     Visibility="{Binding SelectedTabHighlight, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
                 <Grid>
@@ -801,11 +801,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{StaticResource Lzn.Discord}" Stretch="Uniform" Width="30" Height="23" Margin="0,0,14,0" VerticalAlignment="Center" />
+                    <Path Data="{StaticResource Lzn.Brand.DiscordSymbol}" Fill="{DynamicResource Lzn.Discord}" Stretch="Uniform" Width="30" Height="23" Margin="0,0,14,0" VerticalAlignment="Center" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding SelectedTabHighlight}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="Bold" Foreground="{StaticResource Lzn.Text}" />
+                        <TextBlock Text="{Binding SelectedTabHighlight}" FontSize="{StaticResource Lzn.FontSize.Subtitle}" FontWeight="Bold" Foreground="{DynamicResource Lzn.Text}" />
                         <TextBlock Text="Nada é alterado automaticamente. Os nomes seguem a versão atual do Discord em português e podem mudar entre versões; cada card avisa o que pode variar."
-                                   Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                   Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,3,0,0" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -824,25 +824,25 @@
                 <ToggleButton x:Name="FilterToggle" Grid.Column="1" Margin="8,0,0,0" Cursor="Hand" FocusVisualStyle="{StaticResource Lzn.FocusVisual}" AutomationProperties.Name="Filtros">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
-                            <Border x:Name="Chrome" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,8" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}">
+                            <Border x:Name="Chrome" CornerRadius="{StaticResource Lzn.Radius.Md}" Padding="12,8" BorderThickness="1" Background="{DynamicResource Lzn.Surface}" BorderBrush="{DynamicResource Lzn.Stroke}">
                                 <ContentPresenter VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.SurfaceHover}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" /></Trigger>
-                                <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{StaticResource Lzn.AccentSoft}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource Lzn.AccentStroke}" /></Trigger>
+                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Lzn.StrokeStrong}" /></Trigger>
+                                <Trigger Property="IsChecked" Value="True"><Setter TargetName="Chrome" Property="Background" Value="{DynamicResource Lzn.AccentSoft}" /><Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Lzn.AccentStroke}" /></Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </ToggleButton.Template>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE71C;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" Foreground="{StaticResource Lzn.TextSecondary}" />
-                        <TextBlock Text="Filtros" FontSize="12" Foreground="{StaticResource Lzn.TextSecondary}" />
-                        <Ellipse Width="6" Height="6" Fill="{StaticResource Lzn.Accent}" Margin="6,0,0,0" VerticalAlignment="Center"
+                        <TextBlock Text="&#xE71C;" Style="{StaticResource Lzn.Icon}" FontSize="13" Margin="0,0,8,0" Foreground="{DynamicResource Lzn.TextSecondary}" />
+                        <TextBlock Text="Filtros" FontSize="12" Foreground="{DynamicResource Lzn.TextSecondary}" />
+                        <Ellipse Width="6" Height="6" Fill="{DynamicResource Lzn.Accent}" Margin="6,0,0,0" VerticalAlignment="Center"
                                  Visibility="{Binding HasFilters, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                     </StackPanel>
                 </ToggleButton>
                 <Popup Grid.Column="1" PlacementTarget="{Binding ElementName=FilterToggle}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                        IsOpen="{Binding IsChecked, ElementName=FilterToggle, Mode=TwoWay}" VerticalOffset="6">
-                    <Border Background="{StaticResource Lzn.SurfaceRaised}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="14" Width="260">
+                    <Border Background="{DynamicResource Lzn.SurfaceRaised}" BorderBrush="{DynamicResource Lzn.StrokeStrong}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="14" Width="260">
                         <StackPanel>
                             <TextBlock Text="Risco" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,6" />
                             <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding RiskOptions}" SelectedItem="{Binding RiskFilter}" />
@@ -853,14 +853,14 @@
                         </StackPanel>
                     </Border>
                 </Popup>
-                <Border Grid.Column="2" Margin="8,0,0,0" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{StaticResource Lzn.Surface}" BorderBrush="{StaticResource Lzn.Stroke}" Padding="10,0,4,0">
+                <Border Grid.Column="2" Margin="8,0,0,0" CornerRadius="{StaticResource Lzn.Radius.Md}" BorderThickness="1" Background="{DynamicResource Lzn.Surface}" BorderBrush="{DynamicResource Lzn.Stroke}" Padding="10,0,4,0">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE8CB;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,0,4,0" />
+                        <TextBlock Text="&#xE8CB;" Style="{StaticResource Lzn.Icon}" FontSize="13" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="0,0,4,0" />
                         <ComboBox Style="{StaticResource MinimalComboBoxStyle}" ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SortMode}" MinWidth="120"
                                   BorderThickness="0" Background="Transparent" AutomationProperties.Name="Ordenar" />
                     </StackPanel>
                 </Border>
-                <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}"
                            Text="{Binding VisibleCount, StringFormat={}{0} item(ns)}" />
             </Grid>
 
@@ -890,8 +890,8 @@
                 <controls:LoadingState Message="Lendo o estado atual dos ajustes…" Visibility="{Binding IsLoading, Converter={x:Static infra:VisibilityConverter.WhenTrue}}" />
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                             Visibility="{Binding VisibleCount, Converter={x:Static infra:VisibilityConverter.WhenZero}}">
-                    <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="28" Foreground="{StaticResource Lzn.TextMuted}" HorizontalAlignment="Center" />
-                    <TextBlock Text="Nenhum item corresponde à busca ou aos filtros." FontSize="13" Foreground="{StaticResource Lzn.TextSecondary}" Margin="0,10,0,0" />
+                    <TextBlock Text="&#xE721;" Style="{StaticResource Lzn.Icon}" FontSize="28" Foreground="{DynamicResource Lzn.TextMuted}" HorizontalAlignment="Center" />
+                    <TextBlock Text="Nenhum item corresponde à busca ou aos filtros." FontSize="13" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="0,10,0,0" />
                     <Button Style="{StaticResource Lzn.ToolbarButton}" Content="Limpar busca e filtros" FontSize="12" HorizontalAlignment="Center" Margin="0,12,0,0"
                             Command="{Binding ClearFiltersCommand}" />
                 </StackPanel>
@@ -906,12 +906,12 @@
 
         <!-- Painel de detalhes -->
         <Grid Visibility="{Binding IsDetailOverlayOpen, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-            <Border Background="{StaticResource Lzn.Overlay}">
+            <Border Background="{DynamicResource Lzn.Overlay}">
                 <Border.InputBindings>
                     <MouseBinding MouseAction="LeftClick" Command="{Binding CloseDetailsCommand}" />
                 </Border.InputBindings>
             </Border>
-            <Border HorizontalAlignment="Right" Width="560" Background="{StaticResource Lzn.Background}" BorderBrush="{StaticResource Lzn.StrokeStrong}" BorderThickness="1,0,0,0">
+            <Border HorizontalAlignment="Right" Width="560" Background="{DynamicResource Lzn.Background}" BorderBrush="{DynamicResource Lzn.StrokeStrong}" BorderThickness="1,0,0,0">
                 <DockPanel>
                     <Button DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="0,14,18,0" Style="{StaticResource Lzn.GhostButton}" Command="{Binding CloseDetailsCommand}" ToolTip="Fechar (Esc)" AutomationProperties.Name="Fechar detalhes">
                         <TextBlock Text="{StaticResource Lzn.Glyph.Close}" Style="{StaticResource Lzn.Icon}" FontSize="11" />

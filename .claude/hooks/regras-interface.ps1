@@ -1,5 +1,5 @@
 ﻿# Hook PostToolUse (Edit/Write/MultiEdit): devolve ao Claude, na hora, as regras de interface do CLAUDE.md que o
-# teste DesignSystemGuardTests só pegaria depois (~40 s): cor em hexadecimal fora de Themes/Tokens.xaml, Click= no XAML
+# teste DesignSystemGuardTests só pegaria depois (~40 s): cor em hexadecimal fora de Themes/Palette.*.xaml, Click= no XAML
 # e MessageBox em code-behind (diálogos vão por IUserDialogs). App.xaml.cs fica de fora: avisa falhas antes da injeção
 # de dependência existir.
 $ErrorActionPreference = 'Stop'
@@ -17,8 +17,8 @@ try {
     $number = 0
     foreach ($line in Get-Content -LiteralPath $file -Encoding UTF8) {
         $number++
-        if ($isXaml -and $name -ne 'Tokens.xaml' -and $line -match '(?<![&\w])#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3,4})\b') {
-            $problems += "${name}:${number}: cor em hexadecimal; use um pincel do tema (Themes/Tokens.xaml ou ThemeBrushes)."
+        if ($isXaml -and -not $name.StartsWith('Palette.') -and $line -match '(?<![&\w])#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3,4})\b') {
+            $problems += "${name}:${number}: cor em hexadecimal; use um pincel do tema (Themes/Palette.*.xaml, gerado por tools/theme/paletas.py, ou ThemeBrushes)."
         }
         if ($isXaml -and $line -match '\sClick\s*=') {
             $problems += "${name}:${number}: Click= no XAML; use Command com um RelayCommand no ViewModel."

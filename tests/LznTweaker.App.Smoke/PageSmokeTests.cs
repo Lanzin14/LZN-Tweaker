@@ -90,6 +90,7 @@ public sealed class PageSmokeTests
         errors.AddRange(CheckToolsPage(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckGeneralList(provider, shell, window, bindingErrors, output));
         errors.AddRange(CheckSidebar(shell, window, bindingErrors, output));
+        errors.AddRange(CheckThemes(shell, window, bindingErrors, output));
 
         window.Close();
         PresentationTraceSources.DataBindingSource.Listeners.Remove(bindingErrors);
@@ -106,7 +107,7 @@ public sealed class PageSmokeTests
         var errors = new List<string>();
         var home = provider.GetRequiredService<LznTweaker.Features.Home.HomeViewModel>();
         var general = provider.GetRequiredService<LznTweaker.Features.TweakCards.GeneralPageViewModel>();
-        for (var waited = 0; home.TweaksBadge == "lendo…" && waited < 50; waited++)
+        for (var waited = 0; home.IsTweaksLoading && waited < 50; waited++)
             Pump(TimeSpan.FromMilliseconds(100));
         if (!home.IsCleanupUnscanned)
             errors.Add($"início: a Limpeza não deveria ser varrida ao abrir o app (selo: {home.CleanupBadge})");
@@ -409,6 +410,38 @@ public sealed class PageSmokeTests
     }
 
     /// <summary>Sidebar: as seções seguem a ordem nova; recolhida, fica estreita e continua navegando sem erro de binding.</summary>
+    /// <summary>
+    /// Temas: claro e escuro (Grafite + Azul) trocam em tempo real, sem erro de binding, e o fundo muda de verdade.
+    /// Salva os prints das páginas principais nos dois temas.
+    /// </summary>
+    private static IEnumerable<string> CheckThemes(ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
+    {
+        var errors = new List<string>();
+        var before = bindingErrors.Messages.Count;
+        var backgrounds = new Dictionary<LznTweaker.Infrastructure.AppTheme, System.Windows.Media.Color>();
+        foreach (var theme in new[] { LznTweaker.Infrastructure.AppTheme.Light, LznTweaker.Infrastructure.AppTheme.Dark })
+        {
+            shell.ThemeChoice = theme;
+            Pump(TimeSpan.FromMilliseconds(300));
+            if (LznTweaker.Infrastructure.ThemeService.IsDark != (theme == LznTweaker.Infrastructure.AppTheme.Dark))
+                errors.Add($"tema: {theme} não ficou ativo");
+            backgrounds[theme] = ((System.Windows.Media.SolidColorBrush)window.FindResource("Lzn.Background")).Color;
+            var suffix = theme == LznTweaker.Infrastructure.AppTheme.Light ? "light" : "dark";
+            foreach (var key in new[] { ShellPages.Home, ShellPages.General, ShellPages.Games, ShellPages.Cleanup })
+            {
+                shell.Navigate(key);
+                Pump(TimeSpan.FromMilliseconds(600));
+                Save(window, Path.Combine(output, $"theme-{suffix}-{key}.png"));
+            }
+        }
+        if (backgrounds[LznTweaker.Infrastructure.AppTheme.Light] == backgrounds[LznTweaker.Infrastructure.AppTheme.Dark])
+            errors.Add("tema: o fundo não mudou entre claro e escuro");
+        shell.ThemeChoice = LznTweaker.Infrastructure.AppTheme.Dark;
+        Pump(TimeSpan.FromMilliseconds(200));
+        errors.AddRange(bindingErrors.Messages.Skip(before).Select(message => $"tema: {message}"));
+        return errors;
+    }
+
     private static IEnumerable<string> CheckSidebar(ShellViewModel shell, Window window, BindingErrorListener bindingErrors, string output)
     {
         var errors = new List<string>();

@@ -5,7 +5,7 @@
              xmlns:shell="clr-namespace:LznTweaker.Shell"
              xmlns:local="clr-namespace:LznTweaker.Features.Debloat"
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <!-- Selo da categoria (cor de estado: patrocinado = seguro, sistema = atenção) -->
         <DataTemplate x:Key="CategoryBadge" DataType="{x:Type local:AppxItemViewModel}">
@@ -27,7 +27,7 @@
                           ToolTip="Marcar para remover" AutomationProperties.Name="{Binding Title, StringFormat=Marcar {0} para remover}" />
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock Text="{Binding FriendlyName}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                    <TextBlock Text="{Binding Name}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                    <TextBlock Text="{Binding Name}" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}"
                                TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
                 </StackPanel>
                 <ContentPresenter Grid.Column="2" Content="{Binding}" ContentTemplate="{StaticResource CategoryBadge}" Margin="14,0,0,0" />
@@ -58,13 +58,13 @@
 
                 <TextBlock Text="Pacote" Style="{StaticResource Lzn.DetailLabel}" />
                 <TextBox Text="{Binding Name, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="{StaticResource Lzn.MonoFont}" FontSize="{StaticResource Lzn.FontSize.Caption}"
-                         Foreground="{StaticResource Lzn.TextSecondary}" Background="{StaticResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
+                         Foreground="{DynamicResource Lzn.TextSecondary}" Background="{DynamicResource Lzn.SurfaceSunken}" BorderThickness="0" Padding="10,8"
                          AutomationProperties.Name="Nome do pacote" />
                 <TextBlock Text="{Binding Version, StringFormat=Versão {0}}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,6,0,0" />
 
-                <Border BorderBrush="{StaticResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,18,0,0">
+                <Border BorderBrush="{DynamicResource Lzn.Stroke}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,18,0,0">
                     <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsQueued}">
-                        <TextBlock Text="Marcar para remover" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.Text}" />
+                        <TextBlock Text="Marcar para remover" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.Text}" />
                     </CheckBox>
                 </Border>
             </StackPanel>
@@ -110,7 +110,7 @@
             </Button>
             <Button Grid.Column="2" Margin="8,0,0,0" Style="{StaticResource Lzn.GhostButton}" Content="Desmarcar todos" Command="{Binding ClearQueueCommand}" Padding="10,6" />
             <CheckBox Grid.Column="3" Margin="12,0,0,0" Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding ShowOnlyQueued}" VerticalAlignment="Center">
-                <TextBlock Text="Mostrar só os marcados" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                <TextBlock Text="Mostrar só os marcados" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" />
             </CheckBox>
             <TextBlock Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.Text.Caption}"
                        Text="{Binding Installed.Count, StringFormat={}{0} apps}" />
@@ -144,7 +144,7 @@
             <StackPanel Orientation="Horizontal">
                 <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding RemoveForAllUsers}" VerticalAlignment="Center" Margin="0,0,16,0"
                           ToolTip="Apaga os arquivos para todas as contas, inclusive novas: a volta só é possível pela Microsoft Store. O ponto de restauração protege o resto do sistema, mas não reinstala apps da Store.">
-                    <TextBlock Text="Para todos os usuários" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                    <TextBlock Text="Para todos os usuários" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                 </CheckBox>
                 <Button Style="{StaticResource Lzn.DangerButton}" Command="{Binding RemoveSelectedCommand}"
                         ToolTip="Marque ao menos um app. Pede confirmação e cria o ponto de restauração antes." ToolTipService.ShowOnDisabled="True">
@@ -178,7 +178,7 @@
                         <DataTemplate DataType="{x:Type local:RemovedAppxItemViewModel}">
                             <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected}" Margin="0,3">
                                 <StackPanel Margin="2,0,0,0">
-                                    <TextBlock Text="{Binding FriendlyName}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.Text}" />
+                                    <TextBlock Text="{Binding FriendlyName}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.Text}" />
                                     <TextBlock Text="{Binding Details}" Style="{StaticResource Lzn.Text.Caption}" />
                                 </StackPanel>
                             </CheckBox>

@@ -1,0 +1,94 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Tema escuro Grafite + Azul: chumbo, grafite e azul elétrico.
+         Gerado por tools/theme/paletas.py (não edite à mão: mude lá e rode de novo). Único lugar com hexadecimais,
+         junto com o outro tema; as telas usam {DynamicResource Lzn.*} e o ThemeService troca este dicionário. -->
+
+    <!-- Cores primitivas -->
+    <Color x:Key="Lzn.Color.Background">#111317</Color>
+    <Color x:Key="Lzn.Color.Surface">#181B21</Color>
+    <Color x:Key="Lzn.Color.SurfaceHover">#1D2027</Color>
+    <Color x:Key="Lzn.Color.Raised">#21252D</Color>
+    <Color x:Key="Lzn.Color.Active">#272C35</Color>
+    <Color x:Key="Lzn.Color.Line">#262A33</Color>
+    <Color x:Key="Lzn.Color.LineSubtle">#1F232A</Color>
+    <Color x:Key="Lzn.Color.LineStrong">#3A404C</Color>
+    <Color x:Key="Lzn.Color.ScrollHover">#4E5666</Color>
+    <Color x:Key="Lzn.Color.ControlStroke">#687184</Color>
+    <Color x:Key="Lzn.Color.Text">#E7E9ED</Color>
+    <Color x:Key="Lzn.Color.TextSecondary">#B6BCC7</Color>
+    <Color x:Key="Lzn.Color.TextMuted">#8D95A3</Color>
+    <Color x:Key="Lzn.Color.Accent">#2F6BEB</Color>
+    <Color x:Key="Lzn.Color.OnAccent">#FFFFFF</Color>
+    <Color x:Key="Lzn.Color.AccentStrong">#285FD6</Color>
+    <Color x:Key="Lzn.Color.AccentPressed">#2453BD</Color>
+    <Color x:Key="Lzn.Color.AccentHover">#6E9DFF</Color>
+    <Color x:Key="Lzn.Color.AccentText">#C3D5FF</Color>
+    <Color x:Key="Lzn.Color.AccentSoft">#172238</Color>
+    <Color x:Key="Lzn.Color.AccentStroke">#2B4270</Color>
+    <Color x:Key="Lzn.Color.Success">#7FD1A8</Color>
+    <Color x:Key="Lzn.Color.SuccessSoft">#14261E</Color>
+    <Color x:Key="Lzn.Color.SuccessStroke">#22443A</Color>
+    <Color x:Key="Lzn.Color.Warning">#E5C07B</Color>
+    <Color x:Key="Lzn.Color.WarningSoft">#282216</Color>
+    <Color x:Key="Lzn.Color.WarningStroke">#4A3D22</Color>
+    <Color x:Key="Lzn.Color.Danger">#E47777</Color>
+    <Color x:Key="Lzn.Color.DangerSoft">#2A171A</Color>
+    <Color x:Key="Lzn.Color.DangerStroke">#5A2A2E</Color>
+    <Color x:Key="Lzn.Color.Info">#7DB7FA</Color>
+    <Color x:Key="Lzn.Color.Sidebar">#15181D</Color>
+    <Color x:Key="Lzn.Color.SidebarHover">#1D2027</Color>
+    <Color x:Key="Lzn.Color.SidebarActive">#1B2433</Color>
+    <Color x:Key="Lzn.Color.SidebarStroke">#23272F</Color>
+    <Color x:Key="Lzn.Color.SidebarMuted">#9AA1AE</Color>
+    <Color x:Key="Lzn.Color.Overlay">#99000000</Color>
+    <Color x:Key="Lzn.Color.DiscordBlurple">#5865F2</Color>
+    <Color x:Key="Lzn.Color.DiscordSoft">#1A1D3B</Color>
+    <Color x:Key="Lzn.Color.DiscordStroke">#353D8C</Color>
+
+    <!-- Pincéis semânticos (as telas usam estes) -->
+    <SolidColorBrush x:Key="Lzn.Background" Color="{StaticResource Lzn.Color.Background}" />
+    <SolidColorBrush x:Key="Lzn.SurfaceSunken" Color="{StaticResource Lzn.Color.Background}" />
+    <SolidColorBrush x:Key="Lzn.Surface" Color="{StaticResource Lzn.Color.Surface}" />
+    <SolidColorBrush x:Key="Lzn.SurfaceHover" Color="{StaticResource Lzn.Color.SurfaceHover}" />
+    <SolidColorBrush x:Key="Lzn.SurfaceRaised" Color="{StaticResource Lzn.Color.Raised}" />
+    <SolidColorBrush x:Key="Lzn.SurfaceActive" Color="{StaticResource Lzn.Color.Active}" />
+    <SolidColorBrush x:Key="Lzn.Stroke" Color="{StaticResource Lzn.Color.Line}" />
+    <SolidColorBrush x:Key="Lzn.StrokeSubtle" Color="{StaticResource Lzn.Color.LineSubtle}" />
+    <SolidColorBrush x:Key="Lzn.StrokeStrong" Color="{StaticResource Lzn.Color.LineStrong}" />
+    <SolidColorBrush x:Key="Lzn.ControlStroke" Color="{StaticResource Lzn.Color.ControlStroke}" />
+    <SolidColorBrush x:Key="Lzn.Overlay" Color="{StaticResource Lzn.Color.Overlay}" />
+    <SolidColorBrush x:Key="Lzn.Text" Color="{StaticResource Lzn.Color.Text}" />
+    <SolidColorBrush x:Key="Lzn.TextSecondary" Color="{StaticResource Lzn.Color.TextSecondary}" />
+    <SolidColorBrush x:Key="Lzn.TextMuted" Color="{StaticResource Lzn.Color.TextMuted}" />
+    <SolidColorBrush x:Key="Lzn.TextOnAccent" Color="{StaticResource Lzn.Color.OnAccent}" />
+    <SolidColorBrush x:Key="Lzn.Accent" Color="{StaticResource Lzn.Color.Accent}" />
+    <SolidColorBrush x:Key="Lzn.AccentStrong" Color="{StaticResource Lzn.Color.AccentStrong}" />
+    <SolidColorBrush x:Key="Lzn.AccentPressed" Color="{StaticResource Lzn.Color.AccentPressed}" />
+    <SolidColorBrush x:Key="Lzn.AccentHover" Color="{StaticResource Lzn.Color.AccentHover}" />
+    <SolidColorBrush x:Key="Lzn.AccentSoft" Color="{StaticResource Lzn.Color.AccentSoft}" />
+    <SolidColorBrush x:Key="Lzn.AccentStroke" Color="{StaticResource Lzn.Color.AccentStroke}" />
+    <SolidColorBrush x:Key="Lzn.AccentText" Color="{StaticResource Lzn.Color.AccentText}" />
+    <SolidColorBrush x:Key="Lzn.FocusRing" Color="{StaticResource Lzn.Color.AccentHover}" />
+    <SolidColorBrush x:Key="Lzn.RiskLow" Color="{StaticResource Lzn.Color.Success}" />
+    <SolidColorBrush x:Key="Lzn.RiskWarn" Color="{StaticResource Lzn.Color.Warning}" />
+    <SolidColorBrush x:Key="Lzn.RiskHigh" Color="{StaticResource Lzn.Color.Danger}" />
+    <SolidColorBrush x:Key="Lzn.Info" Color="{StaticResource Lzn.Color.Info}" />
+    <SolidColorBrush x:Key="Lzn.SuccessSoft" Color="{StaticResource Lzn.Color.SuccessSoft}" />
+    <SolidColorBrush x:Key="Lzn.SuccessStroke" Color="{StaticResource Lzn.Color.SuccessStroke}" />
+    <SolidColorBrush x:Key="Lzn.WarnSoft" Color="{StaticResource Lzn.Color.WarningSoft}" />
+    <SolidColorBrush x:Key="Lzn.WarnStroke" Color="{StaticResource Lzn.Color.WarningStroke}" />
+    <SolidColorBrush x:Key="Lzn.DangerSoft" Color="{StaticResource Lzn.Color.DangerSoft}" />
+    <SolidColorBrush x:Key="Lzn.DangerStroke" Color="{StaticResource Lzn.Color.DangerStroke}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar" Color="{StaticResource Lzn.Color.Sidebar}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Hover" Color="{StaticResource Lzn.Color.SidebarHover}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Active" Color="{StaticResource Lzn.Color.SidebarActive}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Stroke" Color="{StaticResource Lzn.Color.SidebarStroke}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.Text" Color="{StaticResource Lzn.Color.Text}" />
+    <SolidColorBrush x:Key="Lzn.Sidebar.TextMuted" Color="{StaticResource Lzn.Color.SidebarMuted}" />
+    <SolidColorBrush x:Key="Lzn.Discord" Color="{StaticResource Lzn.Color.DiscordBlurple}" />
+    <SolidColorBrush x:Key="Lzn.DiscordSoft" Color="{StaticResource Lzn.Color.DiscordSoft}" />
+    <SolidColorBrush x:Key="Lzn.DiscordStroke" Color="{StaticResource Lzn.Color.DiscordStroke}" />
+    <SolidColorBrush x:Key="Lzn.ScrollThumb" Color="{StaticResource Lzn.Color.LineStrong}" />
+    <SolidColorBrush x:Key="Lzn.ScrollThumbHover" Color="{StaticResource Lzn.Color.ScrollHover}" />
+</ResourceDictionary>

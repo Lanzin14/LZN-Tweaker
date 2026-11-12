@@ -12,8 +12,8 @@
             <ToggleButton.Template>
                 <ControlTemplate TargetType="ToggleButton">
                     <StackPanel Orientation="Horizontal" Background="Transparent">
-                        <TextBlock x:Name="Label" Text="Saiba mais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.AccentHover}" />
-                        <TextBlock x:Name="Chevron" Text="&#xE70D;" Style="{StaticResource Lzn.Icon}" FontSize="9" Foreground="{StaticResource Lzn.AccentHover}" Margin="5,1,0,0" />
+                        <TextBlock x:Name="Label" Text="Saiba mais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.AccentHover}" />
+                        <TextBlock x:Name="Chevron" Text="&#xE70D;" Style="{StaticResource Lzn.Icon}" FontSize="9" Foreground="{DynamicResource Lzn.AccentHover}" Margin="5,1,0,0" />
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -21,13 +21,13 @@
                             <Setter TargetName="Chevron" Property="Text" Value="&#xE70E;" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Label" Property="Foreground" Value="{StaticResource Lzn.AccentText}" />
+                            <Setter TargetName="Label" Property="Foreground" Value="{DynamicResource Lzn.AccentText}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </ToggleButton.Template>
         </ToggleButton>
-        <Border Margin="0,8,0,0" Padding="14,10,14,12" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{StaticResource Lzn.SurfaceSunken}"
+        <Border Margin="0,8,0,0" Padding="14,10,14,12" CornerRadius="{StaticResource Lzn.Radius.Md}" Background="{DynamicResource Lzn.SurfaceSunken}"
                 Visibility="{Binding IsChecked, ElementName=MoreToggle, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
             <controls:AdaptiveGridPanel MinItemWidth="220" MaxColumns="3" Spacing="18">
                 <StackPanel>
@@ -39,7 +39,7 @@
                     <TextBlock Text="{Binding Benefit}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
                 </StackPanel>
                 <StackPanel Visibility="{Binding Care, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}">
-                    <TextBlock Text="Cuidados" Style="{StaticResource Lzn.Text.Overline}" Foreground="{StaticResource Lzn.RiskWarn}" Margin="0,0,0,3" />
+                    <TextBlock Text="Cuidados" Style="{StaticResource Lzn.Text.Overline}" Foreground="{DynamicResource Lzn.RiskWarn}" Margin="0,0,0,3" />
                     <TextBlock Text="{Binding Care}" Style="{StaticResource Lzn.Text.Body}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" LineHeight="18" />
                 </StackPanel>
             </controls:AdaptiveGridPanel>

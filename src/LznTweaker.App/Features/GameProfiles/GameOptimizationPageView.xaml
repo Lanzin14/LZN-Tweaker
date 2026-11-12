@@ -6,12 +6,12 @@
              xmlns:infra="clr-namespace:LznTweaker.Infrastructure"
              xmlns:controls="clr-namespace:LznTweaker.Controls"
              xmlns:tools="clr-namespace:LznTweaker.Features.Tools"
-             Background="Transparent" Foreground="{StaticResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
+             Background="Transparent" Foreground="{DynamicResource Lzn.Text}" FontFamily="{StaticResource Lzn.Font}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource Lzn.Surface}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Lzn.Stroke}" />
+            <Setter Property="Background" Value="{DynamicResource Lzn.Surface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Lzn.Stroke}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="14,12" />
@@ -22,8 +22,8 @@
             <Setter Property="Margin" Value="2,18,0,8" />
         </Style>
         <Style x:Key="Chip" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource Lzn.SurfaceHover}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Lzn.StrokeStrong}" />
+            <Setter Property="Background" Value="{DynamicResource Lzn.SurfaceHover}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeStrong}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Padding" Value="6,2" />
@@ -43,7 +43,7 @@
                     <TextBlock Text="{Binding Value}" Style="{StaticResource Lzn.ValueText}" TextWrapping="Wrap" />
                 </Border>
                 <StackPanel Grid.Column="2" Margin="0,0,12,0">
-                    <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Note}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0"
                                Visibility="{Binding Note, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                 </StackPanel>
@@ -58,8 +58,8 @@
                     <ColumnDefinition Width="18" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Info}" VerticalAlignment="Top" Margin="0,1,0,0" />
-                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{DynamicResource Lzn.Info}" VerticalAlignment="Top" Margin="0,1,0,0" />
+                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -80,7 +80,7 @@
                 </Image>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding DetectionText}" Foreground="{StaticResource Lzn.TextSecondary}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding DetectionText}" Foreground="{DynamicResource Lzn.TextSecondary}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Margin="0,6,0,0" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Description}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,4,0,0" TextWrapping="Wrap" />
                 </StackPanel>
             </DockPanel>
@@ -116,7 +116,7 @@
                 <Grid>
                     <TextBlock Text="Configurações recomendadas" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
                     <Border Style="{StaticResource Lzn.Badge.Warn}" HorizontalAlignment="Right">
-                        <TextBlock Text="Instruções manuais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" />
+                        <TextBlock Text="Instruções manuais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.RiskWarn}" />
                     </Border>
                 </Grid>
                 <TextBlock Text="Siga os passos na ordem. O LZN Tweaker não aplica nem verifica estes ajustes." Style="{StaticResource Lzn.Text.Caption}" Margin="0,3,0,0" />
@@ -125,8 +125,8 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,12,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
-                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{DynamicResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Gerenciador de Tarefas" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
@@ -134,7 +134,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type local:ProcedureView}">
                                     <StackPanel Margin="0,10,0,0">
-                                        <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.Text}" Margin="0,0,0,4" />
+                                        <TextBlock Text="{Binding Title}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.Text}" Margin="0,0,0,4" />
                                         <ItemsControl ItemsSource="{Binding Steps}" Focusable="False">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type local:NumberedStep}">
@@ -143,8 +143,8 @@
                                                             <ColumnDefinition Width="22" />
                                                             <ColumnDefinition Width="*" />
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBlock Text="{Binding Number, StringFormat={}{0}.}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.AccentHover}" />
-                                                        <TextBlock Grid.Column="1" Text="{Binding Text}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                                                        <TextBlock Text="{Binding Number, StringFormat={}{0}.}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.AccentHover}" />
+                                                        <TextBlock Grid.Column="1" Text="{Binding Text}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" />
                                                     </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -154,8 +154,8 @@
                                                 <ColumnDefinition Width="22" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="&#xE7BA;" Style="{StaticResource Lzn.Icon}" FontSize="12" Foreground="{StaticResource Lzn.RiskWarn}" VerticalAlignment="Top" Margin="0,1,0,0" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Warning}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" LineHeight="16" />
+                                            <TextBlock Text="&#xE7BA;" Style="{StaticResource Lzn.Icon}" FontSize="12" Foreground="{DynamicResource Lzn.RiskWarn}" VerticalAlignment="Top" Margin="0,1,0,0" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Warning}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.RiskWarn}" LineHeight="16" />
                                         </Grid>
                                     </StackPanel>
                                 </DataTemplate>
@@ -168,13 +168,13 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,10,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
-                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{DynamicResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Vídeo e desempenho" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
                         <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="32,4,0,6">
-                            <Run Text="Onde: " /><Run Text="{Binding VideoMenuPath, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                            <Run Text="Onde: " /><Run Text="{Binding VideoMenuPath, Mode=OneWay}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                         </TextBlock>
                         <ItemsControl ItemsSource="{Binding VideoSettings}" Focusable="False" Margin="32,0,0,0" Grid.IsSharedSizeScope="True">
                             <ItemsControl.ItemTemplate>
@@ -190,7 +190,7 @@
                                             <TextBlock Text="{Binding Value}" Style="{StaticResource Lzn.ValueText}" />
                                         </Border>
                                         <StackPanel Grid.Column="2">
-                                            <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding Purpose}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" />
                                             <TextBlock Text="{Binding Dependency}" Style="{StaticResource Lzn.Text.Caption}" Margin="0,2,0,0"
                                                        Visibility="{Binding Dependency, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
                                         </StackPanel>
@@ -210,8 +210,8 @@
                                     <ColumnDefinition Width="18" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{StaticResource Lzn.Info}" VerticalAlignment="Top" Margin="0,1,0,0" />
-                                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                                <TextBlock Text="&#xE946;" Style="{StaticResource Lzn.Icon}" FontSize="11" Foreground="{DynamicResource Lzn.Info}" VerticalAlignment="Top" Margin="0,1,0,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -223,7 +223,7 @@
                 <Grid>
                     <TextBlock Text="Configurações recomendadas" Style="{StaticResource Lzn.Text.Subtitle}" VerticalAlignment="Center" />
                     <Border Style="{StaticResource Lzn.Badge.Warn}" HorizontalAlignment="Right">
-                        <TextBlock Text="Instruções manuais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.RiskWarn}" />
+                        <TextBlock Text="Instruções manuais" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.RiskWarn}" />
                     </Border>
                 </Grid>
                 <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="0,3,0,0" TextWrapping="Wrap"
@@ -233,13 +233,13 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,12,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
-                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{DynamicResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="1" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Configurações gerais: vídeo do jogo" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
                         <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="32,4,0,0" TextWrapping="Wrap">
-                            <Run Text="Onde: " /><Run Text="{Binding FortniteVideoMenuPath, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                            <Run Text="Onde: " /><Run Text="{Binding FortniteVideoMenuPath, Mode=OneWay}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                         </TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="32,10,0,0">
                             <RadioButton Style="{StaticResource Lzn.Tab}" GroupName="FnProfile" IsChecked="{Binding UsesPerformanceMode}" AutomationProperties.Name="Perfil competitivo, Modo Desempenho">
@@ -249,7 +249,7 @@
                                 <TextBlock Text="Alternativo · DirectX 12" FontSize="{StaticResource Lzn.FontSize.BodySmall}" />
                             </RadioButton>
                         </StackPanel>
-                        <TextBlock Text="{Binding FortniteProfileSummary}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" Margin="32,8,0,4" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding FortniteProfileSummary}" Style="{StaticResource Lzn.Text.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" Margin="32,8,0,4" TextWrapping="Wrap" />
                         <ItemsControl ItemsSource="{Binding FortniteVideoSettings}" Focusable="False" Margin="32,0,0,0" Grid.IsSharedSizeScope="True" />
                         <ItemsControl ItemsSource="{Binding FortniteVideoNotes}" ItemTemplate="{StaticResource FnNoteTemplate}" Focusable="False" Margin="32,8,0,0" />
                     </StackPanel>
@@ -259,8 +259,8 @@
                 <Border Style="{StaticResource Lzn.Panel}" Margin="0,10,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="22" Height="22" CornerRadius="11" Background="{StaticResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
-                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Width="22" Height="22" CornerRadius="11" Background="{DynamicResource Lzn.SurfaceRaised}" Margin="0,0,10,0">
+                                <TextBlock Text="2" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="SemiBold" Foreground="{DynamicResource Lzn.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="Placa de vídeo: escolha a fabricante" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
@@ -275,7 +275,7 @@
                         <ItemsControl ItemsSource="{Binding FortniteGpuNotes}" ItemTemplate="{StaticResource FnNoteTemplate}" Focusable="False" Margin="32,8,0,0" />
                         <StackPanel Visibility="{Binding HasGpuChoice, Converter={StaticResource BoolToVisibility}}">
                             <TextBlock Style="{StaticResource Lzn.Text.Caption}" Margin="32,8,0,4" TextWrapping="Wrap">
-                                <Run Text="Onde: " /><Run Text="{Binding GpuMenuPath, Mode=OneWay}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                                <Run Text="Onde: " /><Run Text="{Binding GpuMenuPath, Mode=OneWay}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                             </TextBlock>
                             <ItemsControl ItemsSource="{Binding GpuSettings}" Focusable="False" Margin="32,0,0,0" Grid.IsSharedSizeScope="True" />
                         </StackPanel>
@@ -294,7 +294,7 @@
                     <ItemsControl ItemsSource="{Binding Actions}" Focusable="False">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:OptimizationActionViewModel}">
-                                <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,10" Background="Transparent" ToolTip="{Binding Tooltip}">
+                                <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,10" Background="Transparent" ToolTip="{Binding Tooltip}">
                                     <StackPanel>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -307,11 +307,11 @@
                                             <CheckBox Style="{StaticResource AccentCheckBoxStyle}" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,12,0"
                                                       AutomationProperties.Name="{Binding Name}" />
                                             <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="{StaticResource Lzn.FontSize.Body}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,14,0" />
-                                            <TextBlock Grid.Column="2" Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}"
+                                            <TextBlock Grid.Column="2" Text="{Binding Description}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}"
                                                        TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
                                             <TextBlock Grid.Column="3" Text="{Binding SizeText}" FontSize="{StaticResource Lzn.FontSize.BodySmall}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0" />
                                             <Border Grid.Column="4" Style="{StaticResource Lzn.Badge}" Margin="12,0,0,0" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Risk, StringFormat=Risco {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" />
+                                                <TextBlock Text="{Binding Risk, StringFormat=Risco {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" />
                                             </Border>
                                         </Grid>
                                         <TextBlock Text="{Binding ResultText}" Foreground="{Binding ResultBrush}" FontSize="{StaticResource Lzn.FontSize.Caption}" Margin="28,4,0,0" TextWrapping="Wrap"
@@ -330,11 +330,11 @@
                         <ItemsControl ItemsSource="{Binding Backups}" Focusable="False">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type local:BackupItemViewModel}">
-                                    <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,10">
+                                    <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,10">
                                         <Grid>
                                             <StackPanel Margin="0,0,120,0">
                                                 <TextBlock Text="{Binding Label}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                                <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,3,0,0" ToolTip="{Binding Details}" />
+                                                <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,3,0,0" ToolTip="{Binding Details}" />
                                             </StackPanel>
                                             <Button HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Lzn.ToolbarButton}" Content="Restaurar"
                                                     Command="{Binding DataContext.RestoreBackupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
@@ -344,7 +344,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Border>
-                    <TextBlock Text="{Binding RunSummary}" Foreground="{StaticResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,8,0,0"
+                    <TextBlock Text="{Binding RunSummary}" Foreground="{DynamicResource Lzn.AccentText}" FontSize="{StaticResource Lzn.FontSize.Caption}" TextWrapping="Wrap" Margin="0,8,0,0"
                                Visibility="{Binding HasActions, Converter={x:Static local:InverseBoolToVisibilityConverter.Instance}}" />
                 </StackPanel>
             </StackPanel>
@@ -354,8 +354,8 @@
                 <ItemsControl ItemsSource="{Binding Diagnostics}" Focusable="False">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:DiagnosticItemViewModel}">
-                            <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,8">
-                                <Expander Foreground="{StaticResource Lzn.Text}">
+                            <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,8">
+                                <Expander Foreground="{DynamicResource Lzn.Text}">
                                     <Expander.Header>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -364,7 +364,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                                <TextBlock Text="{Binding CurrentState}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                                                <TextBlock Text="{Binding CurrentState}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
                                             </StackPanel>
                                             <Border Grid.Column="1" VerticalAlignment="Center" CornerRadius="4" Padding="7,2" BorderThickness="1" BorderBrush="{Binding StatusBrush}" Margin="12,0,0,0">
                                                 <TextBlock Text="{Binding StatusText}" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Bold" Foreground="{Binding StatusBrush}" />
@@ -372,8 +372,8 @@
                                         </Grid>
                                     </Expander.Header>
                                     <StackPanel Margin="24,8,0,4">
-                                        <TextBlock Text="{Binding Recommendation}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
-                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Recommendation}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="16" />
+                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" Margin="0,5,0,0" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </Expander>
                             </Border>
@@ -387,23 +387,23 @@
                 <ItemsControl ItemsSource="{Binding Guidance}" Focusable="False">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:GuidanceItemViewModel}">
-                            <Border BorderBrush="{StaticResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,8">
-                                <Expander Foreground="{StaticResource Lzn.Text}">
+                            <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,0,0,1" Padding="14,8">
+                                <Expander Foreground="{DynamicResource Lzn.Text}">
                                     <Expander.Header>
                                         <StackPanel>
                                             <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" Foreground="{Binding TitleBrush}" TextWrapping="Wrap" />
-                                            <TextBlock Text="{Binding Summary}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                                            <TextBlock Text="{Binding Summary}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,2,0,0" />
                                         </StackPanel>
                                     </Expander.Header>
                                     <StackPanel Margin="24,8,0,4">
                                         <ItemsControl ItemsSource="{Binding Steps}" Focusable="False">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding StringFormat=• {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,2" />
+                                                    <TextBlock Text="{Binding StringFormat=• {0}}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" Margin="0,2" />
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{StaticResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                                        <TextBlock Text="{Binding Details}" FontSize="{StaticResource Lzn.FontSize.Caption}" Foreground="{DynamicResource Lzn.TextMuted}" TextWrapping="Wrap" Margin="0,6,0,0" />
                                     </StackPanel>
                                 </Expander>
                             </Border>
