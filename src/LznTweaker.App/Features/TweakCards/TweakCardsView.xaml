@@ -579,10 +579,10 @@
             </Grid.ColumnDefinitions>
 
             <!-- Lista -->
-            <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}">
+            <Border>
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="BorderThickness" Value="0,0,1,0" />
+                        <Setter Property="BorderThickness" Value="0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsDetailDocked}" Value="False">
                                 <Setter Property="Grid.ColumnSpan" Value="2" />
@@ -742,13 +742,17 @@
                 </DockPanel>
             </Border>
 
-            <!-- Detalhe fixo -->
-            <Grid Grid.Column="1" Width="{StaticResource Lzn.Layout.DockedDetailWidth}" Visibility="{Binding IsDetailDocked, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
-                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FocusDetailPanel}" Focusable="False"
-                                Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
-                <controls:EmptyState Glyph="{StaticResource Lzn.Glyph.Select}" Message="Selecione um item da lista para ver o que ele faz, o que muda no sistema e como desfazer."
-                                     Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNull}}" />
-            </Grid>
+            <!-- Detalhe fixo: painel de superfície à direita, como os cartões da referência -->
+            <Border Grid.Column="1" Width="{StaticResource Lzn.Layout.DockedDetailWidth}" Margin="0,16,16,12" Background="{DynamicResource Lzn.Surface}"
+                    BorderBrush="{DynamicResource Lzn.Stroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}"
+                    Visibility="{Binding IsDetailDocked, Converter={x:Static infra:VisibilityConverter.WhenTrue}}">
+                <Grid>
+                    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource FocusDetailPanel}" Focusable="False"
+                                    Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNotNull}}" />
+                    <controls:EmptyState Glyph="{StaticResource Lzn.Glyph.Select}" Message="Selecione um item da lista para ver o que ele faz, o que muda no sistema e como desfazer."
+                                         Visibility="{Binding SelectedCard, Converter={x:Static infra:VisibilityConverter.WhenNull}}" />
+                </Grid>
+            </Border>
 
             <!-- Alterações pendentes -->
             <ContentControl Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding}" ContentTemplate="{StaticResource PendingBar}" Margin="28,0,28,0" Focusable="False" />

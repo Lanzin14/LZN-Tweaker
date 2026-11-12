@@ -83,7 +83,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0" Margin="0,0,0,12" VerticalAlignment="Top">
+            <Border Style="{StaticResource Lzn.Panel}" Padding="6,2" Margin="0,0,0,12" VerticalAlignment="Top">
                 <ItemsControl ItemsSource="{Binding Categories}" ItemTemplate="{StaticResource CategoryRow}" Focusable="False" />
             </Border>
         </ScrollViewer>

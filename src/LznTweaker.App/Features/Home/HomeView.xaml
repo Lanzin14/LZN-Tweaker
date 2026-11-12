@@ -88,6 +88,8 @@
 
                 <StackPanel>
                     <!-- O que fazer agora: um botão roxo só (Revisar recomendados). -->
+                    <Border Style="{StaticResource Lzn.Panel}" Padding="16,14,16,4">
+                    <StackPanel>
                     <TextBlock Text="O QUE FAZER AGORA" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,6" />
 
                     <Border Style="{StaticResource Lzn.SettingRow}" MinHeight="64" Padding="4,10">
@@ -164,8 +166,13 @@
                         </DockPanel>
                     </Border>
 
+                    </StackPanel>
+                    </Border>
+
                     <!-- Últimas alterações -->
-                    <Grid Margin="0,28,0,6">
+                    <Border Style="{StaticResource Lzn.Panel}" Padding="16,14,16,4" Margin="0,16,0,0">
+                    <StackPanel>
+                    <Grid Margin="0,0,0,6">
                         <TextBlock Text="ÚLTIMAS ALTERAÇÕES" Style="{StaticResource Lzn.Text.Overline}" VerticalAlignment="Center" />
                         <Button Style="{StaticResource SectionLink}" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Backups}">
                             <TextBlock Text="Ver histórico e desfazer" FontSize="{StaticResource Lzn.FontSize.Caption}" FontWeight="Medium" Foreground="{DynamicResource Lzn.AccentHover}" />
@@ -200,12 +207,16 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <TextBlock Text="Nenhuma alteração registrada ainda." Style="{StaticResource Lzn.Text.Caption}" Margin="4,8,0,0"
+                    <TextBlock Text="Nenhuma alteração registrada ainda." Style="{StaticResource Lzn.Text.Caption}" Margin="4,8,0,10"
                                Visibility="{Binding HasRecentChanges, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
+                    </StackPanel>
+                    </Border>
                 </StackPanel>
 
                 <!-- Jogos encontrados e o que garante a segurança -->
                 <StackPanel Grid.Column="2">
+                    <Border Style="{StaticResource Lzn.Panel}" Padding="16,14,16,4">
+                    <StackPanel>
                     <Grid Margin="0,0,0,6">
                         <TextBlock Text="JOGOS ENCONTRADOS" Style="{StaticResource Lzn.Text.Overline}" VerticalAlignment="Center" />
                         <Button Style="{StaticResource SectionLink}" Command="{Binding NavigateCommand}" CommandParameter="{x:Static shell:ShellPages.Games}">
@@ -233,12 +244,19 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <TextBlock Text="Nenhum jogo compatível encontrado." Style="{StaticResource Lzn.Text.Caption}" Margin="4,8,0,0"
+                    <TextBlock Text="Nenhum jogo compatível encontrado." Style="{StaticResource Lzn.Text.Caption}" Margin="4,8,0,10"
                                Visibility="{Binding HasInstalledGames, Converter={x:Static infra:VisibilityConverter.WhenFalse}}" />
 
-                    <TextBlock Text="SEGURANÇA" Style="{StaticResource Lzn.Text.Overline}" Margin="0,28,0,8" />
-                    <TextBlock Text="Antes de cada alteração o app cria um ponto de restauração, e o Histórico guarda o valor anterior para desfazer."
-                               Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="20" />
+                    </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Lzn.Panel}" Margin="0,16,0,0">
+                        <StackPanel>
+                            <TextBlock Text="SEGURANÇA" Style="{StaticResource Lzn.Text.Overline}" Margin="0,0,0,8" />
+                            <TextBlock Text="Antes de cada alteração o app cria um ponto de restauração, e o Histórico guarda o valor anterior para desfazer."
+                                       Foreground="{DynamicResource Lzn.TextSecondary}" TextWrapping="Wrap" LineHeight="20" />
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
         </StackPanel>

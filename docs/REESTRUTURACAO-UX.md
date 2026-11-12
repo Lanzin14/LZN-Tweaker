@@ -215,3 +215,23 @@ Diferenças em relação ao plano:
 - "Removidos pelo LZN Tweaker" continua como painel em Remover apps (virar filtro mudaria o comportamento da lista).
 - Os perfis Recomendado/Mínimo/Avançado continuam como botões: eles marcam ajustes (ação), não são um filtro.
 - O Ctrl+Enter não tem teste automático: o teste de interface não simula o estado real do teclado.
+
+## Temas claro e escuro Grafite + Azul (11/11/2026)
+
+Referência visual: painel financeiro claro (cartões brancos sobre fundo cinza-azulado, cantos arredondados, azul de
+ação, seletor de tema no rodapé do menu). O violeta saiu; o app tem dois temas com as mesmas chaves:
+
+- **Claro**: fundo `#F3F5F9`, superfícies brancas, texto `#0F1724`, azul `#2563EB`.
+- **Escuro Grafite + Azul**: chumbo `#111317`, grafite `#181B21`, azul elétrico `#2F6BEB` (texto branco nos botões).
+
+Como funciona:
+- Cores só em `Themes/Palette.Light.xaml` e `Palette.Dark.xaml`, gerados por `tools/theme/paletas.py`, que confere o
+  contraste AA antes de gravar. Para mudar uma cor, edite o script e rode de novo.
+- As telas usam `{DynamicResource Lzn.*}` para cores; o `ThemeService` troca a paleta em tempo real, segue o Windows
+  por padrão (e acompanha a troca do sistema) e salva a escolha em `ui.json`. `ThemeBrushes` reaproveita os pincéis
+  dos ViewModels e só troca a cor.
+- Seletor no rodapé da sidebar: seguir o Windows, claro ou escuro; recolhida, um botão alterna.
+- Visual da referência: sidebar como painel solto (cantos 14), lista e detalhe em painéis de superfície (cantos 12),
+  blocos do Início em painéis.
+- Testes: contraste e chaves iguais nos dois temas (`DesignSystemGuardTests`) e prints das páginas principais nos dois
+  temas (`theme-light-*.png`, `theme-dark-*.png`).

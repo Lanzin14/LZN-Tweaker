@@ -72,7 +72,7 @@ A skill `ui-ux-pro-max --design-system` sugeriu, para "ferramenta desktop gamer 
 
 | Token | Cor | HEX | Uso |
 |---|---|---|---|
-Atualizada em 02/11/2026 na reformulação visual "Obsidian + Electric Violet" (registro em `docs/REESTRUTURACAO-UX.md`).
+Histórico: em 11/11/2026 a paleta virou dois temas (claro e escuro Grafite + Azul); os valores atuais ficam em `tools/theme/paletas.py` e o registro em `docs/REESTRUTURACAO-UX.md`. A tabela abaixo é a versão Obsidian + Electric Violet de 02/11/2026.
 
 | Token | Cor | HEX | Uso |
 |---|---|---|---|

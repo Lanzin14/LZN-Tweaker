@@ -11,7 +11,7 @@
         <DataTemplate x:Key="ToolGroupTemplate" DataType="{x:Type local:ToolGroup}">
             <StackPanel Margin="0,0,0,16">
                 <TextBlock Text="{Binding Title, Converter={x:Static infra:UpperCaseConverter.Instance}}" Style="{StaticResource Lzn.Text.Overline}" Margin="2,0,0,8" ToolTip="{Binding Description}" />
-                <Border BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,1,0,0">
+                <Border Style="{StaticResource Lzn.Panel}" Padding="10,2">
                     <ItemsControl ItemsSource="{Binding Rows}" Focusable="False">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ToolRow}">

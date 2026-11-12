@@ -286,7 +286,7 @@
         <Setter Property="Background" Value="{DynamicResource Lzn.Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeSubtle}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Md}" />
+        <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Lg}" />
         <Setter Property="Padding" Value="{StaticResource Lzn.Padding.Card}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Style.Triggers>
@@ -301,7 +301,7 @@
         <Setter Property="Background" Value="{DynamicResource Lzn.Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Lzn.StrokeSubtle}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Md}" />
+        <Setter Property="CornerRadius" Value="{StaticResource Lzn.Radius.Lg}" />
         <Setter Property="Padding" Value="{StaticResource Lzn.Padding.Card}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
@@ -474,6 +474,7 @@
          e o último ganham cantos com Lzn.Segment.First / Lzn.Segment.Last. -->
     <Style x:Key="Lzn.Segment" TargetType="RadioButton">
         <Setter Property="Foreground" Value="{DynamicResource Lzn.TextSecondary}" />
+        <Setter Property="Padding" Value="12,5" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource Lzn.FocusVisualInset}" />
@@ -483,7 +484,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
                     <Border x:Name="Chip" BorderBrush="{DynamicResource Lzn.ControlStroke}" BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding Tag}" Background="Transparent" Padding="12,5">
+                            CornerRadius="{TemplateBinding Tag}" Background="Transparent" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -793,14 +794,16 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border x:Name="MasterPane" BorderBrush="{DynamicResource Lzn.StrokeSubtle}" BorderThickness="0,0,1,0" Padding="0,0,14,0">
+                        <Border x:Name="MasterPane" Background="{DynamicResource Lzn.Surface}" BorderBrush="{DynamicResource Lzn.Stroke}" BorderThickness="1"
+                                CornerRadius="{StaticResource Lzn.Radius.Lg}" Padding="6">
                             <ContentPresenter Content="{TemplateBinding Master}" />
                         </Border>
 
                         <!-- Detalhe fixo -->
-                        <Border x:Name="Docked" Grid.Column="1" Width="{StaticResource Lzn.Layout.DockedDetailWidth}" Background="Transparent">
+                        <Border x:Name="Docked" Grid.Column="1" Width="{StaticResource Lzn.Layout.DockedDetailWidth}" Margin="12,0,0,0" Background="{DynamicResource Lzn.Surface}"
+                                BorderBrush="{DynamicResource Lzn.Stroke}" BorderThickness="1" CornerRadius="{StaticResource Lzn.Radius.Lg}">
                             <Grid>
-                                <ScrollViewer x:Name="DockedContent" VerticalScrollBarVisibility="Auto" Padding="28,4,8,20" Focusable="False">
+                                <ScrollViewer x:Name="DockedContent" VerticalScrollBarVisibility="Auto" Padding="22,18,14,18" Focusable="False">
                                     <ContentPresenter Content="{TemplateBinding Selected}" ContentTemplate="{TemplateBinding DetailTemplate}" ContentTemplateSelector="{TemplateBinding DetailTemplateSelector}" />
                                 </ScrollViewer>
                                 <StackPanel x:Name="DockedEmpty" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Visibility="Collapsed">
